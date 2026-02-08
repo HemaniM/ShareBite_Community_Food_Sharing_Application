@@ -2,10 +2,10 @@ import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Icon } from '../Icons/Icons';
 
-const NavigationBar1 = ({ className, ...props }) => {
+const NavBarHomepage = ({ className, ...props }) => {
     return (
         <div className="w-full">
-            <div className="w-full max-w-[1100px] mx-auto pt-[35px] py-[15px] sm:px-6 lg:px-8">
+            <div className="w-full max-w-[1100px] mx-auto pt-[35px] py-[15px]">
                 <div className="flex flex-row justify-between items-center">
                     {/* Logo */}
                     <div className="">
@@ -45,4 +45,4 @@ const NavigationBar1 = ({ className, ...props }) => {
     );
 };
 
-export default NavigationBar1;
+export default NavBarHomepage;
