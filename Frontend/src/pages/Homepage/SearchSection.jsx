@@ -14,7 +14,7 @@ const SearchSection = () => {
 
   return (
     <section className="w-full relative">
-      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="w-full max-w-[1100px] mx-auto">
         <div className="relative -mt-8 lg:-mt-[62px] z-10">
           <div className="bg-white rounded-[5px] shadow-[0px_4px_25px_#00000019] p-4 lg:p-[22px_56px_22px_74px]">
             {/* Section Title */}
