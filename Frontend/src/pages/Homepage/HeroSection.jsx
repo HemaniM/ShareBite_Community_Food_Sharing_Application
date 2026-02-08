@@ -7,19 +7,19 @@ import NavBarHomepage from '../../components/common/NavBarHomepage';
 
 const HeroSection = () => {
   return (
-    <section className="w-full bg-[url('../../public/images/hero_background.jpg')] bg-cover no-repeat relative">
+    <section className="w-full min-h-[696px] bg-[url('../../public/images/hero_background.jpg'),linear-gradient(90deg,#f9f7f8_0%,#f0eeef_50%,#f3f1f2_100%)] bg-no-repeat bg-top relative">
       {/* Navigation Bar */}
       <NavBarHomepage />
 
       {/* Hero Content */}
       <div className="w-full relative">
         {/* Background Decorative Element */}
-        <div className="absolute top-0 right-0 w-[200px] md:w-[262px] h-full bg-[linear-gradient(180deg,#f2f0f1_0%,#f6f4f5_50%,#f5f3f4_100%)] hidden lg:block"></div>
+        <div className="absolute top-0 right-0 w-[200px] md:w-[262px] h-full hidden lg:block"></div>
 
-        <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="flex flex-col lg:flex-row items-center justify-between py-8 lg:py-0 min-h-[500px] lg:min-h-[696px]">
+        <div className="w-full max-w-[1100px] mx-auto relative">
+          <div className="flex flex-col lg:flex-row justify-between py-8 lg:py-0 min-h-[500px] max-h-[696px]">
             {/* Left Content */}
-            <div className="w-full lg:w-[42%] flex flex-col gap-6 lg:gap-[32px] items-center lg:items-start text-center lg:text-left mb-8 lg:mb-0">
+            <div className="w-full pt-[80px] lg:w-[53%] flex flex-col gap-6 lg:gap-[32px] items-center lg:items-start text-center lg:text-left mb-8 lg:mb-0">
               <div className="flex flex-col gap-4 lg:gap-0 items-center lg:items-start w-full">
                 {/* Tagline */}
                 <h2 className="text-[20px] lg:text-[28px] font-bold leading-[28px] lg:leading-[39px] text-left uppercase text-[#7d8d2a] font-['Nunito Sans'] mb-2 lg:mb-4">
@@ -49,16 +49,6 @@ const HeroSection = () => {
                   className="w-full sm:w-auto px-6 py-2.5 lg:px-[26px] lg:py-[10px] rounded-[14px] text-base font-bold leading-[22px] text-center text-[#d99338] bg-transparent border-2 border-[#d99338] font-['Nunito'] hover:bg-[#d99338] hover:text-white transition-all"
                 />
               </div>
-            </div>
-
-            {/* Right Image */}
-            <div className="w-full lg:w-[48%] flex justify-center lg:justify-end">
-              <img
-                src="/images/img_scrambled_eggsadilla.png"
-                alt="Delicious food sharing"
-                className="w-full max-w-[400px] lg:max-w-[666px] h-auto object-contain"
-                loading="lazy"
-              />
             </div>
           </div>
         </div>

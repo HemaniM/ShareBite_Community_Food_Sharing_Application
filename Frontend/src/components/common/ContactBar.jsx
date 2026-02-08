@@ -10,7 +10,7 @@ const ContactBar = ({ className, ...props }) => {
     >
       {/* Top Contact Bar */}
       <div className="w-full bg-[linear-gradient(90deg,#f9f7f8_0%,#f0eeef_50%,#f3f1f2_100%)]">
-        <div className="w-full max-w-[1100px] mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="w-full max-w-[1100px] mx-auto">
           <div className="flex flex-row justify-between items-center py-2 md:py-[10px]">
             {/* Email */}
             <div className="">
