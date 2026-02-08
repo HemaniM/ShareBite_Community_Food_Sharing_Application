@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '../../components/ui/Button';
 import { Icon } from '../../components/Icons/Icons';
-import NavigationBar1 from '../../components/common/NavigationBar1';
+import NavBarHomepage from '../../components/common/NavBarHomepage';
 
 
 
@@ -9,7 +9,7 @@ const HeroSection = () => {
   return (
     <section className="w-full bg-[url('../../public/images/hero_background.jpg')] bg-cover no-repeat relative">
       {/* Navigation Bar */}
-      <NavigationBar1 />
+      <NavBarHomepage />
 
       {/* Hero Content */}
       <div className="w-full relative">
