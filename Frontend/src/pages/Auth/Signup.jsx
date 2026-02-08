@@ -1,7 +1,7 @@
 const Signup = () => {
   return (
     <div>
-      <h2 className="text-[28px] font-bold mb-2 text-[#000000]">
+      <h2 className="text-[28px] font-bold mb-1 text-[#000000]">
         BE PART OF THE CHANGE
       </h2>
       <p className="text-[#595957] mb-6 text-sm">Sign Up Today!</p>
@@ -13,7 +13,7 @@ const Signup = () => {
           </label>
           <input
             type="text"
-            className="w-full px-3 py-2.5 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
+            className="w-full px-3 py-2 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
           />
         </div>
 
@@ -23,7 +23,7 @@ const Signup = () => {
           </label>
           <input
             type="email"
-            className="w-full px-3 py-2.5 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
+            className="w-full px-3 py-2 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
           />
         </div>
 
@@ -33,7 +33,7 @@ const Signup = () => {
           </label>
           <input
             type="password"
-            className="w-full px-3 py-2.5 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
+            className="w-full px-3 py-2 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
           />
         </div>
 
@@ -43,7 +43,7 @@ const Signup = () => {
           </label>
           <input
             type="password"
-            className="w-full px-3 py-2.5 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
+            className="w-full px-3 py-2 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
           />
         </div>
 

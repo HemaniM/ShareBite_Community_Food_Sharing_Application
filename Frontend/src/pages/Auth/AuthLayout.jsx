@@ -27,21 +27,26 @@ const carouselData = [
 
 const AuthLayout = () => {
   const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
+    if (paused) return;
+
     const interval = setInterval(() => {
       setCurrent((prev) => (prev + 1) % carouselData.length);
-    }, 3000);
+    }, 5000);
 
     return () => clearInterval(interval);
-  }, []);
+  }, [paused]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f3f4f6]">
       <div className="bg-white w-full max-w-[1000px] h-[670px] flex rounded-xl overflow-hidden shadow-2xl">
+
         {/* LEFT: Image Carousel */}
         <div className="w-[45%] relative overflow-hidden m-3 rounded-lg">
-          {/* Sign Up and Login Buttons on Image - Top Right */}
+
+          {/* Sign Up & Login buttons */}
           <div className="absolute top-6 right-6 flex gap-3 z-20">
             <NavLink
               to="/signup"
@@ -70,6 +75,7 @@ const AuthLayout = () => {
             </NavLink>
           </div>
 
+          {/* Slides */}
           {carouselData.map((item, index) => (
             <div
               key={index}
@@ -83,20 +89,26 @@ const AuthLayout = () => {
                 className="w-full h-full object-cover"
               />
 
-              {/* Dark overlay for better text readability */}
+              {/* Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
-              {/* Text with blurred rounded container */}
+              {/* Text */}
               <div className="absolute bottom-20 left-8 right-8">
                 <div className="bg-white/10 backdrop-blur-md rounded-xl px-4 py-3">
-                  <p className="text-white text-sm font-normal leading-relaxed">
+                  <p className="text-white text-sm leading-relaxed">
                     "{item.text}"
                   </p>
                 </div>
               </div>
 
-              {/* Learn More Button */}
-              <button className="absolute bottom-6 left-8 px-5 py-2 border-2 border-white text-white rounded-md hover:bg-white hover:text-gray-900 transition-all duration-300 font-medium text-sm">
+              {/* Learn More Button (PAUSE ON HOVER) */}
+              <button
+                onMouseEnter={() => setPaused(true)}
+                onMouseLeave={() => setPaused(false)}
+                className="absolute bottom-6 left-8 px-5 py-2 border-2 border-white 
+                           text-white rounded-md hover:bg-white hover:text-gray-900 
+                           transition-all duration-300 font-medium text-sm"
+              >
                 Learn More
               </button>
             </div>
@@ -120,17 +132,18 @@ const AuthLayout = () => {
         </div>
 
         {/* RIGHT: Auth Forms */}
-        <div className="w-[55%] p-10 flex flex-col bg-[#ffffff]">
+        <div className="w-[55%] p-10 flex flex-col bg-white">
           {/* Logo */}
-          <div className="mb-6">
+          <div className="mb-10">
             <Icon name="shareBite_logo_header" />
           </div>
 
-          {/* Form Content */}
+          {/* Forms */}
           <div className="flex-1 overflow-y-auto scrollbar-hide">
             <Outlet />
           </div>
         </div>
+
       </div>
     </div>
   );

@@ -13,7 +13,7 @@ const Login = () => {
           </label>
           <input
             type="email"
-            className="w-full px-3 py-2.5 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
+            className="w-full px-3 py-2 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
           />
         </div>
 
@@ -23,14 +23,14 @@ const Login = () => {
           </label>
           <input
             type="password"
-            className="w-full px-3 py-2.5 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
+            className="w-full px-3 py-2 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
           />
         </div>
 
         <div className="flex justify-center">
           <button
             type="submit"
-            className="w-[100px] bg-[#efa13d] hover:bg-[#d99338] text-white font-semibold py-2 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md mt-2 text-sm"
+            className="w-[200px] bg-[#efa13d] hover:bg-[#d99338] text-white font-semibold py-2 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md mt-2 text-sm"
           >
             LOGIN
           </button>

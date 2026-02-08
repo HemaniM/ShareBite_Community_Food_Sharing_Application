@@ -1,5 +1,5 @@
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 // Pages
 import Homepage from "./pages/Homepage";
@@ -12,7 +12,9 @@ const AppRoutes = () => {
     <Routes>
       {/* Auth routes (START of website) */}
       <Route element={<AuthLayout />}>
-        <Route path="/" element={<Login />} />
+        {/* DEFAULT route */}
+        <Route index element={<Navigate to="/login" replace />} />
+
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
       </Route>
