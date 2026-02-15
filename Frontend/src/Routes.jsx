@@ -7,6 +7,7 @@ import Login from "./pages/Auth/Login";
 import Signup from "./pages/Auth/Signup";
 import AuthLayout from "./pages/Auth/AuthLayout";
 import ProfilePage from "./pages/Profile/ProfilePage";
+import EditProfilePage from "./pages/Profile/EditProfilePage";
 
 const AppRoutes = () => {
   return (
@@ -23,6 +24,7 @@ const AppRoutes = () => {
       {/* After login */}
       <Route path="/home" element={<Homepage />} />
       <Route path="/profile" element={<ProfilePage />} />
+      <Route path="/profile/edit" element={<EditProfilePage />} />
     </Routes>
   );
 };
