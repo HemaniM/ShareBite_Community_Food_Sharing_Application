@@ -1,7 +1,7 @@
 import React from 'react';
 import Button from '../../components/ui/Button';
 import { Icon } from '../../components/Icons/Icons';
-import NavBarHomepage from '../../components/common/NavBarHomepage';
+import NavBarHomepage from '../../components/common/NavbarHomepage';
 
 
 
