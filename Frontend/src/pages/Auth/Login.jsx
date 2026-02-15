@@ -1,14 +1,15 @@
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import { loginUser } from "../../features/auth/authSlice";
+import { loginUser, clearLoginError } from "../../features/auth/authSlice";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { isAuthenticated, loading, error } = useAppSelector(
-  (state) => state.auth
-);
+
+  const { isAuthenticated, loading, loginError } = useAppSelector(
+    (state) => state.auth
+  );
 
   const [form, setForm] = useState({
     email: "",
@@ -22,12 +23,18 @@ const Login = () => {
     });
   };
 
+  // Redirect if logged in
   useEffect(() => {
-  if (isAuthenticated) {
-    setForm({ email: "", password: "" });
-    navigate("/home");
-  }
-}, [isAuthenticated, navigate]);
+    if (isAuthenticated) {
+      setForm({ email: "", password: "" });
+      navigate("/home");
+    }
+  }, [isAuthenticated, navigate]);
+
+  // Clear old login errors when page loads
+  useEffect(() => {
+    dispatch(clearLoginError());
+  }, [dispatch]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -67,6 +74,13 @@ const Login = () => {
           />
         </div>
 
+        {/* LOGIN ERROR ONLY */}
+        {loginError && (
+          <p className="text-red-500 text-sm text-center">
+            {loginError}
+          </p>
+        )}
+
         <div className="flex justify-center">
           <button
             type="submit"
@@ -76,7 +90,6 @@ const Login = () => {
             {loading ? "Logging in..." : "LOGIN"}
           </button>
         </div>
-        {error && <p className="text-red-500">{error}</p>}
       </form>
 
       <div className="flex items-center my-6">
