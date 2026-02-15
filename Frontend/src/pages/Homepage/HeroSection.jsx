@@ -1,7 +1,8 @@
 import React from 'react';
 import Button from '../../components/ui/Button';
 import { Icon } from '../../components/Icons/Icons';
-import NavBarHomepage from '../../components/common/NavbarHomepage';
+import NavBarHomepage from '../../components/common/NavBarHomepage';
+import Button1 from '../../components/ui/Button1';
 
 
 
@@ -39,15 +40,22 @@ const HeroSection = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-[32px] w-full lg:w-auto">
-                <Button
-                  text="GET STARTED"
-                  className="w-full sm:w-auto px-6 py-2.5 lg:px-[24px] lg:py-[10px] rounded-[14px] text-base font-bold leading-[22px] text-center text-white bg-[#efa13d] font-['Nunito'] hover:opacity-90 transition-opacity"
-                />
+                <Button1
+                  variant="filled"
+                  color="orange"
+                  size="md"
+                >
+                  GET STARTED
+                </Button1>
 
-                <Button
-                  text="LEARN MORE"
-                  className="w-full sm:w-auto px-6 py-2.5 lg:px-[26px] lg:py-[10px] rounded-[14px] text-base font-bold leading-[22px] text-center text-[#d99338] bg-transparent border-2 border-[#d99338] font-['Nunito'] hover:bg-[#d99338] hover:text-white transition-all"
-                />
+                <Button1
+                  variant="outline"
+                  color="orange"
+                  size="md"
+                  className="py-[9px]"
+                >
+                  LEARN MORE
+                </Button1>
               </div>
             </div>
           </div>

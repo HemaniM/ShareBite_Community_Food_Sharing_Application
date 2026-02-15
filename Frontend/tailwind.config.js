@@ -6,6 +6,18 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        green: {
+          DEFAULT: 'var(--primary-green)',
+        },
+        orange: {
+          DEFAULT: 'var(--primary-orange)',
+          dark: 'var(--primary-orange-600)',
+        },
+        white: {
+          DEFAULT: 'var(--text-white)',
+        },
+      },
       fontFamily: {
         nunito: ["Nunito", "sans-serif"],
         lato: ["Lato", "sans-serif"],
