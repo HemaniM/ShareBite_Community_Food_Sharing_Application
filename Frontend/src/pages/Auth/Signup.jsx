@@ -1,4 +1,31 @@
+import { useAppDispatch } from "../../hooks/reduxHooks";
+import { registerUser } from "../../features/auth/authSlice";
+import { useState } from "react";
+
 const Signup = () => {
+  const dispatch = useAppDispatch();
+
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    role: "INDIVIDUAL",
+  });
+
+  const passwordsMatch =
+    form.password &&
+    form.confirmPassword &&
+    form.password === form.confirmPassword;
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!passwordsMatch) return;
+
+    const { confirmPassword, ...payload } = form;
+    dispatch(registerUser(payload));
+  };
+
   return (
     <div>
       <h2 className="text-[28px] font-bold mb-1 text-[#000000]">
@@ -6,51 +33,76 @@ const Signup = () => {
       </h2>
       <p className="text-[#595957] mb-6 text-sm">Sign Up Today!</p>
 
-      <form className="space-y-4 m-1">
+      <form onSubmit={handleSubmit} className="space-y-4 m-1">
+        {/* Name */}
         <div>
           <label className="block text-xs font-medium text-[#40403e] mb-1.5">
             User Name
           </label>
           <input
             type="text"
+            name="name"
+            onChange={(e) => setForm({ ...form, name: e.target.value })}
             className="w-full px-3 py-2 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
           />
         </div>
 
+        {/* Email */}
         <div>
           <label className="block text-xs font-medium text-[#40403e] mb-1.5">
             Email Address
           </label>
           <input
             type="email"
+            name="email"
+            onChange={(e) => setForm({ ...form, email: e.target.value })}
             className="w-full px-3 py-2 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
           />
         </div>
 
+        {/* Password */}
         <div>
           <label className="block text-xs font-medium text-[#40403e] mb-1.5">
             Password
           </label>
           <input
+            name="password"
             type="password"
+            onChange={(e) => setForm({ ...form, password: e.target.value })}
             className="w-full px-3 py-2 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
           />
         </div>
 
+        {/* Confirm Password */}
         <div>
           <label className="block text-xs font-medium text-[#40403e] mb-1.5">
             Confirm Password
           </label>
           <input
             type="password"
+            onChange={(e) =>
+              setForm({ ...form, confirmPassword: e.target.value })
+            }
             className="w-full px-3 py-2 text-sm border-[#d4d4d4] rounded-md bg-[#F8F8F8] focus:outline-none focus:border-[#efa13d] focus:ring-1 focus:ring-[#efa13d] transition-all"
           />
+
+          {/* Error Message */}
+          {form.confirmPassword && !passwordsMatch && (
+            <p className="text-red-500 text-xs mt-1">Passwords do not match</p>
+          )}
         </div>
 
+        {/* Submit Button */}
         <div className="flex justify-center">
           <button
             type="submit"
-            className="w-[200px] bg-[#efa13d] hover:bg-[#d99338] text-white font-semibold py-2 rounded-2xl transition-all duration-200 shadow-sm hover:shadow-md mt-2 text-sm"
+            disabled={!passwordsMatch}
+            className={`w-[200px] text-white font-semibold py-2 rounded-2xl transition-all duration-200 shadow-sm mt-2 text-sm
+              ${
+                passwordsMatch
+                  ? "bg-[#efa13d] hover:bg-[#d99338]"
+                  : "bg-gray-300 cursor-not-allowed"
+              }`}
           >
             SIGN UP
           </button>

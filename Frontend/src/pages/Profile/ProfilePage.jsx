@@ -6,7 +6,19 @@ import Footer from "../../components/common/Footer";
 import NavbarHomepage from "../../components/common/NavbarHomepage";
 import NavbarProfile from "../../components/common/NavbarProfile";
 
+import { useAppDispatch } from "../../hooks/reduxHooks";
+import { logout } from "../../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
+
 const ProfilePage = () => {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+  dispatch(logout());
+  navigate("/login", { replace: true });
+};
+
   return (
     <>
       <Helmet>
@@ -126,6 +138,7 @@ const ProfilePage = () => {
 
                     <button
                       type="button"
+                      onClick={handleLogout}
                       className="w-[130px] px-6 py-2.5 rounded-[9px] bg-[#efa13d] text-white text-[11px] font-bold tracking-[0.7px] hover:opacity-90"
                     >
                       LOGOUT
