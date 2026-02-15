@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import EditText from '../../components/ui/EditText';
-import Button from '../../components/ui/Button';
+import Button1 from '../../components/ui/Button1';
+import { Icon } from '../../components/Icons/Icons';
 
 const SearchSection = () => {
   const [location, setLocation] = useState('');
@@ -30,13 +31,9 @@ const SearchSection = () => {
                   placeholder="Location"
                   value={location}
                   onChange={(e) => setLocation(e?.target?.value)}
-                  className="w-full px-3 lg:px-[14px] py-2 lg:py-[10px] pr-10 lg:pr-[28px] rounded-[10px] border-2 border-[#f2ebe5] bg-white text-[15px] font-semibold leading-[21px] text-left text-[#595957] font-['Nunito'] focus:border-[#efa13d] focus:outline-none"
+                  className="w-full px-3 lg:px-[14px] py-2 lg:py-[10px] pr-10 lg:pr-[28px] rounded-[10px] border-2 border-[#f2ebe5] bg-white text-[15px] font-semibold leading-[21px] text-left text-[#595957] font-['Nunito'] outline-none focus:outline-none focus:ring-0 focus:ring-transparent"
                 />
-                <img
-                  src="/images/img_vector.svg"
-                  alt="Location icon"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 w-[14px] h-[16px] object-contain"
-                />
+                <Icon name="location_icon" className="absolute right-3 top-1/2 transform -translate-y-1/2 w-[18px] h-[16px] object-contain" />
               </div>
 
               {/* Category Input */}
@@ -45,13 +42,9 @@ const SearchSection = () => {
                   placeholder="Category"
                   value={category}
                   onChange={(e) => setCategory(e?.target?.value)}
-                  className="w-full px-3 lg:px-[14px] py-2 lg:py-[10px] pr-10 lg:pr-[32px] rounded-[10px] border-2 border-[#f2ebe5] bg-white text-[15px] font-semibold leading-[21px] text-left text-[#595957] font-['Nunito'] focus:border-[#efa13d] focus:outline-none"
+                  className="w-full px-3 lg:px-[14px] py-2 lg:py-[10px] pr-10 lg:pr-[32px] rounded-[10px] border-2 border-[#f2ebe5] bg-white text-[15px] font-semibold leading-[21px] text-left text-[#595957] font-['Nunito'] outline-none focus:outline-none focus:ring-0 focus:ring-transparent"
                 />
-                <img
-                  src="/images/img_vector_blue_gray_400.svg"
-                  alt="Category icon"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 w-[18px] h-[16px] object-contain"
-                />
+                <Icon name="category_icon" className="absolute right-3 top-1/2 transform -translate-y-1/2 w-[18px] h-[16px] object-contain" />
               </div>
 
               {/* Budget Input */}
@@ -60,22 +53,21 @@ const SearchSection = () => {
                   placeholder="Budget"
                   value={budget}
                   onChange={(e) => setBudget(e?.target?.value)}
-                  className="w-full px-3 lg:px-[14px] py-2 lg:py-[10px] pr-10 lg:pr-[32px] rounded-[10px] border-2 border-[#f2ebe5] bg-white text-[15px] font-semibold leading-[21px] text-left text-[#595957] font-['Nunito'] focus:border-[#efa13d] focus:outline-none"
+                  className="w-full px-3 lg:px-[14px] py-2 lg:py-[10px] pr-10 lg:pr-[32px] rounded-[10px] border-2 border-[#f2ebe5] bg-white text-[15px] font-semibold leading-[21px] text-left text-[#595957] font-['Nunito'] outline-none focus:outline-none focus:ring-0 focus:ring-transparent"
                 />
-                <img
-                  src="/images/img_vector_blue_gray_400_16x18.svg"
-                  alt="Budget icon"
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 w-[18px] h-[16px] object-contain"
-                />
+                <Icon name="budget_icon" className="absolute right-3 top-1/2 transform -translate-y-1/2 w-[18px] h-[16px] object-contain" />
               </div>
 
               {/* Search Button */}
               <div className="w-full lg:w-[16%]">
-                <Button
-                  text="SEARCH"
-                  onClick={handleSearch}
-                  className="w-full px-2 lg:px-[10px] py-2 lg:py-[10px] rounded-[10px] text-sm font-semibold leading-5 text-center text-white bg-[#7d8d2a] font-['Nunito'] hover:opacity-90 transition-opacity"
-                />
+                <Button1
+                  variant="filled"
+                  color="green"
+                  size="md"
+                  className="font-[var(--font-weight-normal)] leading-[30px] py-3 px-[50px] text-sm"
+                >
+                  SEARCH
+                </Button1>
               </div>
             </div>
           </div>
