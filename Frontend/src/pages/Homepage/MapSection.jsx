@@ -3,9 +3,9 @@ import Button from '../../components/ui/Button';
 
 const MapSection = () => {
   return (
-    <section className="w-full py-8 lg:py-[56px]">
-      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-6 lg:gap-[40px] items-start">
+    <section className="w-full py-[60px]">
+      <div className="w-full max-w-[975px] mx-auto">
+        <div className="flex flex-col gap-[50px] items-start">
           {/* Section Title */}
           <h2 className="text-xl lg:text-[22px] font-bold leading-7 lg:leading-[31px] text-left uppercase text-black font-['Nunito']">
             Find Food Near You
@@ -16,7 +16,7 @@ const MapSection = () => {
             {/* Map Image */}
             <div className="w-full lg:w-[48%]">
               <img
-                src="/images/img_image_11.png"
+                src="/images/Mapview_image.jpg"
                 alt="Food location map"
                 className="w-full h-[200px] lg:h-[250px] object-cover rounded-[20px]"
                 loading="lazy"

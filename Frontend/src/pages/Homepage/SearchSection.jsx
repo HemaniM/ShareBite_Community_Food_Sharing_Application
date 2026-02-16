@@ -64,7 +64,7 @@ const SearchSection = () => {
                   variant="filled"
                   color="green"
                   size="md"
-                  className="font-[var(--font-weight-normal)] leading-[30px] py-3 px-[50px] text-sm"
+                  className="font-normal leading-[30px] py-3 px-[50px] text-sm"
                 >
                   SEARCH
                 </Button1>

@@ -12,7 +12,7 @@ const CategoriesSection = () => {
   ];
 
   return (
-    <section className="w-full py-12 lg:py-[96px]">
+    <section className="w-full pt-[80px] pb-[50px] lg:pt-[80px] lg:pb-[50px]">
       <div className="w-full max-w-[975px] mx-auto">
         <div className="flex flex-col gap-6 lg:gap-[38px] items-center">
           {/* Section Title */}

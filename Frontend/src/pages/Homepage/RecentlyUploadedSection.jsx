@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import Button1 from '../../components/ui/Button1';
+import { Icon } from '../../components/Icons/Icons';
 
 const RecentlyUploadedSection = () => {
   const [currentPage, setCurrentPage] = useState(0);
@@ -47,9 +49,9 @@ const RecentlyUploadedSection = () => {
   };
 
   return (
-    <section className="w-full py-8 lg:py-[56px]">
-      <div className="w-full max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col gap-6 lg:gap-[40px] items-center">
+    <section className="w-full py-[60px]">
+      <div className="w-full max-w-[975px] mx-auto">
+        <div className="flex flex-col gap-[50px] items-center">
           {/* Section Header */}
           <div className="flex flex-col sm:flex-row justify-between items-center w-full">
             <h2 className="text-xl lg:text-[22px] font-bold leading-7 lg:leading-[31px] text-left uppercase text-black font-['Nunito'] mb-4 sm:mb-0">
@@ -57,13 +59,14 @@ const RecentlyUploadedSection = () => {
             </h2>
 
             {/* View More Button */}
-            <button className="flex items-center justify-center w-8 h-8 lg:w-[46px] lg:h-[46px] rounded-[10px] bg-[#7d8d2a] hover:opacity-90 transition-opacity">
-              <img
-                src="/images/img_vector_white_a700.svg"
-                alt="View more"
-                className="w-2 lg:w-[8px] h-3 lg:h-[14px] object-contain"
-              />
-            </button>
+            <Button1
+              variant="filled"
+              color="green"
+              size="sm"
+              className="w-[47px] h-[30px] lg:w-[47px] lg:h-[30px] rounded-[10px]"
+            >
+              <Icon name="right_arrow" />
+            </Button1>
           </div>
 
           {/* Recent Items */}

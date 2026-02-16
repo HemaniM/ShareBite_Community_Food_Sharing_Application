@@ -15,7 +15,7 @@ const buttonStyles = cva(
                 orange: '',
             },
             size: {
-                sm: 'px-4 py-2 text-sm rounded-[10px]',
+                sm: 'px-4 py-2 font-medium text-xs rounded-[10px]',
                 md: 'px-6 py-2.5 text-base rounded-[14px]',
                 lg: 'px-8 py-3 text-lg rounded-xl',
                 icon: 'p-2 rounded-full',
