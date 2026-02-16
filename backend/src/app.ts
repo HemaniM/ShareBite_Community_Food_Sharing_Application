@@ -1,10 +1,16 @@
 import express from 'express';
+import cors from "cors";
 import { healthRouter } from './modules/health/health.route';
 import { errorMiddleware } from './common/middleware/error.middleware';
 import { httpLogger } from './common/middleware/httpLogger.middleware';
 import { authRouter } from './modules/auth/auth.route';
 
 export const app = express();
+
+app.use(cors({
+  origin: "http://localhost:5173",
+  credentials: true
+}));
 
 app.use(express.json());
 app.use('/api/auth', authRouter);
