@@ -7,7 +7,7 @@ const FoodNearYouSection = () => {
   const foodItems = [
     {
       id: 1,
-      image: "/images/img_morning_breakfast.png",
+      image: "/images/Poha.jpg",
       location: "BHAYANDER",
       title: "Poha",
       price: "20 ₹ /-",
@@ -15,7 +15,7 @@ const FoodNearYouSection = () => {
     },
     {
       id: 2,
-      image: "/images/img_download_19.png",
+      image: "/images/Nibu_Soda.jpg",
       location: "BHAYANDER",
       title: "Nibu Soda",
       price: "Free",
@@ -23,7 +23,7 @@ const FoodNearYouSection = () => {
     },
     {
       id: 3,
-      image: "/images/img_download_27.png",
+      image: "/images/Sandwitch.jpg",
       location: "BHAYANDER",
       title: "Sandwitch",
       price: "30 ₹ /-",
@@ -31,7 +31,7 @@ const FoodNearYouSection = () => {
     },
     {
       id: 4,
-      image: "/images/img_easy_raising_cane_s.png",
+      image: "/images/Samose.jpg",
       location: "BHAYANDER",
       title: "Samose",
       price: "25 ₹ /-",
@@ -39,7 +39,7 @@ const FoodNearYouSection = () => {
     },
     {
       id: 5,
-      image: "/images/img_2b1c3930_d78f_4.png",
+      image: "/images/Lunch_Box.jpg",
       location: "BHAYANDER",
       title: "Lunch Box",
       price: "40 ₹ /-",
@@ -47,7 +47,7 @@ const FoodNearYouSection = () => {
     },
     {
       id: 6,
-      image: "/images/img_chicken_kathi_roll.png",
+      image: "/images/Kathi_Roll.jpg",
       location: "BHAYANDER",
       title: "Kathi Roll",
       price: "55 ₹ /-",
@@ -55,7 +55,7 @@ const FoodNearYouSection = () => {
     },
     {
       id: 7,
-      image: "/images/img_premium_nuts_and.png",
+      image: "/images/Dry_Fruits_Pack.jpg",
       location: "BHAYANDER",
       title: "Dry Fruits Pack",
       price: "100 ₹ /-",
@@ -63,7 +63,7 @@ const FoodNearYouSection = () => {
     },
     {
       id: 8,
-      image: "/images/img_5_irresistible_fat_burning.png",
+      image: "/images/Watermelon_Juice.jpg",
       location: "BHAYANDER",
       title: "Watermelon Juice",
       price: "Free",
@@ -78,7 +78,7 @@ const FoodNearYouSection = () => {
           {/* Section Header */}
           <div className="flex flex-col sm:flex-row justify-between items-center w-full">
             <h2 className="text-xl lg:text-[22px] font-bold leading-7 lg:leading-[31px] text-left uppercase text-black font-['Nunito'] mb-4 sm:mb-0">
-              fOOD nEAR YOU
+              FOOD NEAR YOU
             </h2>
 
             {/* View More Button */}
@@ -115,9 +115,9 @@ const FoodNearYouSection = () => {
                 </div>
 
                 {/* Food Details */}
-                <div className="flex flex-col gap-0.5 lg:gap-[2px] items-center w-full">
+                <div className="flex flex-col gap-0.5 lg:gap-[2px] w-full">
                   {/* Location */}
-                  <span className="text-[8px] font-normal leading-[11px] text-left text-[#6b6961] font-['Nunito']">
+                  <span className="text-[8px] font-normal leading-[11px] text-[#6b6961] font-['Nunito']">
                     {item?.location}
                   </span>
 

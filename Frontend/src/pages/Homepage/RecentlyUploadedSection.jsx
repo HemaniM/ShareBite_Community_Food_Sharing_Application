@@ -8,7 +8,7 @@ const RecentlyUploadedSection = () => {
   const recentItems = [
     {
       id: 1,
-      image: '/images/img_pan_fried_gyoza.png',
+      image: '/images/Pan_Fry_Momos.jpg',
       timeAgo: '• 20s ago',
       title: 'Pan Fry Momos',
       price: '20 ₹ /-',
@@ -16,7 +16,7 @@ const RecentlyUploadedSection = () => {
     },
     {
       id: 2,
-      image: '/images/img_idli_sambar.png',
+      image: '/images/Idli_Sambar.jpg',
       timeAgo: '• 1m ago',
       title: 'Idali Sambar',
       price: '30 ₹ /-',
@@ -24,7 +24,7 @@ const RecentlyUploadedSection = () => {
     },
     {
       id: 3,
-      image: '/images/img_download_28.png',
+      image: '/images/Pineapple_Juice.jpg',
       timeAgo: '• 6m ago',
       title: 'Pineapple Juice',
       price: 'Free',
@@ -32,7 +32,23 @@ const RecentlyUploadedSection = () => {
     },
     {
       id: 4,
-      image: '/images/img_download_26.png',
+      image: '/images/Spring_Rolls.jpg',
+      timeAgo: '• 6m ago',
+      title: 'Spring Rolls',
+      price: '15 ₹ /-',
+      priceColor: '#f2f4ea'
+    },
+    {
+      id: 5,
+      image: '/images/Spring_Rolls.jpg',
+      timeAgo: '• 6m ago',
+      title: 'Spring Rolls',
+      price: '15 ₹ /-',
+      priceColor: '#f2f4ea'
+    },
+    {
+      id: 6,
+      image: '/images/Spring_Rolls.jpg',
       timeAgo: '• 6m ago',
       title: 'Spring Rolls',
       price: '15 ₹ /-',
@@ -90,13 +106,13 @@ const RecentlyUploadedSection = () => {
                   <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent">
                     {/* Time Badge */}
                     <div className="absolute top-2 lg:top-[8px] left-3 lg:left-[12px]">
-                      <span className="px-1 lg:px-[4px] py-1 lg:py-[4px] rounded-[10px] bg-[#59595726] backdrop-blur-sm text-[10px] font-semibold leading-[14px] text-left capitalize text-white font-['Nunito'] shadow-[0px_4px_4px_#888888ff]">
+                      <span className="px-[8px] py-1 rounded-[10px] bg-[#59595726] backdrop-blur-sm text-[10px] font-semibold leading-[14px] text-left capitalize text-white font-['Nunito']">
                         {item?.timeAgo}
                       </span>
                     </div>
 
                     {/* Bottom Content */}
-                    <div className="absolute bottom-0 left-0 right-0 p-1 lg:p-[4px] bg-[#59595726] backdrop-blur-sm rounded-b-[14px] shadow-[0px_4px_4px_#888888ff]">
+                    <div className="absolute bottom-0 left-0 right-0 p-2 bg-[#59595726] backdrop-blur-sm rounded-b-[14px] shadow-[0px_4px_4px_#888888ff]">
                       <div className="flex items-center justify-between px-2 lg:px-[6px]">
                         <div className="flex flex-col gap-1">
                           <h3 className="text-xs lg:text-[14px] font-semibold leading-4 lg:leading-5 text-left capitalize text-white font-['Nunito']">
@@ -111,13 +127,7 @@ const RecentlyUploadedSection = () => {
                         </div>
 
                         {/* Add Button */}
-                        <button className="flex items-center justify-center w-6 h-6 lg:w-[30px] lg:h-[30px] rounded-[8px] bg-[#efa13d] shadow-[0px_4px_2px_#888888ff] hover:opacity-90 transition-opacity">
-                          <img
-                            src="/images/img_frame_37.svg"
-                            alt="Add to cart"
-                            className="w-4 h-4 lg:w-[20px] lg:h-[20px] object-contain"
-                          />
-                        </button>
+                        <Icon name="cart_small" />
                       </div>
                     </div>
                   </div>
@@ -132,11 +142,7 @@ const RecentlyUploadedSection = () => {
                 className="flex items-center justify-center w-8 h-8 lg:w-[34px] lg:h-[34px] rounded-[16px] bg-[#f8d4a6] hover:opacity-90 transition-opacity disabled:opacity-50"
                 disabled={currentPage === 0}
               >
-                <img
-                  src="/images/img_vector_white_a700_34x34.svg"
-                  alt="Previous"
-                  className="w-4 h-4 lg:w-[20px] lg:h-[20px] object-contain rotate-180"
-                />
+                <Icon name="left_arrow_slider" />
               </button>
 
               <button
@@ -144,11 +150,7 @@ const RecentlyUploadedSection = () => {
                 className="flex items-center justify-center w-8 h-8 lg:w-[34px] lg:h-[34px] rounded-[16px] bg-[#efa13d] hover:opacity-90 transition-opacity disabled:opacity-50"
                 disabled={currentPage === 1}
               >
-                <img
-                  src="/images/img_vector_34x34.svg"
-                  alt="Next"
-                  className="w-4 h-4 lg:w-[20px] lg:h-[20px] object-contain"
-                />
+                <Icon name="right_arrow_slider" />
               </button>
             </div>
           </div>

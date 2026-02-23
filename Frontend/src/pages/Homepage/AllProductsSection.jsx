@@ -1,90 +1,90 @@
-import React from 'react';
-import Button from '../../components/ui/Button';
-import Button1 from '../../components/ui/Button1';
-import { Icon } from '../../components/Icons/Icons';
+import React from "react";
+import Button from "../../components/ui/Button";
+import Button1 from "../../components/ui/Button1";
+import { Icon } from "../../components/Icons/Icons";
 
 const AllProductsSection = () => {
   const allProducts = [
     {
       id: 1,
-      image: '/images/img_take_out_poke_bowls.png',
-      location: 'BHAYANDER',
-      title: 'Lunch Box',
-      price: '40 ₹ /-',
-      priceColor: '#d99338'
+      image: "/images/Lunch_Box_1.jpg",
+      location: "BHAYANDER",
+      title: "Lunch Box",
+      price: "40 ₹ /-",
+      priceColor: "#d99338",
     },
     {
       id: 2,
-      image: '/images/img_plant_based_everyday.png',
-      location: 'BHAYANDER WEST',
-      title: 'Roti Sabzi',
-      price: 'FREE',
-      priceColor: '#7d8d2a'
+      image: "/images/Roti_Sabzi.jpg",
+      location: "BHAYANDER WEST",
+      title: "Roti Sabzi",
+      price: "FREE",
+      priceColor: "#7d8d2a",
     },
     {
       id: 3,
-      image: '/images/img_botella_de_jugo.png',
-      location: 'VASAI',
-      title: 'Orange Juice',
-      price: '15 ₹ /-',
-      priceColor: '#d99338'
+      image: "/images/Orange_Juice.jpg",
+      location: "VASAI",
+      title: "Orange Juice",
+      price: "15 ₹ /-",
+      priceColor: "#d99338",
     },
     {
       id: 4,
-      image: '/images/img_3_2.png',
-      location: 'MIRA ROAD',
-      title: 'kiwi',
-      price: '50 ₹ /-',
-      priceColor: '#d99338'
+      image: "/images/Kiwi.jpg",
+      location: "MIRA ROAD",
+      title: "kiwi",
+      price: "50 ₹ /-",
+      priceColor: "#d99338",
     },
     {
       id: 5,
-      image: '/images/img_chili_garlic_noodles.png',
-      location: 'BHAYANDER EAST',
-      title: 'Noodles',
-      price: '30 ₹ /-',
-      priceColor: '#d99338'
+      image: "/images/Noodles.jpg",
+      location: "BHAYANDER EAST",
+      title: "Noodles",
+      price: "30 ₹ /-",
+      priceColor: "#d99338",
     },
     {
       id: 6,
-      image: '/images/img_download_29_1.png',
-      location: 'BHAYANDER',
-      title: 'Rice 1kg',
-      price: '25 ₹ /-',
-      priceColor: '#d99338'
+      image: "/images/Rice_1kg.jpg",
+      location: "BHAYANDER",
+      title: "Rice 1kg",
+      price: "25 ₹ /-",
+      priceColor: "#d99338",
     },
     {
       id: 7,
-      image: '/images/img_270x224.png',
-      location: 'MALAD',
-      title: 'Rajama Chaval',
-      price: 'FREE',
-      priceColor: '#7d8d2a'
+      image: "/images/Rajama_Chawal.jpg",
+      location: "MALAD",
+      title: "Rajama Chaval",
+      price: "FREE",
+      priceColor: "#7d8d2a",
     },
     {
       id: 8,
-      image: '/images/img_summer_fruits.png',
-      location: 'BORIVALI',
-      title: 'Carrot Juice',
-      price: '10 ₹ /-',
-      priceColor: '#d99338'
+      image: "/images/Carrot_Juice.jpg",
+      location: "BORIVALI",
+      title: "Carrot Juice",
+      price: "10 ₹ /-",
+      priceColor: "#d99338",
     },
     {
       id: 9,
-      image: '/images/img_the_ultimate_costco.png',
-      location: 'DAHISAR',
-      title: 'Apple Cider Vinegar',
-      price: '80 ₹ /-',
-      priceColor: '#d99338'
+      image: "/images/Apple_Cider_Vinegar.jpg",
+      location: "DAHISAR",
+      title: "Apple Cider Vinegar",
+      price: "80 ₹ /-",
+      priceColor: "#d99338",
     },
     {
       id: 10,
-      image: '/images/img_download_24.png',
-      location: 'ANDHERI',
-      title: 'Ramen',
-      price: '40 ₹ /-',
-      priceColor: '#d99338'
-    }
+      image: "/images/Ramen.jpg",
+      location: "ANDHERI",
+      title: "Ramen",
+      price: "40 ₹ /-",
+      priceColor: "#d99338",
+    },
   ];
 
   return (
@@ -125,13 +125,9 @@ const AllProductsSection = () => {
                   />
 
                   {/* Add Button */}
-                  <button className="absolute top-3 right-3 lg:top-[12px] lg:right-[10px] flex items-center justify-center w-6 h-6 lg:w-[26px] lg:h-[26px] rounded-[8px] bg-[#efa13d] shadow-[0px_4px_2px_#888888ff] hover:opacity-90 transition-opacity">
-                    <img
-                      src="/images/img_frame_37.svg"
-                      alt="Add to cart"
-                      className="w-4 h-4 lg:w-[18px] lg:h-[18px] object-contain"
-                    />
-                  </button>
+                  <div className="absolute top-3 right-3 lg:top-[12px] lg:right-[10px] hover:opacity-80 transition-opacity">
+                    <Icon name="cart_small" />
+                  </div>
                 </div>
 
                 {/* Product Details */}
@@ -170,7 +166,7 @@ const AllProductsSection = () => {
                       layout_gap=""
                       variant=""
                       size=""
-                      onClick={() => { }}
+                      onClick={() => {}}
                     />
                   </div>
                 </div>
