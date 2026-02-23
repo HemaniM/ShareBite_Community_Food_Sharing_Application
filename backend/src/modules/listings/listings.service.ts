@@ -14,6 +14,7 @@ export class ListingService {
         const listingData: Partial<IListing> = {
             ...payload,
             donor: new mongoose.Types.ObjectId(donorId),
+            category: new mongoose.Types.ObjectId(payload.category as unknown as string),
         };
         return this.repository.create(listingData);
     }

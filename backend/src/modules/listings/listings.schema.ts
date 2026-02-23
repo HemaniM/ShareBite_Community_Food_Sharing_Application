@@ -1,12 +1,11 @@
 import { z } from 'zod';
-import { ListingCategory } from './listings.model';
 
 export const createListingSchema = z.object({
     title: z.string().min(3, "Title must be at least 3 characters"),
     description: z.string().optional(),
     quantity: z.string().min(1, "Quantity is required"),
     price: z.number().min(0).default(0),
-    category: z.nativeEnum(ListingCategory),
+    category: z.string().regex(/^[0-9a-fA-F]{24}$/, "Invalid Category ID"),
     isNonVeg: z.boolean().default(false),
     allergens: z.array(z.string()).optional().default([]),
     ingredients: z.array(z.string()).optional().default([]),

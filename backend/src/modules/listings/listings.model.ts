@@ -1,11 +1,5 @@
 import mongoose, { Schema, Document } from 'mongoose';
 
-export enum ListingCategory {
-  COOKED = 'cooked',
-  RAW = 'raw',
-  PACKAGED = 'packaged'
-}
-
 export enum ListingStatus {
   AVAILABLE = 'available',
   CLAIMED = 'claimed',
@@ -18,12 +12,12 @@ export interface IListing extends Document {
   description?: string;
   quantity: string; // e.g., "3 Plates"
   price: number; // 0 for Free
-  category: ListingCategory;
+  category: mongoose.Types.ObjectId;
   isNonVeg: boolean;
   allergens: string[];
-  ingredients: string[]; // NEW
-  locationOverride?: string; // NEW: If different from User profile
-  contactOverride?: string; // NEW: If different from User profile
+  ingredients: string[];
+  locationOverride?: string;
+  contactOverride?: string;
   images: string[];
   status: ListingStatus;
   expiresAt: Date;
@@ -37,7 +31,7 @@ const ListingSchema: Schema = new Schema({
   description: { type: String },
   quantity: { type: String, required: true },
   price: { type: Number, default: 0 },
-  category: { type: String, enum: Object.values(ListingCategory), required: true },
+  category: { type: Schema.Types.ObjectId, ref: 'Category', required: true },
   isNonVeg: { type: Boolean, default: false },
   allergens: [{ type: String }],
   ingredients: [{ type: String }],

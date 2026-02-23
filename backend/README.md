@@ -298,7 +298,7 @@ Authorization: Bearer <token>
 | description | string | No | Details about the food |
 | quantity | string | Yes | The quantity (e.g. "2 Kgs" or "3 Plates") |
 | price | number | No | Default: 0 |
-| category | enum | Yes | `cooked`, `raw`, or `packaged` |
+| category | string | Yes | Valid 24-character hex string (Category ObjectId) |
 | isNonVeg | boolean | No | Default: false |
 | allergens | array | No | Array of allergen strings |
 | ingredients | array | No | Array of ingredient strings |
@@ -318,7 +318,7 @@ Authorization: Bearer <token>
     "description": "A pile of fresh green apples, barely eaten from. Perfect condition.",
     "quantity": "2 Kgs",
     "price": 0,
-    "category": "raw",
+    "category": "60a8fa7d4d6a9f0b12bc58ce",
     "isNonVeg": false,
     "allergens": [],
     "ingredients": [
@@ -372,7 +372,11 @@ Authorization: Bearer <token>
       "description": "A pile of fresh green apples, barely eaten from. Perfect condition.",
       "quantity": "2 Kgs",
       "price": 0,
-      "category": "raw",
+      "category": {
+        "_id": "60a8fa7d4d6a9f0b12bc58ce",
+        "name": "Raw Food",
+        "slug": "raw-food"
+      },
       "isNonVeg": false,
       "allergens": [],
       "ingredients": [
@@ -398,6 +402,94 @@ Authorization: Bearer <token>
 **Error Responses:**
 
 - `400` - Validation error (e.g. invalid pagination parameters)
+- `500` - Server error
+
+---
+
+### Category Endpoints
+
+#### 1. Fetch All Categories
+
+**Endpoint:** `GET /categories`
+
+**Description:** Fetch a list of all food categories. Suitable for populating frontend dropdowns.
+
+**Success Response (200):**
+
+```json
+{
+  "data": [
+    {
+      "isActive": true,
+      "_id": "60a8fa7d4d6a9f0b12bc58ce",
+      "name": "Raw Food",
+      "slug": "raw-food",
+      "createdAt": "2024-02-23T10:00:00.000Z",
+      "updatedAt": "2024-02-23T10:00:00.000Z",
+      "__v": 0
+    }
+  ]
+}
+```
+
+**Error Responses:**
+
+- `500` - Server error
+
+---
+
+#### 2. Create a Category
+
+**Endpoint:** `POST /categories`
+
+**Description:** Create a new food category. Requires user authentication (Protected).
+
+**Headers:**
+
+```bash
+Authorization: Bearer <token>
+```
+
+**Request Body:**
+
+```json
+{
+  "name": "Raw Food",
+  "slug": "raw-food"
+}
+```
+
+**Parameters:**
+
+| Field | Type | Required | Notes |
+|-------|--------|----------|-------|
+| name | string | Yes | Minimum 2 characters |
+| slug | string | Yes | Lowercase letters, numbers, hyphens |
+| imageUrl | string | No | Valid URL string |
+| isActive | boolean | No | Default: true |
+
+**Success Response (201):**
+
+```json
+{
+  "message": "Category created successfully",
+  "category": {
+    "isActive": true,
+    "_id": "60a8fa7d4d6a9f0b12bc58ce",
+    "name": "Raw Food",
+    "slug": "raw-food",
+    "createdAt": "2024-02-23T10:00:00.000Z",
+    "updatedAt": "2024-02-23T10:00:00.000Z",
+    "__v": 0
+  }
+}
+```
+
+**Error Responses:**
+
+- `400` - Validation error
+- `401` - Unauthorized
+- `409` - Category name or slug already exists
 - `500` - Server error
 
 ---
@@ -454,6 +546,31 @@ The central entity for identity and trust management.
 
 ---
 
+### Category Model (`category.model.ts`)
+
+Represents pre-defined food categories (e.g. Raw, Cooked, Fast Food).
+
+**Schema:**
+
+```typescript
+{
+  _id: ObjectId,
+  name: string (unique),
+  slug: string (unique),
+  imageUrl: string (optional),
+  isActive: boolean (default: true),
+  createdAt: Date,
+  updatedAt: Date
+}
+```
+
+**Features:**
+
+- Provides standard tags for food filtering
+- Toggleable by admins via `isActive` flag
+
+---
+
 ### Listing Model (`listings.model.ts`)
 
 Represents food items being shared.
@@ -466,9 +583,9 @@ Represents food items being shared.
   donor: ObjectId (reference to User),
   title: string,
   description: string,
-  category: enum ['cooked', 'raw', 'packaged'],
+  category: ObjectId (reference to Category),
   isNonVeg: boolean,
-  quantity: number,
+  quantity: string,
   expiresAt: Date (required),
   status: enum ['available', 'claimed', 'expired'],
   location: GeoJSON Point,
