@@ -13,13 +13,17 @@ export enum ListingStatus {
 }
 
 export interface IListing extends Document {
-  donor: mongoose.Types.ObjectId; // Reference to User
+  donor: mongoose.Types.ObjectId;
   title: string;
   description?: string;
-  quantity: string;
+  quantity: string; // e.g., "3 Plates"
+  price: number; // 0 for Free
   category: ListingCategory;
   isNonVeg: boolean;
   allergens: string[];
+  ingredients: string[]; // NEW
+  locationOverride?: string; // NEW: If different from User profile
+  contactOverride?: string; // NEW: If different from User profile
   images: string[];
   status: ListingStatus;
   expiresAt: Date;
@@ -32,23 +36,18 @@ const ListingSchema: Schema = new Schema({
   title: { type: String, required: true },
   description: { type: String },
   quantity: { type: String, required: true },
-  category: {
-    type: String,
-    enum: Object.values(ListingCategory),
-    required: true
-  },
+  price: { type: Number, default: 0 },
+  category: { type: String, enum: Object.values(ListingCategory), required: true },
   isNonVeg: { type: Boolean, default: false },
   allergens: [{ type: String }],
+  ingredients: [{ type: String }],
+  locationOverride: { type: String },
+  contactOverride: { type: String },
   images: [{ type: String }],
-  status: {
-    type: String,
-    enum: Object.values(ListingStatus),
-    default: ListingStatus.AVAILABLE
-  },
+  status: { type: String, enum: Object.values(ListingStatus), default: ListingStatus.AVAILABLE },
   expiresAt: { type: Date, required: true }
-}, { timestamps: true }); // Automatically handles createdAt and updatedAt
+}, { timestamps: true });
 
-// Index for expiry
 ListingSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 export default mongoose.model<IListing>('Listing', ListingSchema);
