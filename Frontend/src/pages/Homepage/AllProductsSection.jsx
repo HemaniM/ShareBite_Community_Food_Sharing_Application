@@ -1,5 +1,6 @@
 import React from "react";
 import Button from "../../components/ui/Button";
+import ProductCard from "../../components/common/ProductCard";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
 
@@ -111,66 +112,14 @@ const AllProductsSection = () => {
           {/* Products Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 w-full">
             {allProducts?.map((product) => (
-              <div
+              <ProductCard
                 key={product?.id}
-                className="flex flex-col gap-1 lg:gap-[4px] items-center cursor-pointer group"
-              >
-                {/* Product Image with Add Button */}
-                <div className="relative w-full h-[200px] lg:h-[270px] rounded-[10px] overflow-hidden">
-                  <img
-                    src={product?.image}
-                    alt={product?.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-
-                  {/* Add Button */}
-                  <div className="absolute top-3 right-3 lg:top-[12px] lg:right-[10px] hover:opacity-80 transition-opacity">
-                    <Icon name="cart_small" />
-                  </div>
-                </div>
-
-                {/* Product Details */}
-                <div className="flex flex-col gap-0.5 lg:gap-[2px] items-center w-full">
-                  {/* Location */}
-                  <span className="text-[8px] lg:text-[10px] font-normal leading-[11px] lg:leading-[14px] text-left text-[#6b6961] font-['Nunito']">
-                    {product?.location}
-                  </span>
-
-                  {/* Title and Price Row */}
-                  <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start w-full gap-2 sm:gap-0">
-                    <div className="flex flex-col items-center sm:items-start">
-                      <h3 className="text-sm font-semibold leading-5 text-left text-black font-['Nunito']">
-                        {product?.title}
-                      </h3>
-                      <p
-                        className="text-[13px] font-semibold leading-[18px] text-left font-['Nunito']"
-                        style={{ color: product?.priceColor }}
-                      >
-                        {product?.price}
-                      </p>
-                    </div>
-
-                    {/* Request Button */}
-                    <Button
-                      text="REQUEST"
-                      className="px-2.5 py-2.5 lg:px-[10px] lg:py-[10px] rounded-[6px] text-[10px] font-semibold leading-[14px] text-center text-white bg-[#7d8d2a] font-['Nunito'] hover:opacity-90 transition-opacity"
-                      border_border=""
-                      text_text_transform=""
-                      effect_box_shadow=""
-                      layout_align_self=""
-                      layout_width=""
-                      padding=""
-                      position=""
-                      margin=""
-                      layout_gap=""
-                      variant=""
-                      size=""
-                      onClick={() => {}}
-                    />
-                  </div>
-                </div>
-              </div>
+                image={product?.image}
+                location={product?.location}
+                title={product?.title}
+                price={product?.price}
+                priceColor={product?.priceColor}
+              />
             ))}
           </div>
         </div>

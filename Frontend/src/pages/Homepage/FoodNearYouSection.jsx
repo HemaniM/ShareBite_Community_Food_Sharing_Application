@@ -1,5 +1,5 @@
 import React from "react";
-import Button from "../../components/ui/Button";
+import ProductCard from "../../components/common/ProductCard";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
 
@@ -95,58 +95,14 @@ const FoodNearYouSection = () => {
           {/* Food Items Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 w-full">
             {foodItems?.map((item) => (
-              <div
+              <ProductCard
                 key={item?.id}
-                className="flex flex-col gap-1.5 lg:gap-[6px] items-center cursor-pointer group"
-              >
-                {/* Food Image with Add Button */}
-                <div className="relative w-full h-[200px] lg:h-[270px] rounded-[10px] overflow-hidden">
-                  <img
-                    src={item?.image}
-                    alt={item?.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                    loading="lazy"
-                  />
-
-                  {/* Add Button */}
-                  <div className="absolute top-3 right-3 lg:top-[12px] lg:right-[10px] hover:opacity-80 transition-opacity">
-                    <Icon name="cart_small" />
-                  </div>
-                </div>
-
-                {/* Food Details */}
-                <div className="flex flex-col gap-0.5 lg:gap-[2px] w-full">
-                  {/* Location */}
-                  <span className="text-[8px] font-normal leading-[11px] text-[#6b6961] font-['Nunito']">
-                    {item?.location}
-                  </span>
-
-                  {/* Title and Price Row */}
-                  <div className="flex flex-col sm:flex-row justify-between items-center sm:items-start w-full gap-2 sm:gap-0">
-                    <div className="flex flex-col items-center sm:items-start">
-                      <h3 className="text-sm font-semibold leading-5 text-left text-black font-['Nunito']">
-                        {item?.title}
-                      </h3>
-                      <p
-                        className="text-[13px] font-semibold leading-[18px] text-left font-['Nunito']"
-                        style={{ color: item?.priceColor }}
-                      >
-                        {item?.price}
-                      </p>
-                    </div>
-
-                    {/* Request Button */}
-                    <Button1
-                      variant="filled"
-                      color="green"
-                      size="sm"
-                      className="py-[9px] "
-                    >
-                      REQUEST
-                    </Button1>
-                  </div>
-                </div>
-              </div>
+                image={item?.image}
+                location={item?.location}
+                title={item?.title}
+                price={item?.price}
+                priceColor={item?.priceColor}
+              />
             ))}
           </div>
         </div>
