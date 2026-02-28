@@ -193,7 +193,10 @@ const TrustedDonorsSection = () => {
                       className="h-4 w-4 object-contain"
                     />
                   </button> */}
-                  <Icon name="cart_small" />
+                  <Icon
+                    name="cart_small"
+                    className="hover:opacity-90 transition-opacity"
+                  />
                 </div>
               </article>
             ))}
