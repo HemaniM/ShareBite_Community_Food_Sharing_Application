@@ -1,10 +1,29 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, NavLink, useLocation } from "react-router-dom";
 import { Icon } from "../Icons/Icons";
 
-const navItems = ["HOME", "ABOUT", "CONTACT", "DONATION"];
+// const navItems = ["HOME", "ABOUT", "CONTACT", "DONATION"];
 
-const HomepageNavBar = ({ activePage = "home", showBorder = false }) => {
+const navItems = [
+  { label: "HOME", path: "/home" },
+  { label: "ABOUT", path: "/about" },
+  { label: "CONTACT", path: "/contact" },
+  { label: "DONATION", path: "/donation" },
+];
+
+const HomepageNavBar = ({ showBorder = false }) => {
+  const location = useLocation();
+
+  const isNavItemActive = (path) => {
+    if (path === "/home") {
+      return location.pathname === "/home";
+    }
+
+    return location.pathname.startsWith(path);
+  };
+
+  // const HomepageNavBar = ({ activePage = "home", showBorder = false }) => {
+
   return (
     <div className="w-full">
       <div className="w-full max-w-[1100px] mx-auto pt-[35px] py-[15px] sm:px-6 lg:px-8">
@@ -18,27 +37,28 @@ const HomepageNavBar = ({ activePage = "home", showBorder = false }) => {
 
             <div className="flex flex-row gap-[50px] items-center">
               {navItems.map((item) => (
-                <span
-                  key={item}
+                <NavLink
+                  key={item.label}
+                  to={item.path}
                   className={`text-[14px] leading-5 text-left font-['Nunito'] cursor-pointer transition-colors ${
-                    item === "HOME" && activePage === "home"
+                    isNavItemActive(item.path)
                       ? "font-[var(--font-weight-bold)] text-[#efa13d]"
                       : "font-[var(--font-weight-semibold)] text-[#6b6961] hover:text-[#efa13d]"
                   }`}
                 >
-                  {item}
-                </span>
+                  {item.label}
+                </NavLink>
               ))}
             </div>
 
             <div className="flex flex-row items-center gap-[12px] lg:gap-[12px]">
-              <button
-                type="button"
+              <Link
+                to="/cart"
                 className="hover:opacity-90 transition-opacity"
                 aria-label="Open cart"
               >
                 <Icon name="cart_big_header" />
-              </button>
+              </Link>
 
               <Link
                 to="/profile"

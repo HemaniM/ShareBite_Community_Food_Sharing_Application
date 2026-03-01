@@ -8,6 +8,7 @@ import Signup from "./pages/Auth/Signup";
 import AuthLayout from "./pages/Auth/AuthLayout";
 import ProfilePage from "./pages/Profile/ProfilePage";
 import EditProfilePage from "./pages/Profile/EditProfilePage";
+import ProfileOverview from "./pages/Profile/ProfileOverview";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -32,13 +33,26 @@ const AppRoutes = () => {
       />
 
       <Route
+        path="/cart"
+        element={<ProtectedRoute>{/* <CartPage /> */}</ProtectedRoute>}
+      />
+
+      <Route
         path="/profile"
         element={
           <ProtectedRoute>
             <ProfilePage />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<Navigate to="overview" replace />} />
+        <Route path="overview" element={<ProfileOverview />} />
+        <Route path="edit" element={<EditProfilePage />} />
+        <Route path="reviews" element={<div>Reviews</div>} />
+        <Route path="requests" element={<div>Requests</div>} />
+        <Route path="food-posts" element={<div>Food Posts</div>} />
+        <Route path="history" element={<div>History</div>} />
+      </Route>
 
       <Route
         path="/profile/edit"
