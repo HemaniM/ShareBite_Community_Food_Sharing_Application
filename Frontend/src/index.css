@@ -58,6 +58,12 @@
     --primary-cream-800: #8C8A7F;
     --primary-cream-900: #6B6961;
 
+    /*white color*/
+    --white-600: #E8E8E8;
+    --white-700: #B5B5B5;
+    --white-800: #8C8C8C;
+    --white-900: #6B6B6B;
+
     /*text colors*/
     --text-grey-1: #F2EBE5;
     --text-grey-2: #BFBFBD;

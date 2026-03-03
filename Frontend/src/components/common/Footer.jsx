@@ -1,22 +1,21 @@
-import React from 'react';
-import Button1 from '../ui/Button1';
-import EditText from '../ui/EditText';
-import { twMerge } from 'tailwind-merge';
-import { Icon } from '../Icons/Icons';
+import React from "react";
+import Button1 from "../ui/Button1";
+import EditText from "../ui/EditText";
+import { twMerge } from "tailwind-merge";
+import { Icon } from "../Icons/Icons";
 
 const Footer = ({ className, ...props }) => {
   return (
     <footer
       className={twMerge(
-        'w-full bg-[#f9f7f8] mt-[48px] md:mt-[72px] pt-5 pb-5 px-5',
-        className
+        "w-full bg-[#f9f7f8] mt-[48px] md:mt-[72px] pt-5 pb-5 px-5",
+        className,
       )}
       {...props}
     >
       <div className="w-full max-w-[1200px] mx-auto">
         {/* Main Footer Content */}
         <div className="flex flex-col lg:flex-row gap-6 lg:gap-[34px] justify-start items-start mt-4 lg:mt-[28px] mb-8 lg:mb-12">
-
           {/* Brand Section */}
           <div className="w-full lg:flex-1 mt-2">
             {/* Logo and Navigation Header */}
@@ -38,7 +37,9 @@ const Footer = ({ className, ...props }) => {
 
                   {/* Description Text */}
                   <p className="text-sm font-normal leading-[19px] text-left text-[#40403e] font-['Nunito'] min-w-[376px] max-w-[400px]">
-                    ShareBite helps people and restaurants share surplus food with others nearby. It is an easy way to reduce food waste and support your local community.
+                    ShareBite helps people and restaurants share surplus food
+                    with others nearby. It is an easy way to reduce food waste
+                    and support your local community.
                   </p>
                 </div>
 
@@ -66,7 +67,6 @@ const Footer = ({ className, ...props }) => {
                     aria-label="Instagram"
                   >
                     <Icon name="instagram_footer" />
-
                   </a>
                 </div>
               </div>
@@ -76,7 +76,6 @@ const Footer = ({ className, ...props }) => {
           {/* Quick Links Section */}
           <div className="w-full sm:w-auto lg:w-[10%]">
             <div className="flex flex-col gap-4 lg:gap-[24px] mt-2 lg:mt-[10px]">
-
               <h3 className="text-sm font-semibold leading-5 text-left uppercase text-black font-['Nunito']">
                 Navigation
               </h3>
@@ -109,7 +108,6 @@ const Footer = ({ className, ...props }) => {
                     Donation
                   </span>
                 </div>
-
               </div>
             </div>
           </div>
@@ -190,7 +188,8 @@ const Footer = ({ className, ...props }) => {
                 </span>
 
                 <p className="text-xs font-medium leading-4 text-left text-[#595957] font-['Nunito'] max-w-[200px]">
-                  Flat 302, Shree Ganesh Apartments, Link road, Andheri west, Mumbai, Maharashtra – 400053
+                  Flat 302, Shree Ganesh Apartments, Link road, Andheri west,
+                  Mumbai, Maharashtra – 400053
                 </p>
               </div>
             </div>
@@ -201,7 +200,7 @@ const Footer = ({ className, ...props }) => {
             <div className="flex flex-col gap-2 lg:gap-[10px] items-end">
               <EditText
                 placeholder="Message"
-                className="w-full rounded-[5px] border-none outline-none focus:outline-none focus:ring-0 px-3 py-2 text-xs font-semibold leading-[17px] text-left capitalize text-[#8c8c8a] bg-white font-['Nunito']"
+                className="w-full rounded-[5px] border-none outline-none focus:outline-none focus:ring-0 px-3 py-2 text-xs font-semibold leading-[17px] text-left capitalize text-[#8c8c8a] bg-white font-['Nunito'] focus:outline-none focus:ring-0 focus:ring-transparent"
               />
 
               <Button1

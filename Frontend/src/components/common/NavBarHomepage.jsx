@@ -42,8 +42,8 @@ const HomepageNavBar = ({ showBorder = false }) => {
                   to={item.path}
                   className={`text-[14px] leading-5 text-left font-['Nunito'] cursor-pointer transition-colors ${
                     isNavItemActive(item.path)
-                      ? "font-[var(--font-weight-bold)] text-[#efa13d]"
-                      : "font-[var(--font-weight-semibold)] text-[#6b6961] hover:text-[#efa13d]"
+                      ? "font-[var(--font-weight-bold)] text-orange"
+                      : "font-[var(--font-weight-semibold)] text-[var(--primary-cream-900)] hover:text-orange hover:font-bold"
                   }`}
                 >
                   {item.label}

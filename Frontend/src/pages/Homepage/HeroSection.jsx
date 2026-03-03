@@ -1,10 +1,8 @@
-import React from 'react';
-import Button from '../../components/ui/Button';
-import { Icon } from '../../components/Icons/Icons';
-import NavBarHomepage from '../../components/common/NavBarHomepage';
-import Button1 from '../../components/ui/Button1';
-
-
+import React from "react";
+import Button from "../../components/ui/Button";
+import { Icon } from "../../components/Icons/Icons";
+import NavBarHomepage from "../../components/common/NavbarHomepage";
+import Button1 from "../../components/ui/Button1";
 
 const HeroSection = () => {
   return (
@@ -34,17 +32,14 @@ const HeroSection = () => {
 
                 {/* Description */}
                 <p className="text-[16px] lg:text-[18px] font-medium leading-[22px] lg:leading-[24px] text-left text-[#595957] font-['Nunito Sans'] max-w-full lg:max-w-[94%]">
-                  Connect with your community, share surplus food, and help reduce waste while making a difference.
+                  Connect with your community, share surplus food, and help
+                  reduce waste while making a difference.
                 </p>
               </div>
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-[32px] w-full lg:w-auto">
-                <Button1
-                  variant="filled"
-                  color="orange"
-                  size="md"
-                >
+                <Button1 variant="filled" color="orange" size="md">
                   GET STARTED
                 </Button1>
 

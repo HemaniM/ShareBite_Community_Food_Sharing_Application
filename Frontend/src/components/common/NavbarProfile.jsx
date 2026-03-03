@@ -1,6 +1,5 @@
 import React from "react";
-
-// const profileTabs = ["PROFILE", "REVIEWS", "REQUESTS", "FOOD POSTS", "HISTORY"];
+import { Link, NavLink, useLocation } from "react-router-dom";
 
 const profileTabs = [
   { label: "PROFILE", path: "/profile/overview" },
@@ -10,23 +9,32 @@ const profileTabs = [
   { label: "HISTORY", path: "/profile/history" },
 ];
 
-const ProfileNavBar = ({ activeTab = "PROFILE" }) => {
+const ProfileNavBar = () => {
+  const location = useLocation();
+
+  const isNavItemActive = (path) => {
+    console.log(path);
+    console.log(location.pathname);
+    console.log(location.pathname.startsWith(path));
+    return location.pathname.startsWith(path);
+  };
+
   return (
     <div className="w-full max-w-[780px] mx-auto my-5">
       <div className="border-b border-[#d8d7d1]">
-        <div className="flex flex-wrap  justify-center gap-8 md:gap-[70px] text-[12px] font-semibold text-[#5d5b55]">
+        <div className="flex flex-wrap  justify-center gap-8 md:gap-[70px] text-[12px] font-semibold text-[var(--primary-cream-900)]">
           {profileTabs.map((tab) => (
-            <button
+            <Link
               key={tab.label}
-              type="button"
+              to={tab.path}
               className={`pb-5 tracking-[0.5px] ${
-                activeTab === tab
-                  ? "text-[#7f8f2f] border-b-4 border-[#9dad4a]"
-                  : "hover:text-[#efa13d]"
+                isNavItemActive(tab.path)
+                  ? "text-green font-bold border-b-4 border-green"
+                  : "hover:text-green hover:font-bold"
               }`}
             >
               {tab.label}
-            </button>
+            </Link>
           ))}
         </div>
       </div>

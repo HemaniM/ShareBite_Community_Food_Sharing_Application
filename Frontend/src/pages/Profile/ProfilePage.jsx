@@ -36,7 +36,7 @@ const ProfilePage = () => {
         <section className="w-full">
           <NavbarHomepage activePage="home" showBorder={true} />
 
-          <NavbarProfile activeTab="PROFILE" />
+          <NavbarProfile />
 
           {/* Main Container */}
           <Outlet />

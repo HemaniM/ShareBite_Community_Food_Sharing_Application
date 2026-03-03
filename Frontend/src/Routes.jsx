@@ -9,6 +9,7 @@ import AuthLayout from "./pages/Auth/AuthLayout";
 import ProfilePage from "./pages/Profile/ProfilePage";
 import EditProfilePage from "./pages/Profile/EditProfilePage";
 import ProfileOverview from "./pages/Profile/ProfileOverview";
+import ReviewsPage from "./pages/Profile/ReviewsPage";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -48,7 +49,7 @@ const AppRoutes = () => {
         <Route index element={<Navigate to="overview" replace />} />
         <Route path="overview" element={<ProfileOverview />} />
         <Route path="edit" element={<EditProfilePage />} />
-        <Route path="reviews" element={<div>Reviews</div>} />
+        <Route path="reviews" element={<ReviewsPage />} />
         <Route path="requests" element={<div>Requests</div>} />
         <Route path="food-posts" element={<div>Food Posts</div>} />
         <Route path="history" element={<div>History</div>} />
