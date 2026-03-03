@@ -81,7 +81,7 @@ const SearchSection = () => {
             className="w-[18px] h-[16px] object-contain mr-2"
           />
           <Icon
-            name="arrow_down"
+            name="arrow_down_grey"
             className={`transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`}
           />
         </div>

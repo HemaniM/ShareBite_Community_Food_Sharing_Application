@@ -10,6 +10,7 @@ import ProfilePage from "./pages/Profile/ProfilePage";
 import EditProfilePage from "./pages/Profile/EditProfilePage";
 import ProfileOverview from "./pages/Profile/ProfileOverview";
 import ReviewsPage from "./pages/Profile/ReviewsPage";
+import RequestsPage from "./pages/Profile/RequestsPage";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -50,7 +51,7 @@ const AppRoutes = () => {
         <Route path="overview" element={<ProfileOverview />} />
         <Route path="edit" element={<EditProfilePage />} />
         <Route path="reviews" element={<ReviewsPage />} />
-        <Route path="requests" element={<div>Requests</div>} />
+        <Route path="requests" element={<RequestsPage />} />
         <Route path="food-posts" element={<div>Food Posts</div>} />
         <Route path="history" element={<div>History</div>} />
       </Route>
