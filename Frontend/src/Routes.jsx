@@ -30,7 +30,7 @@ const AppRoutes = () => {
         path="/home"
         element={
           // <ProtectedRoute>
-            <Homepage />
+          <Homepage />
           // </ProtectedRoute>
         }
       />
@@ -44,7 +44,7 @@ const AppRoutes = () => {
         path="/profile"
         element={
           // <ProtectedRoute>
-            <ProfilePage />
+          <ProfilePage />
           // </ProtectedRoute>
         }
       >
@@ -53,7 +53,8 @@ const AppRoutes = () => {
         <Route path="edit" element={<EditProfilePage />} />
         <Route path="reviews" element={<ReviewsPage />} />
         <Route path="requests" element={<RequestsPage />} />
-        <Route path="food-posts" element={<FoodPostsPage/>} />
+        <Route path="food-posts" element={<FoodPostsPage />} />
+        <Route path="food-posts/create-post" element={<div>Create Post</div>} />
         <Route path="history" element={<div>History</div>} />
       </Route>
 
