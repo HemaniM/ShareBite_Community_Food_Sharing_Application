@@ -11,6 +11,7 @@ import EditProfilePage from "./pages/Profile/EditProfilePage";
 import ProfileOverview from "./pages/Profile/ProfileOverview";
 import ReviewsPage from "./pages/Profile/ReviewsPage";
 import RequestsPage from "./pages/Profile/RequestsPage";
+import FoodPostsPage from "./pages/Profile/FoodPostsPage";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -28,9 +29,9 @@ const AppRoutes = () => {
       <Route
         path="/home"
         element={
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <Homepage />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         }
       />
 
@@ -42,9 +43,9 @@ const AppRoutes = () => {
       <Route
         path="/profile"
         element={
-          <ProtectedRoute>
+          // <ProtectedRoute>
             <ProfilePage />
-          </ProtectedRoute>
+          // </ProtectedRoute>
         }
       >
         <Route index element={<Navigate to="overview" replace />} />
@@ -52,7 +53,7 @@ const AppRoutes = () => {
         <Route path="edit" element={<EditProfilePage />} />
         <Route path="reviews" element={<ReviewsPage />} />
         <Route path="requests" element={<RequestsPage />} />
-        <Route path="food-posts" element={<div>Food Posts</div>} />
+        <Route path="food-posts" element={<FoodPostsPage/>} />
         <Route path="history" element={<div>History</div>} />
       </Route>
 

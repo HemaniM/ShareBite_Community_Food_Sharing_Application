@@ -163,7 +163,7 @@ export const RequestsPage = () => {
     <>
       <section className="w-full max-w-[975px] mx-auto pb-16 mt-[80px]">
         <div className="flex items-center justify-between mb-[50px]">
-          <h2 className="text-[22px] font-bold tracking-[0.4px] text-[#2f2e2a]">
+          <h2 className="text-[22px] font-bold tracking-[0.4px] text-black">
             ALL REQUESTS
           </h2>
 
