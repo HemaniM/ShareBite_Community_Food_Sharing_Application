@@ -1,6 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
+import DropdownField from "../../components/ui/DropdownField";
 
 const inputClassName =
   "mt-2 w-full rounded-[6px] border-none bg-[var(--primary-green-50)] px-3 py-[10px] text-[14px] text-[var(--text-grey-4)] outline-none placeholder:text-[var(text-grey-3)]";
@@ -11,9 +12,51 @@ const labelClassName =
 const sectionLableClassName =
   "text-[18px] font-bold text-[var(--text-grey-5)] tracking-[0.4px]";
 
+const categoryOptions = [
+  "Groceries",
+  "Vegetable",
+  "Fruits",
+  "Snacks",
+  "Meals",
+  "Fast Food",
+  "Drinks",
+];
+
+const freeOptions = ["Yes", "No"];
+
+const stockMeasureOptions = [
+  "Plates",
+  "Pieces",
+  "Kg",
+  "Grams",
+  "Litres",
+  "Packets",
+];
+
 const CreateFoodPost = () => {
   const [images, setImages] = useState([]);
+  const [openDropdown, setOpenDropdown] = useState("");
+  const [category, setCategory] = useState("");
+  const [free, setFree] = useState("No");
+  const [stockMeasure, setStockMeasure] = useState("");
+
   const fileInputRef = useRef(null);
+
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (!dropdownRef.current?.contains(event.target)) {
+        setOpenDropdown("");
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, []);
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
@@ -40,7 +83,11 @@ const CreateFoodPost = () => {
         CREATE NEW FOOD POST
       </h1>
 
-      <form className="space-y-6" onSubmit={(event) => event.preventDefault()}>
+      <form
+        className="space-y-6"
+        onSubmit={(event) => event.preventDefault()}
+        ref={dropdownRef}
+      >
         <div className="grid gap-6 md:grid-cols-2">
           <div className="space-y-3">
             <h2 className={sectionLableClassName}>Description</h2>
@@ -119,11 +166,22 @@ const CreateFoodPost = () => {
               <h2 className={sectionLableClassName}>Category</h2>
               <div className="space-y-5 rounded-[8px] border border-[#ebe9e3] p-4">
                 <label className={labelClassName}>Food Category</label>
-                <select className={inputClassName} defaultValue="">
-                  <option value="" disabled>
-                    Category
-                  </option>
-                </select>
+                <DropdownField
+                  label="category"
+                  value={category}
+                  placeholder="Category"
+                  options={categoryOptions}
+                  isOpen={openDropdown === "category"}
+                  onToggle={() =>
+                    setOpenDropdown((previous) =>
+                      previous === "category" ? "" : "category",
+                    )
+                  }
+                  onSelect={(option) => {
+                    setCategory(option);
+                    setOpenDropdown("");
+                  }}
+                />
               </div>
             </div>
 
@@ -196,11 +254,22 @@ const CreateFoodPost = () => {
                 </div>
                 <div>
                   <label className={labelClassName}>Stock Measure</label>
-                  <select className={inputClassName} defaultValue="">
-                    <option value="" disabled>
-                      Measure
-                    </option>
-                  </select>
+                  <DropdownField
+                    label="stockMeasure"
+                    value={stockMeasure}
+                    placeholder="Measure"
+                    options={stockMeasureOptions}
+                    isOpen={openDropdown === "stockMeasure"}
+                    onToggle={() =>
+                      setOpenDropdown((previous) =>
+                        previous === "stockMeasure" ? "" : "stockMeasure",
+                      )
+                    }
+                    onSelect={(option) => {
+                      setStockMeasure(option);
+                      setOpenDropdown("");
+                    }}
+                  />
                 </div>
               </div>
             </div>
@@ -213,10 +282,22 @@ const CreateFoodPost = () => {
                 </div>
                 <div>
                   <label className={labelClassName}>Free</label>
-                  <select className={inputClassName} defaultValue="No">
-                    <option>No</option>
-                    <option>Yes</option>
-                  </select>
+                  <DropdownField
+                    label="free"
+                    value={free}
+                    placeholder="Free"
+                    options={freeOptions}
+                    isOpen={openDropdown === "free"}
+                    onToggle={() =>
+                      setOpenDropdown((previous) =>
+                        previous === "free" ? "" : "free",
+                      )
+                    }
+                    onSelect={(option) => {
+                      setFree(option);
+                      setOpenDropdown("");
+                    }}
+                  />
                 </div>
               </div>
             </div>
