@@ -10,7 +10,7 @@ const labelClassName =
 
 const CreateFoodPost = () => {
   return (
-    <section className="mx-auto mt-[65px] w-full max-w-[975px] pb-20">
+    <section className="mx-auto mt-[80px] w-full max-w-[975px] pb-20">
       <h1 className="mb-8 text-[22px] font-bold text-[#2f2e2b]">
         CREATE NEW FOOD POST
       </h1>
