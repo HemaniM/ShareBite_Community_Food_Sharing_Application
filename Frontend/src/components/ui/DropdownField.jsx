@@ -11,9 +11,18 @@ const DropdownField = ({
   onToggle,
   onSelect,
   buttonClassName = "",
+  buttonColorClass = "",
   menuClassName = "",
   optionClassName = "",
+  iconName = ""
 }) => {
+
+
+// const iconName = buttonColorClass.includes("text-white")
+//   ? "arrow_down_white"
+//   : "arrow_down_grey";
+
+
   return (
     <div className="relative">
       <Button1
@@ -22,11 +31,11 @@ const DropdownField = ({
         color="orange"
         size="sm"
         onClick={onToggle}
-        className={`mt-2 flex h-[42px] w-full items-center justify-between rounded-[8px] bg-[var(--primary-green-50)] px-4 text-left text-[12px] font-semibold tracking-[0.2px] text-[var(--text-grey-4)] ${buttonClassName}`}
+        className={`mt-2 flex h-[42px] w-full items-center justify-between rounded-[8px] px-4 text-left text-[12px] font-semibold tracking-[0.2px] ${buttonColorClass} ${buttonClassName}`}
       >
         <span>{value || placeholder}</span>
         <Icon
-          name="arrow_down_grey"
+          name={iconName}
           className={`scale-[0.7] transition-transform ${isOpen ? "rotate-180" : ""}`}
         />
       </Button1>

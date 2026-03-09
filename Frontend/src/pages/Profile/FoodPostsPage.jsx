@@ -100,21 +100,26 @@ const FoodPostsPage = () => {
                   <h3 className="text-[18px] font-bold text-black pl-1">
                     {post.title}
                   </h3>
-                  <Button1
-                    variant="outline"
-                    color="green"
-                    size="sm"
-                    className="group w-[47px] h-[30px] rounded-[10px]"
-                  >
-                    <Icon
-                      name="right_arrow_green"
-                      className="group-hover:hidden"
-                    />
-                    <Icon
-                      name="right_arrow"
-                      className="hidden group-hover:block"
-                    />
-                  </Button1>
+                  <Link
+                    to={`/profile/food-posts/${post.id}/requests`}
+                    state={{ postTitle: post.title }}
+                    aria-label={`View requests for ${post.title}`}>
+                    <Button1
+                      variant="outline"
+                      color="green"
+                      size="sm"
+                      className="group w-[47px] h-[30px] rounded-[10px]"
+                    >
+                      <Icon
+                        name="right_arrow_green"
+                        className="group-hover:hidden"
+                      />
+                      <Icon
+                        name="right_arrow"
+                        className="hidden group-hover:block"
+                      />
+                    </Button1>
+                  </Link>
                 </div>
 
                 <div className="mt-4 p-1 grid md:grid-cols-2 gap-x-8 gap-y-2 text-[13px] text-[var(--text-grey-4)]">

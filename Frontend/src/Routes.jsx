@@ -13,6 +13,7 @@ import ReviewsPage from "./pages/Profile/ReviewsPage";
 import RequestsPage from "./pages/Profile/RequestsPage";
 import FoodPostsPage from "./pages/Profile/FoodPostsPage";
 import CreateFoodPost from "./pages/Profile/CreateFoodPost";
+import FoodPostRequestsPage from "./pages/Profile/FoodPostRequestsPage";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -56,6 +57,7 @@ const AppRoutes = () => {
         <Route path="requests" element={<RequestsPage />} />
         <Route path="food-posts" element={<FoodPostsPage />} />
         <Route path="food-posts/create-post" element={<CreateFoodPost />} />
+        <Route path="food-posts/:postId/requests" element={<FoodPostRequestsPage />} />
         <Route path="history" element={<div>History</div>} />
       </Route>
 

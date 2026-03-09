@@ -170,6 +170,8 @@ const CreateFoodPost = () => {
                   label="category"
                   value={category}
                   placeholder="Category"
+                  buttonColorClass="bg-[var(--primary-green-50)] text-[var(--text-grey-4)]"
+                  iconName = "arrow_down_grey"
                   options={categoryOptions}
                   isOpen={openDropdown === "category"}
                   onToggle={() =>
@@ -258,6 +260,8 @@ const CreateFoodPost = () => {
                     label="stockMeasure"
                     value={stockMeasure}
                     placeholder="Measure"
+                    buttonColorClass="bg-[var(--primary-green-50)] text-[var(--text-grey-4)]"
+                    iconName = "arrow_down_grey"
                     options={stockMeasureOptions}
                     isOpen={openDropdown === "stockMeasure"}
                     onToggle={() =>
@@ -286,6 +290,8 @@ const CreateFoodPost = () => {
                     label="free"
                     value={free}
                     placeholder="Free"
+                    buttonColorClass="bg-[var(--primary-green-50)] text-[var(--text-grey-4)]"
+                    iconName = "arrow_down_grey"
                     options={freeOptions}
                     isOpen={openDropdown === "free"}
                     onToggle={() =>
