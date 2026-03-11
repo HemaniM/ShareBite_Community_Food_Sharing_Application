@@ -93,7 +93,7 @@ const FoodPostRequestsPage = () => {
             value={statusFilter}
             placeholder="ALL"
             buttonColorClass="bg-orange text-white"
-            iconName = "arrow_down_white"
+            iconName="arrow_down_white"
             options={dropdownOptions}
             isOpen={isDropdownOpen}
             onToggle={() => setIsDropdownOpen((previous) => !previous)}
@@ -113,51 +113,64 @@ const FoodPostRequestsPage = () => {
             className="rounded-[8px] border border-[var(--white-600)] bg-white py-[22px] px-[24px]"
           >
             <div className="flex items-start justify-between gap-5">
-              <div className="flex gap-4">
-                <img
-                  src={request.avatar}
-                  alt={request.requesterName}
-                  className="h-[40px] w-[40px] rounded-full object-cover"
-                />
-
-                <div className="text-[12px] leading-[19px] text-[var(--text-grey-4)]">
-                  <h3 className="text-[14px] font-bold text-[#31302b]">
-                    {request.requesterName}
-                  </h3>
-                  <p className="text-[10px] text-[#9b9a95]">{request.requestedAgo}</p>
-
-                  <div className="mt-[10px] grid md:grid-cols-2 gap-x-[80px] gap-y-[2px]">
-                    <p>
-                      <span className="mr-[24px] font-semibold text-[#2f2e2b]">Product</span>
-                      {request.product}
-                    </p>
-                    <p className="font-semibold text-[#2f2e2b]">Contacts</p>
-
-                    <p>
-                      <span className="mr-[10px] font-semibold text-[#2f2e2b]">Request ID</span>
-                      {request.id}
-                    </p>
-                    <p>{request.contactNumber}</p>
-
-                    <p>
-                      <span className="mr-[20px] font-semibold text-[#2f2e2b]">Quantity</span>
-                      {request.quantity}
-                    </p>
-                    <p>{request.contactEmail}</p>
-
-                    <p className="md:col-span-2">
-                      <span className="mr-[36px] font-semibold text-[#2f2e2b]">From</span>
-                      {request.address}
+              <div className="flex flex-col gap-[15px]">
+                <div className="flex items-center gap-[20px]">
+                  <img
+                    src={request.avatar}
+                    alt={request.requesterName}
+                    className="h-[50px] w-[50px] rounded-full object-cover"
+                  />
+                  <div className="">
+                    <h3 className="text-[16px] font-bold text-[var(--text-grey-5)] mb-[8px]">
+                      {request.requesterName}
+                    </h3>
+                    <p className="text-[10px] text-[var(--text-grey-3)]">
+                      {request.requestedAgo}
                     </p>
                   </div>
+                </div>
+                <div className="text-[12px] leading-[19px] text-[var(--text-grey-4)] px-2">
+                  <div className="mt-[10px] grid md:grid-cols-2 gap-x-[80px] ">
+                    <div className="flex flex-col gap-[6px]">
+                      <p>
+                        <span className="mr-[30px] font-semibold text-[#2f2e2b]">
+                          Product
+                        </span>
+                        {request.product}
+                      </p>
+                      <p>
+                        <span className="mr-[12px] font-semibold text-[#2f2e2b]">
+                          Request ID
+                        </span>
+                        {request.id}
+                      </p>
+                      <p>
+                        <span className="mr-[25px] font-semibold text-[#2f2e2b]">
+                          Quantity
+                        </span>
+                        {request.quantity}
+                      </p>
+                      <p className="md:col-span-2">
+                        <span className="mr-[45px] font-semibold text-[#2f2e2b]">
+                          From
+                        </span>
+                        {request.address}
+                      </p>
+                    </div>
+                    <div className="flex flex-col gap-[6px]">
+                      <p className="font-semibold text-[#2f2e2b]">Contacts</p>
+                      <p>{request.contactNumber}</p>
+                      <p>{request.contactEmail}</p>
+                    </div>
+                  </div>
 
-                  <div className="mt-[14px] flex items-center gap-[12px]">
+                  <div className="mt-[15px] flex items-center gap-[15px]">
                     <Button1
                       type="button"
                       variant="filled"
                       color="green"
                       size="sm"
-                      className="rounded-[8px] px-[16px] py-[9px] text-[11px] font-semibold"
+                      className="rounded-[8px] px-[18px] py-[10px] text-[12px] font-semibold"
                     >
                       ACCEPT REQUEST
                     </Button1>
@@ -167,7 +180,7 @@ const FoodPostRequestsPage = () => {
                       variant="outline"
                       color="orange"
                       size="sm"
-                      className="rounded-[8px] px-[16px] py-[9px] text-[11px] font-semibold"
+                      className="rounded-[8px] px-[18px] py-[9px] text-[12px] font-semibold"
                     >
                       DECLINE
                     </Button1>
@@ -175,7 +188,9 @@ const FoodPostRequestsPage = () => {
                 </div>
               </div>
 
-              <p className="text-[12px] text-[var(--text-grey-5)]">{request.dayLabel}</p>
+              <p className="text-[14px] text-[var(--text-grey-5)] mt-3 font-medium">
+                {request.dayLabel}
+              </p>
             </div>
           </article>
         ))}
@@ -187,16 +202,23 @@ const FoodPostRequestsPage = () => {
         )}
       </div>
 
-      <div className="mt-8 flex justify-end">
+      <div className="mt-8 flex justify-start">
         <Button1
           type="button"
           variant="outline"
           color="green"
-          size="sm"
-          className="rounded-[10px] px-[16px] py-[10px]"
+          size="md"
+          className="group text-[16px] rounded-[10px] font-semibold px-[18px] py-[12px] leading-tight"
         >
+          <Icon
+            name="right_arrow_green"
+            className="rotate-180 mr-[15px] group-hover:hidden"
+          />
+          <Icon
+            name="right_arrow"
+            className="hidden group-hover:block rotate-180 mr-[15px]"
+          />
           View post details
-          <Icon name="right_arrow_green" />
         </Button1>
       </div>
     </section>
