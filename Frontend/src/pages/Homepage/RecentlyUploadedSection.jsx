@@ -1,67 +1,67 @@
-import React, { useState } from 'react';
-import Button1 from '../../components/ui/Button1';
-import { Icon } from '../../components/Icons/Icons';
+import React, { useState } from "react";
+import Button1 from "../../components/ui/Button1";
+import { Icon } from "../../components/Icons/Icons";
 
-const RecentlyUploadedSection = () => {
+const RecentlyUploadedSection = ({ onProductClick }) => {
   const [currentPage, setCurrentPage] = useState(0);
 
   const recentItems = [
     {
       id: 1,
-      image: '/images/Pan_Fry_Momos.jpg',
-      timeAgo: '• 20s ago',
-      title: 'Pan Fry Momos',
-      price: '20 ₹ /-',
-      priceColor: '#f2f4ea'
+      image: "/images/Pan_Fry_Momos.jpg",
+      timeAgo: "• 20s ago",
+      title: "Pan Fry Momos",
+      price: "20 ₹ /-",
+      priceColor: "#f2f4ea",
     },
     {
       id: 2,
-      image: '/images/Idli_Sambar.jpg',
-      timeAgo: '• 1m ago',
-      title: 'Idali Sambar',
-      price: '30 ₹ /-',
-      priceColor: '#f2f4ea'
+      image: "/images/Idli_Sambar.jpg",
+      timeAgo: "• 1m ago",
+      title: "Idali Sambar",
+      price: "30 ₹ /-",
+      priceColor: "#f2f4ea",
     },
     {
       id: 3,
-      image: '/images/Pineapple_Juice.jpg',
-      timeAgo: '• 6m ago',
-      title: 'Pineapple Juice',
-      price: 'Free',
-      priceColor: '#f2f4ea'
+      image: "/images/Pineapple_Juice.jpg",
+      timeAgo: "• 6m ago",
+      title: "Pineapple Juice",
+      price: "Free",
+      priceColor: "#f2f4ea",
     },
     {
       id: 4,
-      image: '/images/Spring_Rolls.jpg',
-      timeAgo: '• 6m ago',
-      title: 'Spring Rolls',
-      price: '15 ₹ /-',
-      priceColor: '#f2f4ea'
+      image: "/images/Spring_Rolls.jpg",
+      timeAgo: "• 6m ago",
+      title: "Spring Rolls",
+      price: "15 ₹ /-",
+      priceColor: "#f2f4ea",
     },
     {
       id: 5,
-      image: '/images/Spring_Rolls.jpg',
-      timeAgo: '• 6m ago',
-      title: 'Spring Rolls',
-      price: '15 ₹ /-',
-      priceColor: '#f2f4ea'
+      image: "/images/Spring_Rolls.jpg",
+      timeAgo: "• 6m ago",
+      title: "Spring Rolls",
+      price: "15 ₹ /-",
+      priceColor: "#f2f4ea",
     },
     {
       id: 6,
-      image: '/images/Spring_Rolls.jpg',
-      timeAgo: '• 6m ago',
-      title: 'Spring Rolls',
-      price: '15 ₹ /-',
-      priceColor: '#f2f4ea'
-    }
+      image: "/images/Spring_Rolls.jpg",
+      timeAgo: "• 6m ago",
+      title: "Spring Rolls",
+      price: "15 ₹ /-",
+      priceColor: "#f2f4ea",
+    },
   ];
 
   const handlePrevious = () => {
-    setCurrentPage(prev => Math.max(0, prev - 1));
+    setCurrentPage((prev) => Math.max(0, prev - 1));
   };
 
   const handleNext = () => {
-    setCurrentPage(prev => Math.min(1, prev + 1));
+    setCurrentPage((prev) => Math.min(1, prev + 1));
   };
 
   return (
@@ -92,6 +92,7 @@ const RecentlyUploadedSection = () => {
               {recentItems?.map((item) => (
                 <div
                   key={item?.id}
+                  onClick={() => onProductClick?.(item)}
                   className="relative flex-shrink-0 w-full sm:w-[230px] h-[200px] lg:h-[276px] rounded-[14px] overflow-hidden group cursor-pointer"
                 >
                   {/* Background Image */}
@@ -161,4 +162,3 @@ const RecentlyUploadedSection = () => {
 };
 
 export default RecentlyUploadedSection;
-

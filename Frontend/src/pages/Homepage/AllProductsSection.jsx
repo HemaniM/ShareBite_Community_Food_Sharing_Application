@@ -4,7 +4,7 @@ import ProductCard from "../../components/common/ProductCard";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
 
-const AllProductsSection = () => {
+const AllProductsSection = ({ onProductClick }) => {
   const allProducts = [
     {
       id: 1,
@@ -119,6 +119,7 @@ const AllProductsSection = () => {
                 title={product?.title}
                 price={product?.price}
                 priceColor={product?.priceColor}
+                onClick={() => onProductClick?.(product)}
               />
             ))}
           </div>

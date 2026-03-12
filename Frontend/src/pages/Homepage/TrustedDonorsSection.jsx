@@ -3,7 +3,7 @@ import Button from "../../components/ui/Button";
 import { Icon } from "../../components/Icons/Icons";
 import Button1 from "../../components/ui/Button1";
 
-const TrustedDonorsSection = () => {
+const TrustedDonorsSection = ({ onProductClick }) => {
   const donorItems = [
     {
       id: 1,
@@ -151,6 +151,7 @@ const TrustedDonorsSection = () => {
             {donorItems.map((item) => (
               <article
                 key={item.id}
+                onClick={() => onProductClick?.(item)}
                 className={`group relative col-span-1 overflow-hidden rounded-[12px] shadow-sm ${item.classes}`}
               >
                 {/* Background Image */}
