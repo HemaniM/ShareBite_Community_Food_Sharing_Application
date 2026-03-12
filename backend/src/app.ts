@@ -4,6 +4,7 @@ import { healthRouter } from './modules/health/health.route';
 import { errorMiddleware } from './common/middleware/error.middleware';
 import { httpLogger } from './common/middleware/httpLogger.middleware';
 import { authRouter } from './modules/auth/auth.route';
+import { listingsRouter } from './modules/listings/listings.route';
 
 export const app = express();
 
@@ -14,6 +15,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use('/api/auth', authRouter);
+app.use('/api/listings', listingsRouter);
 app.use(httpLogger);
 app.get('/favicon.ico', (_req, res) => res.status(204));
 app.use('/health', healthRouter);

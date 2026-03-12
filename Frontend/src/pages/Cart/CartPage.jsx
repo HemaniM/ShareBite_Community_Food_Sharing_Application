@@ -3,7 +3,7 @@ import { Helmet } from "react-helmet";
 
 import ContactBar from "../../components/common/ContactBar";
 import Footer from "../../components/common/Footer";
-import NavbarHomepage from "../../components/common/NavBarHomepage";
+import NavbarHomepage from "../../components/common/NavbarHomepage";
 import Button1 from "../../components/ui/Button1";
 import DropdownField from "../../components/ui/DropdownField";
 import { Icon } from "../../components/Icons/Icons";
