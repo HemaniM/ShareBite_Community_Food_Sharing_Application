@@ -3,7 +3,7 @@ import ProductCard from "../../components/common/ProductCard";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
 
-const FoodNearYouSection = () => {
+const FoodNearYouSection = ({ onProductClick }) => {
   const foodItems = [
     {
       id: 1,
@@ -102,6 +102,7 @@ const FoodNearYouSection = () => {
                 title={item?.title}
                 price={item?.price}
                 priceColor={item?.priceColor}
+                onClick={() => onProductClick?.(item)}
               />
             ))}
           </div>

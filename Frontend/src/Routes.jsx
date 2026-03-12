@@ -15,6 +15,7 @@ import FoodPostsPage from "./pages/Profile/FoodPostsPage";
 import CreateFoodPost from "./pages/Profile/CreateFoodPost";
 import FoodPostRequestsPage from "./pages/Profile/FoodPostRequestsPage";
 import CartPage from "./pages/Cart/CartPage";
+import ProductPage from "./pages/Product/ProductPage";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -39,8 +40,13 @@ const AppRoutes = () => {
       />
 
       <Route
+        path="/product/:productId/:productName"
+        element={<ProductPage />}
+      />
+
+      <Route
         path="/cart"
-        element={<ProtectedRoute>{<CartPage />}</ProtectedRoute>}
+        element={<CartPage />}
       />
 
       <Route
