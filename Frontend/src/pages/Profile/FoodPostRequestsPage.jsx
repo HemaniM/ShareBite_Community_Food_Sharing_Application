@@ -202,7 +202,7 @@ const FoodPostRequestsPage = () => {
         )}
       </div>
 
-      <div className="mt-8 flex justify-start">
+      <div className="mt-8 flex justify-end">
         <Button1
           type="button"
           variant="outline"
@@ -210,15 +210,15 @@ const FoodPostRequestsPage = () => {
           size="md"
           className="group text-[16px] rounded-[10px] font-semibold px-[18px] py-[12px] leading-tight"
         >
+          View post details
           <Icon
             name="right_arrow_green"
-            className="rotate-180 mr-[15px] group-hover:hidden"
+            className="ml-[15px] group-hover:hidden"
           />
           <Icon
             name="right_arrow"
-            className="hidden group-hover:block rotate-180 mr-[15px]"
+            className="hidden group-hover:block ml-[15px]"
           />
-          View post details
         </Button1>
       </div>
     </section>
