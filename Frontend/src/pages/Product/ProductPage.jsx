@@ -49,6 +49,39 @@ const browseMoreItems = [
   },
 ];
 
+const reviewData = [
+  {
+    id: 1,
+    name: "Aanya Mishra",
+    image: "../images/Ananya_Mishra.jpg",
+    date: "4/10/2025",
+    rating: 4.5,
+    location: "Bhayander (E)",
+    comment:
+      "Great initiative by the Share-Fresh. Hygiene for dry mix was rich then. Shared thoughtful food for the community in need.",
+  },
+  {
+    id: 2,
+    name: "Aarav Shah",
+    image: "../images/Aarav_Shah.jpg",
+    date: "15/8/2025",
+    rating: 4,
+    location: "Bhayander (E)",
+    comment:
+      "Fresh and well-packed vegetable pulao. Nicely packed and safe to consume. Really appreciate the care taken while sharing.",
+  },
+  {
+    id: 3,
+    name: "Kavya Malkiye",
+    image: "../images/Kavya_Melviya.jpg",
+    date: "20/12/2025",
+    rating: 3.5,
+    location: "Bhayander (E)",
+    comment:
+      "Soft, flavorful homemade chapatis shared in perfect condition. Serving great hygiene and thoughtfulness.",
+  },
+];
+
 const ProductPage = () => {
   const { productId, productName } = useParams();
   const location = useLocation();
@@ -99,84 +132,51 @@ const ProductPage = () => {
         <section className="w-full">
           <NavbarHomepage showBorder={true} />
 
-          <div className="mx-auto w-full max-w-[975px] py-14">
+          <div className="mx-auto w-full max-w-[975px] py-2 mt-[50px] mb-[100px]">
             {!product && requestStatus === "loading" ? (
               <p className="text-[16px] text-[var(--text-grey-4)]">
                 Loading product details...
               </p>
             ) : (
               <>
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-[360px_1fr]">
-                  <div className="overflow-hidden rounded-[12px] border border-[#eceae4]">
+                <div className="grid grid-cols-1 gap-[50px] md:grid-cols-[360px_1fr]">
+                  <div className="h-[420px] w-[350px] overflow-hidden rounded-[12px]">
                     <img
-                      src={product?.image || "/images/Pav_Bhaji.jpg"}
+                      src={product?.image || "/images/Tandoori_Paneer.jpg"}
                       alt={product?.title || "Product"}
-                      className="h-[360px] w-full object-cover"
+                      className="h-[420px] w-[350px] object-cover"
                     />
                   </div>
 
                   <div>
-                    <div className="mb-4 inline-flex rounded-full border border-[#e5d7bd] px-4 py-1 text-[11px] font-semibold text-[var(--primary-orange-800)]">
+                    <div className="mb-[15px] inline-flex rounded-full border border-[var(--primary-orange-200)] px-[20px] py-[5px] text-[12px] font-semibold text-[var(--text-grey-4)]">
                       Meal
                     </div>
-                    <h1 className="text-[32px] font-bold uppercase text-[var(--text-grey-5)]">
+                    <h1 className="text-[22px] font-bold uppercase text-black">
                       {product?.title || readableProductName || "Pav Bhaji"}
                     </h1>
-                    <p className="mt-1 text-[18px] font-bold text-[var(--primary-green-700)]">
+                    <p className="mt-[10px] text-[18px] font-bold uppercase text-[var(--primary-green-700)]">
                       {displayPrice}
                     </p>
 
-                    <div className="mt-5 flex flex-wrap items-center gap-4 text-[13px] text-[var(--text-grey-4)]">
+                    <div className="mt-[35px] flex flex-wrap items-center gap-[14px] text-[14px] font-bold text-[var(--text-grey-5)]">
                       <span>In Stock</span>
-                      <span className="rounded-[6px] bg-[var(--primary-green-50)] px-2 py-1 font-semibold text-[var(--primary-green-700)]">
+                      <span className="rounded-[8px] bg-[var(--primary-green-50)] px-[10px] py-[4px] font-semibold text-[var(--primary-green-700)]">
                         {product?.stockLabel || "3 Plates"}
                       </span>
                     </div>
 
-                    <div className="mt-5 rounded-[10px] border border-[#eceae4] p-4 text-[13px] leading-6 text-[var(--text-grey-4)]">
-                      <p>
-                        <span className="font-semibold text-[var(--text-grey-5)]">
-                          From:
-                        </span>{" "}
+                    <div className="mt-[25px] text-[12px] leading-5 text-[var(--text-grey-4)]">
+                      <p className="mb-[5px] text-14 font-bold text-[var(--text-grey-5)]">
                         {product?.donor || "Priya Singh"}
                       </p>
                       <p>
-                        <span className="font-semibold text-[var(--text-grey-5)]">
-                          Location:
-                        </span>{" "}
-                        {product?.location || "Bhayander"}
-                      </p>
-                      <p>
-                        <span className="font-semibold text-[var(--text-grey-5)]">
-                          Description:
-                        </span>{" "}
                         {product?.description ||
-                          "Freshly cooked meal ready for pickup."}
+                          "Freshly prepared Pav Bhaji made with clean, high-quality vegetables and hygienic cooking practices. Stored properly and safe to consume within 6–8 hours if kept covered at room temperature"}
                       </p>
                     </div>
 
-                    <div className="mt-5 w-full max-w-[260px]">
-                      <DropdownField
-                        name="requestType"
-                        value={requestType}
-                        placeholder="Select request type"
-                        options={requestOptions}
-                        isOpen={isRequestTypeOpen}
-                        onToggle={() =>
-                          setIsRequestTypeOpen(
-                            (previousState) => !previousState,
-                          )
-                        }
-                        onSelect={(option) => {
-                          setRequestType(option);
-                          setIsRequestTypeOpen(false);
-                        }}
-                        iconName="arrow_down_white"
-                        buttonClassName="mt-0"
-                      />
-                    </div>
-
-                    <div className="mt-6 flex items-center gap-4">
+                    <div className="mt-[25px]">
                       <div className="h-[34px] w-[96px] flex items-center rounded-[8px]">
                         <button
                           type="button"
@@ -200,52 +200,73 @@ const ProductPage = () => {
                           +
                         </button>
                       </div>
+                      <div className="mt-[15px] flex items-center gap-[20px]">
+                        <Button1
+                          variant="filled"
+                          color="orange"
+                          className="rounded-[8px] px-[25px] py-[10px] font-bold text-[13px]"
+                        >
+                          REQUEST
+                        </Button1>
+                        <Button1
+                          variant="outline"
+                          color="orange"
+                          className="rounded-[10px] px-6 py-[9px] text-[12px]"
+                        >
+                          ADD TO CART
+                        </Button1>
+                      </div>
+                    </div>
+                    <div className="mt-[35px] rounded-[8px] border border-[var(--white-600)] text-[12px] text-[var(--text-grey-4)]">
+                      <p className="border-b p-4 border-[var(--white-600)] text-[14px] font-bold text-[var(--text-grey-5)]">
+                        Description
+                      </p>
 
-                      <Button1
-                        variant="filled"
-                        color="orange"
-                        className="rounded-[8px] px-6 py-[10px] text-[12px]"
-                      >
-                        REQUEST
-                      </Button1>
-                      <Button1
-                        variant="outline"
-                        color="orange"
-                        className="rounded-[8px] px-6 py-[10px] text-[12px]"
-                      >
-                        ADD TO CART
-                        <Icon name="cart_small" className="ml-2 scale-75" />
-                      </Button1>
+                      <div className="p-4 flex flex-col gap-[12px]">
+                        <p>
+                          <span className="font-semibold text-[var(--text-grey-5)] mr-[52px]">
+                            Expiry Date
+                          </span>
+                          {product?.expiryDate || "10 Hours"}
+                        </p>
+                        <p className="md:row-span-3 flex items-start">
+                          <span className="font-semibold text-[var(--text-grey-5)] mr-[55px]">
+                            Ingredients
+                          </span>
+                          {product?.ingredients || "Potatoes, cauliflower, green peas, tomatoes, onions, capsicum, butter, pav bhaji masala, red chili powder, turmeric powder, ginger-garlic paste, salt, lemon, fresh coriander leaves, pav"}
+                        </p>
+                        <p className="md:row-span-2 flex items-start">
+                          <span className="font-semibold text-[var(--text-grey-5)] mr-[70px]">
+                            Location
+                          </span>
+                          {product?.location || "Bhayander East, Navghar Road"}
+                        </p>
+                        <p>
+                          <span className="font-semibold text-[var(--text-grey-5)] mr-[8px]">
+                            Contact Information
+                          </span>
+                          {product?.location || "+91 23876 73663, priyasingh@gmail.com"}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
 
                 <section className="mt-16">
-                  <h2 className="text-[20px] font-bold text-[var(--text-grey-5)]">
+                  <h2 className="text-[20px] font-bold text-black">
                     Ratings & Reviews
                   </h2>
                   <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
-                    {[
-                      {
-                        name: "Ananya Mishra",
-                        date: "4/20/2026",
-                        review: "Very tasty and hygienic.",
-                      },
-                      {
-                        name: "Aarav Shah",
-                        date: "1/18/2026",
-                        review: "Perfect for quick meal pickup.",
-                      },
-                      {
-                        name: "Kavya Melviya",
-                        date: "11/10/2025",
-                        review: "Loved the freshness and taste.",
-                      },
-                    ].map((review) => (
+                    {reviewData.map((review) => (
                       <article
-                        key={review.name}
+                        key={review.id}
                         className="rounded-[10px] border border-[#eceae4] p-4"
                       >
+                        <img
+                          src={review.image}
+                          alt={review.name}
+                          className="h-10 w-10 rounded-full object-cover rounded-[12px]"
+                        />
                         <p className="text-[14px] font-semibold text-[var(--text-grey-5)]">
                           {review.name}
                         </p>
@@ -253,7 +274,7 @@ const ProductPage = () => {
                           {review.date}
                         </p>
                         <p className="mt-2 text-[13px] text-[var(--text-grey-4)]">
-                          {review.review}
+                          {review.comment}
                         </p>
                       </article>
                     ))}
