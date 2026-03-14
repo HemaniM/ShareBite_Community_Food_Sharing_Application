@@ -87,7 +87,8 @@ const ListingSchema: Schema = new Schema(
   { timestamps: true },
 );
 
-// Keep listing records after expiry so donors can still manage history.
+// Index for expiry
+ListingSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 ListingSchema.index({ donor: 1, createdAt: -1 });
 
 export default mongoose.model<IListing>("Listing", ListingSchema);
