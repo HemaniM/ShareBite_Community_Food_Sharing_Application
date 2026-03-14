@@ -62,9 +62,7 @@ const initialFormState = {
 const CreateFoodPost = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { createLoading, error, createSuccess } = useAppSelector(
-    (state) => state.listings,
-  );
+  const { createLoading } = useAppSelector((state) => state.listings);
 
   const [images, setImages] = useState([]);
   const [openDropdown, setOpenDropdown] = useState("");
@@ -72,7 +70,6 @@ const CreateFoodPost = () => {
   const [free, setFree] = useState("No");
   const [stockMeasure, setStockMeasure] = useState("");
   const [formData, setFormData] = useState(initialFormState);
-  const [uploadError, setUploadError] = useState("");
 
   const fileInputRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -90,18 +87,6 @@ const CreateFoodPost = () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
-
-  useEffect(() => {
-    if (createSuccess) {
-      setFormData(initialFormState);
-      setImages([]);
-      setCategory("");
-      setFree("No");
-      setStockMeasure("");
-      dispatch(resetCreateListingState());
-      navigate("/profile/food-posts");
-    }
-  }, [createSuccess, dispatch, navigate]);
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
@@ -127,9 +112,56 @@ const CreateFoodPost = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const validateFormData = () => {
+    const validationErrors = [];
+    const requiredFields = [
+      ["Food Name", formData.title],
+      ["Category", category],
+      ["Address Line One", formData.addressLineOne],
+      ["City", formData.city],
+      ["District", formData.district],
+      ["State", formData.state],
+      ["Country", formData.country],
+      ["Pincode", formData.pincode],
+      ["Expiry Date/Time", formData.expiresAt],
+      ["Food Stock", formData.stockQuantity],
+      ["Stock Measure", stockMeasure],
+      ["Phone Number", formData.phoneNumber],
+      ["Email Address", formData.email],
+    ];
+
+    requiredFields.forEach(([label, value]) => {
+      if (!String(value || "").trim()) {
+        validationErrors.push(`${label} is required`);
+      }
+    });
+
+    if (images.length === 0) {
+      validationErrors.push("At least one food image is required");
+    }
+
+    if (free !== "Yes" && Number(formData.priceAmount || 0) <= 0) {
+      validationErrors.push(
+        "Price Amount must be greater than 0 for paid listings",
+      );
+    }
+
+    if (Number(formData.stockQuantity || 0) <= 0) {
+      validationErrors.push("Food Stock must be greater than 0");
+    }
+
+    return validationErrors;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setUploadError("");
+
+    const validationErrors = validateFormData();
+
+    if (validationErrors.length) {
+      console.error("Create post validation failed:", validationErrors);
+      return;
+    }
 
     try {
       const imageUrls = await Promise.all(
@@ -170,9 +202,18 @@ const CreateFoodPost = () => {
         expiresAt: formData.expiresAt,
       };
 
-      dispatch(createListing(payload));
+      await dispatch(createListing(payload)).unwrap();
+      setFormData(initialFormState);
+      setImages([]);
+      setCategory("");
+      setFree("No");
+      setStockMeasure("");
+      dispatch(resetCreateListingState());
+      navigate("/profile/food-posts", {
+        state: { toastMessage: "Post created successfully" },
+      });
     } catch (uploadErr) {
-      setUploadError(uploadErr.message || "Image upload failed");
+      console.error("Create post image upload failed:", uploadErr);
     }
   };
 
@@ -518,10 +559,6 @@ const CreateFoodPost = () => {
             />
           </div>
         </div>
-
-        {(uploadError || error) && (
-          <p className="text-red-500 text-sm">{uploadError || error}</p>
-        )}
 
         <div className="flex justify-center pt-3">
           <Button1
