@@ -61,9 +61,7 @@ const FoodPostsPage = () => {
       {toast.message && (
         <div
           className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${
-            toast.type === "error"
-              ? "bg-[var(--orange-500)]"
-              : "bg-[var(--primary-green-500)]"
+            toast.type === "error" ? "bg-red-500" : "bg-green-500"
           }`}
         >
           {toast.message}
