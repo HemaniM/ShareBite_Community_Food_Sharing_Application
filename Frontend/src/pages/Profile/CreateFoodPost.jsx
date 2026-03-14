@@ -70,6 +70,7 @@ const CreateFoodPost = () => {
   const [free, setFree] = useState("No");
   const [stockMeasure, setStockMeasure] = useState("");
   const [formData, setFormData] = useState(initialFormState);
+  const [toast, setToast] = useState({ message: "", type: "success" });
 
   const fileInputRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -87,6 +88,23 @@ const CreateFoodPost = () => {
       document.removeEventListener("mousedown", handleOutsideClick);
     };
   }, []);
+
+  useEffect(() => {
+    if (!toast.message) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(
+      () => setToast({ message: "", type: "success" }),
+      3000,
+    );
+
+    return () => clearTimeout(timeoutId);
+  }, [toast]);
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+  };
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
@@ -113,7 +131,7 @@ const CreateFoodPost = () => {
   };
 
   const validateFormData = () => {
-    const validationErrors = [];
+    const missingFields = [];
     const requiredFields = [
       ["Food Name", formData.title],
       ["Category", category],
@@ -132,13 +150,33 @@ const CreateFoodPost = () => {
 
     requiredFields.forEach(([label, value]) => {
       if (!String(value || "").trim()) {
-        validationErrors.push(`${label} is required`);
+        missingFields.push(label);
       }
     });
 
     if (images.length === 0) {
-      validationErrors.push("At least one food image is required");
+      missingFields.push("Food Image");
     }
+
+    if (missingFields.length > 0) {
+      const imageMissing = missingFields.includes("Food Image");
+      const fieldMessages = missingFields.filter(
+        (field) => field !== "Food Image",
+      );
+      const messages = [];
+
+      if (fieldMessages.length > 0) {
+        messages.push(`Please fill these fields: ${fieldMessages.join(", ")}`);
+      }
+
+      if (imageMissing) {
+        messages.push("Image should be uploaded");
+      }
+
+      return messages;
+    }
+
+    const validationErrors = [];
 
     if (free !== "Yes" && Number(formData.priceAmount || 0) <= 0) {
       validationErrors.push(
@@ -159,7 +197,7 @@ const CreateFoodPost = () => {
     const validationErrors = validateFormData();
 
     if (validationErrors.length) {
-      console.error("Create post validation failed:", validationErrors);
+      showToast(validationErrors[0], "error");
       return;
     }
 
@@ -213,12 +251,24 @@ const CreateFoodPost = () => {
         state: { toastMessage: "Post created successfully" },
       });
     } catch (uploadErr) {
-      console.error("Create post image upload failed:", uploadErr);
+      console.error("Create post failed:", uploadErr);
+      showToast("Not able to create post", "error");
     }
   };
 
   return (
     <section className="mx-auto mt-[80px] w-full max-w-[975px] pb-20">
+      {toast.message && (
+        <div
+          className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${
+            toast.type === "error"
+              ? "bg-[var(--orange-500)]"
+              : "bg-[var(--primary-green-500)]"
+          }`}
+        >
+          {toast.message}
+        </div>
+      )}
       <h1 className="mb-[50px] text-[22px] font-bold tracking-[0.4px] text-black">
         CREATE NEW FOOD POST
       </h1>

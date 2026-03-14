@@ -15,43 +15,58 @@ const FoodPostsPage = () => {
     (state) => state.listings,
   );
 
-  const [toastMessage, setToastMessage] = useState(
-    () => location.state?.toastMessage || "",
-  );
+  const [toast, setToast] = useState(() => ({
+    message: location.state?.toastMessage || "",
+    type: "success",
+  }));
 
   useEffect(() => {
     dispatch(fetchMyListings());
   }, [dispatch]);
 
   useEffect(() => {
-    if (!toastMessage) {
+    if (!toast.message) {
       return undefined;
     }
 
     window.history.replaceState({}, document.title);
-    const timeoutId = setTimeout(() => setToastMessage(""), 3000);
+    const timeoutId = setTimeout(
+      () => setToast({ message: "", type: "success" }),
+      3000,
+    );
     return () => clearTimeout(timeoutId);
-  }, [toastMessage]);
+  }, [toast]);
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+  };
 
   const handleDeletePost = async (postId) => {
     try {
       const action = await dispatch(deleteMyListing(postId));
       if (deleteMyListing.fulfilled.match(action)) {
-        setToastMessage("Post deleted successfully");
-        setTimeout(() => setToastMessage(""), 3000);
+        showToast("Post deleted successfully", "success");
       } else {
         console.error("Delete post failed:", action.payload);
+        showToast("Not able to delete post", "error");
       }
     } catch (deleteError) {
       console.error("Delete post failed:", deleteError);
+      showToast("Not able to delete post", "error");
     }
   };
 
   return (
     <section className="w-full max-w-[975px] mx-auto pb-16 mt-[80px]">
-      {toastMessage && (
-        <div className="fixed top-5 right-5 z-50 rounded-lg bg-[var(--primary-green-500)] px-4 py-3 text-white shadow-lg">
-          {toastMessage}
+      {toast.message && (
+        <div
+          className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${
+            toast.type === "error"
+              ? "bg-[var(--orange-500)]"
+              : "bg-[var(--primary-green-500)]"
+          }`}
+        >
+          {toast.message}
         </div>
       )}
       <div className="flex justify-center">
