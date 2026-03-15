@@ -26,7 +26,7 @@ const Homepage = () => {
     if (!item?.id) {
       return;
     }
-
+    console.log(item);
     const productSlug = slugifyProductName(
       item?.title || item?.name || "product",
     );

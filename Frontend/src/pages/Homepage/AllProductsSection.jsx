@@ -11,7 +11,7 @@ const AllProductsSection = ({ onProductClick }) => {
       image: "/images/Lunch_Box_1.jpg",
       location: "BHAYANDER",
       title: "Lunch Box",
-      price: "40 ₹ /-",
+      price: 40,
       priceColor: "#d99338",
     },
     {
@@ -19,7 +19,7 @@ const AllProductsSection = ({ onProductClick }) => {
       image: "/images/Roti_Sabzi.jpg",
       location: "BHAYANDER WEST",
       title: "Roti Sabzi",
-      price: "FREE",
+      price: 0,
       priceColor: "#7d8d2a",
     },
     {
@@ -27,7 +27,7 @@ const AllProductsSection = ({ onProductClick }) => {
       image: "/images/Orange_Juice.jpg",
       location: "VASAI",
       title: "Orange Juice",
-      price: "15 ₹ /-",
+      price: 15,
       priceColor: "#d99338",
     },
     {
@@ -35,7 +35,7 @@ const AllProductsSection = ({ onProductClick }) => {
       image: "/images/Kiwi.jpg",
       location: "MIRA ROAD",
       title: "kiwi",
-      price: "50 ₹ /-",
+      price: 50,
       priceColor: "#d99338",
     },
     {
@@ -43,7 +43,7 @@ const AllProductsSection = ({ onProductClick }) => {
       image: "/images/Noodles.jpg",
       location: "BHAYANDER EAST",
       title: "Noodles",
-      price: "30 ₹ /-",
+      price: 30,
       priceColor: "#d99338",
     },
     {
@@ -51,7 +51,7 @@ const AllProductsSection = ({ onProductClick }) => {
       image: "/images/Rice_1kg.jpg",
       location: "BHAYANDER",
       title: "Rice 1kg",
-      price: "25 ₹ /-",
+      price: 25,
       priceColor: "#d99338",
     },
     {
@@ -59,7 +59,7 @@ const AllProductsSection = ({ onProductClick }) => {
       image: "/images/Rajama_Chawal.jpg",
       location: "MALAD",
       title: "Rajama Chaval",
-      price: "FREE",
+      price: 0,
       priceColor: "#7d8d2a",
     },
     {
@@ -67,7 +67,7 @@ const AllProductsSection = ({ onProductClick }) => {
       image: "/images/Carrot_Juice.jpg",
       location: "BORIVALI",
       title: "Carrot Juice",
-      price: "10 ₹ /-",
+      price: 10,
       priceColor: "#d99338",
     },
     {
@@ -75,7 +75,7 @@ const AllProductsSection = ({ onProductClick }) => {
       image: "/images/Apple_Cider_Vinegar.jpg",
       location: "DAHISAR",
       title: "Apple Cider Vinegar",
-      price: "80 ₹ /-",
+      price: 80,
       priceColor: "#d99338",
     },
     {
@@ -83,7 +83,7 @@ const AllProductsSection = ({ onProductClick }) => {
       image: "/images/Ramen.jpg",
       location: "ANDHERI",
       title: "Ramen",
-      price: "40 ₹ /-",
+      price: 40,
       priceColor: "#d99338",
     },
   ];
@@ -114,12 +114,9 @@ const AllProductsSection = ({ onProductClick }) => {
             {allProducts?.map((product) => (
               <ProductCard
                 key={product?.id}
-                image={product?.image}
-                location={product?.location}
-                title={product?.title}
-                price={product?.price}
+                product={product}
                 priceColor={product?.priceColor}
-                onClick={() => onProductClick?.(product)}
+                onProductClick={() => onProductClick?.(product)}
               />
             ))}
           </div>

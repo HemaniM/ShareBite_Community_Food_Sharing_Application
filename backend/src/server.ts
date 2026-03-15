@@ -1,3 +1,6 @@
+import dns from "node:dns";
+dns.setServers(["8.8.8.8", "1.1.1.1"]); // Google + Cloudflare DNS
+
 import { app } from './app';
 import { ENV } from './config/env';
 import { connectDB } from './config/db';
@@ -9,7 +12,7 @@ let server: any;
 async function startServer() {
   await connectDB(process.env.MONGODB_URI as string);
 
-  app.listen(ENV.PORT, () => {
+ app.listen(ENV.PORT, () => {
     logger.info(`HTTP server running on port localhost:${ENV.PORT}`);
   });
 }

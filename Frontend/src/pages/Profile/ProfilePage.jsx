@@ -30,10 +30,10 @@ const ProfilePage = () => {
         />
       </Helmet>
 
-      <main className="w-full bg-white">
+      <main className="min-h-screen flex flex-col w-full bg-white">
         <ContactBar />
 
-        <section className="w-full">
+        <section className="w-full flex-grow">
           <NavbarHomepage activePage="home" showBorder={true} />
 
           <NavbarProfile />

@@ -7,6 +7,7 @@ const requests = [
   {
     id: "R6327YEg3",
     foodName: "Kathi Roll",
+    price: 10,
     username: "Riya Mehata",
     address: "Bhayander (W), BP Road, Shiv Nagar",
     date: "Today",
@@ -19,6 +20,7 @@ const requests = [
   {
     id: "R6327SE5f4",
     foodName: "Noodles",
+    price: 20,
     address: "Bhayander (W), Jesal Park, Shiv Nagar",
     username: "Nira Sharma",
     date: "30/01/2026",
@@ -31,6 +33,7 @@ const requests = [
   {
     id: "R4452ME771",
     foodName: "Watermelon Juice",
+    price: 0,
     address: "Bhayander (E), Maxus Road",
     username: "Aman Gracias",
     date: "30/01/2026",
@@ -43,6 +46,7 @@ const requests = [
   {
     id: "R44534577d",
     foodName: "Badami Paneer",
+    price: 40,
     address: "Bhayander (E), Shivar Garden",
     username: "Shruti Kadam",
     date: "29/01/2026",
@@ -55,6 +59,7 @@ const requests = [
   {
     id: "R4452hj97d",
     foodName: "Mango Milkshake",
+    price: 25,
     address: "Bhayander (E), Goddev Village, Pooja Nagar",
     username: "Manish Goyal",
     date: "29/01/2026",
@@ -108,8 +113,6 @@ export const RequestsPage = () => {
     requestFilterOptions.find((option) => option.value === selectedFilter)
       ?.label || "ALL";
 
-
-
   const handleOpenFeedbackModal = (requestId) => {
     setActiveRequestId(requestId);
     setFeedbackText("");
@@ -151,13 +154,6 @@ export const RequestsPage = () => {
       handleCloseFeedbackModal();
     }
   };
-
-
-
-
-
-
-
 
   return (
     <>
@@ -208,10 +204,11 @@ export const RequestsPage = () => {
                         setSelectedFilter(option.value);
                         setIsFilterOpen(false);
                       }}
-                      className={`w-full rounded-[6px] px-3 py-2 text-left text-[12px] font-semibold ${isSelected
-                        ? "bg-[var(--primary-green-50)] text-[#595957]"
-                        : "text-[var(--text-grey-4)] hover:bg-[#F2F4EA]"
-                        }`}
+                      className={`w-full rounded-[6px] px-3 py-2 text-left text-[12px] font-semibold ${
+                        isSelected
+                          ? "bg-[var(--primary-green-50)] text-[#595957]"
+                          : "text-[var(--text-grey-4)] hover:bg-[#F2F4EA]"
+                      }`}
                     >
                       {option.label}
                     </button>
@@ -249,7 +246,11 @@ export const RequestsPage = () => {
                         <span className="font-semibold text-[#2f2e2b] mr-[40px]">
                           Price
                         </span>
-                        <span className="ml-2">20 ₹/-</span>
+                        <span className="ml-2">
+                          {request?.price === 0
+                            ? "FREE /-"
+                            : `${request?.price} ₹/-`}
+                        </span>
                       </p>
                       <p className="font-semibold text-[#2f2e2b]">Contact</p>
                       <p>
@@ -303,8 +304,8 @@ export const RequestsPage = () => {
                 className={`mt-3 ml-[200px] ${request.status === "accepted" ? "" : "hidden"}`}
               >
                 <p className="text-[13px] text-[var(--text-grey-5)]">
-                  You can now contact the owner to pick the product using contact
-                  details
+                  You can now contact the owner to pick the product using
+                  contact details
                 </p>
 
                 <Button1
@@ -331,7 +332,6 @@ export const RequestsPage = () => {
         </div>
       </section>
 
-
       {isFeedbackModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
           <div className="relative w-full max-w-[500px] rounded-[15px] bg-white px-8 py-9 shadow-[0px_16px_40px_#00000029]">
@@ -353,7 +353,8 @@ export const RequestsPage = () => {
                 HOW WAS YOUR EXPERIENCE?
               </h3>
               <p className="mt-[20px] w-[300px] text-center mx-auto text-[12px] font-medium leading-[14px] text-[var(--text-grey-4)] uppercase">
-                YOUR FEEDBACK HELPS US TO IMPROVE. TAP A STAR TO RATE YOUR EXPERIENCE.
+                YOUR FEEDBACK HELPS US TO IMPROVE. TAP A STAR TO RATE YOUR
+                EXPERIENCE.
               </p>
 
               <form onSubmit={handleFeedbackSubmit} className="mt-[60px]">
@@ -369,13 +370,15 @@ export const RequestsPage = () => {
                         className="leading-none leading-none transition-transform duration-150 hover:scale-110"
                         aria-label={`Rate ${starValue} star`}
                       >
-                        <Icon name={
-                          isFilled
-                            ? "feedback_star_icon_filled"
-                            : "feedback_star_icon_outlined"
-                        } />
+                        <Icon
+                          name={
+                            isFilled
+                              ? "feedback_star_icon_filled"
+                              : "feedback_star_icon_outlined"
+                          }
+                        />
                       </button>
-                    )
+                    );
                   })}
                 </div>
 

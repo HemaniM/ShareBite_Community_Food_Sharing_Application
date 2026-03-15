@@ -10,7 +10,7 @@ const FoodNearYouSection = ({ onProductClick }) => {
       image: "/images/Poha.jpg",
       location: "BHAYANDER",
       title: "Poha",
-      price: "20 ₹ /-",
+      price: 20,
       priceColor: "#d99338",
     },
     {
@@ -18,7 +18,7 @@ const FoodNearYouSection = ({ onProductClick }) => {
       image: "/images/Nibu_Soda.jpg",
       location: "BHAYANDER",
       title: "Nibu Soda",
-      price: "Free",
+      price: 0,
       priceColor: "#7d8d2a",
     },
     {
@@ -26,7 +26,7 @@ const FoodNearYouSection = ({ onProductClick }) => {
       image: "/images/Sandwitch.jpg",
       location: "BHAYANDER",
       title: "Sandwitch",
-      price: "30 ₹ /-",
+      price: 30,
       priceColor: "#d99338",
     },
     {
@@ -34,7 +34,7 @@ const FoodNearYouSection = ({ onProductClick }) => {
       image: "/images/Samose.jpg",
       location: "BHAYANDER",
       title: "Samose",
-      price: "25 ₹ /-",
+      price: 25,
       priceColor: "#d99338",
     },
     {
@@ -42,7 +42,7 @@ const FoodNearYouSection = ({ onProductClick }) => {
       image: "/images/Lunch_Box.jpg",
       location: "BHAYANDER",
       title: "Lunch Box",
-      price: "40 ₹ /-",
+      price: 40,
       priceColor: "#d99338",
     },
     {
@@ -50,7 +50,7 @@ const FoodNearYouSection = ({ onProductClick }) => {
       image: "/images/Kathi_Roll.jpg",
       location: "BHAYANDER",
       title: "Kathi Roll",
-      price: "55 ₹ /-",
+      price: 55,
       priceColor: "#d99338",
     },
     {
@@ -58,7 +58,7 @@ const FoodNearYouSection = ({ onProductClick }) => {
       image: "/images/Dry_Fruits_Pack.jpg",
       location: "BHAYANDER",
       title: "Dry Fruits Pack",
-      price: "100 ₹ /-",
+      price: 100,
       priceColor: "#d99338",
     },
     {
@@ -66,7 +66,7 @@ const FoodNearYouSection = ({ onProductClick }) => {
       image: "/images/Watermelon_Juice.jpg",
       location: "BHAYANDER",
       title: "Watermelon Juice",
-      price: "Free",
+      price: 0,
       priceColor: "#7d8d2a",
     },
   ];
@@ -94,15 +94,12 @@ const FoodNearYouSection = ({ onProductClick }) => {
 
           {/* Food Items Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 w-full">
-            {foodItems?.map((item) => (
+            {foodItems?.map((product) => (
               <ProductCard
-                key={item?.id}
-                image={item?.image}
-                location={item?.location}
-                title={item?.title}
-                price={item?.price}
-                priceColor={item?.priceColor}
-                onClick={() => onProductClick?.(item)}
+                key={product?.id}
+                product={product}
+                priceColor={product?.priceColor}
+                onProductClick={() => onProductClick?.(product)}
               />
             ))}
           </div>

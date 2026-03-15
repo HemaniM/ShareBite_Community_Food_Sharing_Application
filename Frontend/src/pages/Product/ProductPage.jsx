@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
-import { useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 import ContactBar from "../../components/common/ContactBar";
 import Footer from "../../components/common/Footer";
@@ -14,7 +14,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 
 const requestOptions = ["Pickup Today", "Pickup Tomorrow", "Home Delivery"];
 
-const browseMoreItems = [
+const browseMoreProducts = [
   {
     id: "lunch-box-1",
     image: "/images/Lunch_Box_1.jpg",
@@ -53,7 +53,7 @@ const reviewData = [
   {
     id: 1,
     name: "Aanya Mishra",
-    image: "../images/Ananya_Mishra.jpg",
+    image: "/images/Ananya_Mishra.jpg",
     date: "4/10/2025",
     rating: 4.5,
     location: "Bhayander (E)",
@@ -63,7 +63,7 @@ const reviewData = [
   {
     id: 2,
     name: "Aarav Shah",
-    image: "../images/Aarav_Shah.jpg",
+    image: "/images/Aarav_Shah.jpg",
     date: "15/8/2025",
     rating: 4,
     location: "Bhayander (E)",
@@ -73,7 +73,7 @@ const reviewData = [
   {
     id: 3,
     name: "Kavya Malkiye",
-    image: "../images/Kavya_Melviya.jpg",
+    image: "/images/Kavya_Melviya.jpg",
     date: "20/12/2025",
     rating: 3.5,
     location: "Bhayander (E)",
@@ -156,7 +156,9 @@ const ProductPage = () => {
                       {product?.title || readableProductName || "Pav Bhaji"}
                     </h1>
                     <p className="mt-[10px] text-[18px] font-bold uppercase text-[var(--primary-green-700)]">
-                      {displayPrice}
+                      {product?.price === 0
+                        ? "FREE /-"
+                        : `${product.price} ₹/-`}
                     </p>
 
                     <div className="mt-[35px] flex flex-wrap items-center gap-[14px] text-[14px] font-bold text-[var(--text-grey-5)]">
@@ -167,9 +169,11 @@ const ProductPage = () => {
                     </div>
 
                     <div className="mt-[25px] text-[12px] leading-5 text-[var(--text-grey-4)]">
-                      <p className="mb-[5px] text-14 font-bold text-[var(--text-grey-5)]">
-                        {product?.donor || "Priya Singh"}
-                      </p>
+                      <Link to={`/user/${product?.donorId}`}>
+                        <p className="mb-[5px] text-14 font-bold text-[var(--text-grey-5)] hover:text-orange">
+                          {product?.donorName || "Priya Singh"}
+                        </p>
+                      </Link>
                       <p>
                         {product?.description ||
                           "Freshly prepared Pav Bhaji made with clean, high-quality vegetables and hygienic cooking practices. Stored properly and safe to consume within 6–8 hours if kept covered at room temperature"}
@@ -233,7 +237,8 @@ const ProductPage = () => {
                           <span className="font-semibold text-[var(--text-grey-5)] mr-[55px]">
                             Ingredients
                           </span>
-                          {product?.ingredients || "Potatoes, cauliflower, green peas, tomatoes, onions, capsicum, butter, pav bhaji masala, red chili powder, turmeric powder, ginger-garlic paste, salt, lemon, fresh coriander leaves, pav"}
+                          {product?.ingredients ||
+                            "Potatoes, cauliflower, green peas, tomatoes, onions, capsicum, butter, pav bhaji masala, red chili powder, turmeric powder, ginger-garlic paste, salt, lemon, fresh coriander leaves, pav"}
                         </p>
                         <p className="md:row-span-2 flex items-start">
                           <span className="font-semibold text-[var(--text-grey-5)] mr-[70px]">
@@ -245,7 +250,8 @@ const ProductPage = () => {
                           <span className="font-semibold text-[var(--text-grey-5)] mr-[8px]">
                             Contact Information
                           </span>
-                          {product?.location || "+91 23876 73663, priyasingh@gmail.com"}
+                          {product?.location ||
+                            "+91 23876 73663, priyasingh@gmail.com"}
                         </p>
                       </div>
                     </div>
@@ -253,28 +259,65 @@ const ProductPage = () => {
                 </div>
 
                 <section className="mt-16">
-                  <h2 className="text-[20px] font-bold text-black">
-                    Ratings & Reviews
+                  <h2 className="text-[22px] font-bold text-black">
+                    Ratings & Reviews For{" "}
+                    {product?.donor || (
+                      <Link to={`/user/${product?.donorId}`}>
+                        <span className="text-orange hover:text-[var(--primary-orange-300)]">
+                          Priya Singh
+                        </span>
+                      </Link>
+                    )}
                   </h2>
-                  <div className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-3">
+                  <div className="flex items-end gap-[25px] mt-10">
+                    <div className="flex items-start gap-[18px]">
+                      <p className="text-[38px] leading-none font-bold text-[#2e2c27]">
+                        4/5
+                      </p>
+                      <Icon name="star_icon_md" />
+                    </div>
+                    <p className="text-[16px] text-[var(--text-grey-4)]">
+                      50 Reviews
+                    </p>
+                  </div>
+                  <div className="mt-3">
+                    <Button1
+                      type="button"
+                      variant="filled"
+                      color="green"
+                      size="sm"
+                      className="bg-[var(--primary-green-50)] py-[6px] rounded-full px-[20px] text-[14px] font-medium text-[var(--text-grey-4)] normal-case mt-3"
+                    >
+                      <span className="mr-[10px]">
+                        <Icon name="green_tick_icon" />
+                      </span>
+                      Trusted
+                    </Button1>
+                  </div>
+                  <div className="mt-[50px] grid grid-cols-1 gap-4 md:grid-cols-3">
                     {reviewData.map((review) => (
                       <article
                         key={review.id}
                         className="rounded-[10px] border border-[#eceae4] p-4"
                       >
-                        <img
-                          src={review.image}
-                          alt={review.name}
-                          className="h-10 w-10 rounded-full object-cover rounded-[12px]"
-                        />
-                        <p className="text-[14px] font-semibold text-[var(--text-grey-5)]">
-                          {review.name}
-                        </p>
-                        <p className="text-[11px] text-[var(--text-grey-3)]">
-                          {review.date}
-                        </p>
-                        <p className="mt-2 text-[13px] text-[var(--text-grey-4)]">
-                          {review.comment}
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-[10px]">
+                            <img
+                              src={review.image}
+                              alt={review.name}
+                              className="h-10 w-10 rounded-full object-cover rounded-[12px]"
+                            />
+                            <p className="text-[14px] font-semibold text-[var(--text-grey-5)]">
+                              {review.name}
+                            </p>
+                          </div>
+                          <p className="text-[12px] text-[var(--text-grey-3)]">
+                            {review.date}
+                          </p>
+                        </div>
+
+                        <p className="mt-[20px] text-[13px] text-[var(--text-grey-4)]">
+                          "{review.comment}"
                         </p>
                       </article>
                     ))}
@@ -297,14 +340,11 @@ const ProductPage = () => {
                   </div>
 
                   <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-4">
-                    {browseMoreItems.map((item) => (
+                    {browseMoreProducts.map((product) => (
                       <ProductCard
-                        key={item.id}
-                        image={item.image}
-                        location={item.location}
-                        title={item.title}
-                        price={item.price}
-                        priceColor={item.priceColor}
+                        key={product.id}
+                        product={product}
+                        priceColor={product.priceColor}
                       />
                     ))}
                   </div>

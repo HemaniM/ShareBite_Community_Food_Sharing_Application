@@ -16,6 +16,7 @@ import CreateFoodPost from "./pages/Profile/CreateFoodPost";
 import FoodPostRequestsPage from "./pages/Profile/FoodPostRequestsPage";
 import CartPage from "./pages/Cart/CartPage";
 import ProductPage from "./pages/Product/ProductPage";
+import PublicProfilePage from "./pages/publicProfile/PublicProfilePage";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -33,28 +34,45 @@ const AppRoutes = () => {
       <Route
         path="/home"
         element={
-          // <ProtectedRoute>
-          <Homepage />
-          // </ProtectedRoute>
+          <ProtectedRoute>
+            <Homepage />
+          </ProtectedRoute>
         }
       />
 
       <Route
         path="/product/:productId/:productName"
-        element={<ProductPage />}
+        element={
+          <ProtectedRoute>
+            <ProductPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/user/:userId"
+        element={
+          <ProtectedRoute>
+            <PublicProfilePage />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/cart"
-        element={<CartPage />}
+        element={
+          <ProtectedRoute>
+            <CartPage />
+          </ProtectedRoute>
+        }
       />
 
       <Route
         path="/profile"
         element={
-          // <ProtectedRoute>
-          <ProfilePage />
-          // </ProtectedRoute>
+          <ProtectedRoute>
+            <ProfilePage />
+          </ProtectedRoute>
         }
       >
         <Route index element={<Navigate to="overview" replace />} />

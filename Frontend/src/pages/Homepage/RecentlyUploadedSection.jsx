@@ -11,7 +11,7 @@ const RecentlyUploadedSection = ({ onProductClick }) => {
       image: "/images/Pan_Fry_Momos.jpg",
       timeAgo: "• 20s ago",
       title: "Pan Fry Momos",
-      price: "20 ₹ /-",
+      price: 20,
       priceColor: "#f2f4ea",
     },
     {
@@ -19,7 +19,7 @@ const RecentlyUploadedSection = ({ onProductClick }) => {
       image: "/images/Idli_Sambar.jpg",
       timeAgo: "• 1m ago",
       title: "Idali Sambar",
-      price: "30 ₹ /-",
+      price: 30,
       priceColor: "#f2f4ea",
     },
     {
@@ -27,7 +27,7 @@ const RecentlyUploadedSection = ({ onProductClick }) => {
       image: "/images/Pineapple_Juice.jpg",
       timeAgo: "• 6m ago",
       title: "Pineapple Juice",
-      price: "Free",
+      price: 0,
       priceColor: "#f2f4ea",
     },
     {
@@ -35,7 +35,7 @@ const RecentlyUploadedSection = ({ onProductClick }) => {
       image: "/images/Spring_Rolls.jpg",
       timeAgo: "• 6m ago",
       title: "Spring Rolls",
-      price: "15 ₹ /-",
+      price: 15,
       priceColor: "#f2f4ea",
     },
     {
@@ -43,7 +43,7 @@ const RecentlyUploadedSection = ({ onProductClick }) => {
       image: "/images/Spring_Rolls.jpg",
       timeAgo: "• 6m ago",
       title: "Spring Rolls",
-      price: "15 ₹ /-",
+      price: 15,
       priceColor: "#f2f4ea",
     },
     {
@@ -51,7 +51,7 @@ const RecentlyUploadedSection = ({ onProductClick }) => {
       image: "/images/Spring_Rolls.jpg",
       timeAgo: "• 6m ago",
       title: "Spring Rolls",
-      price: "15 ₹ /-",
+      price: 15,
       priceColor: "#f2f4ea",
     },
   ];
@@ -123,7 +123,9 @@ const RecentlyUploadedSection = ({ onProductClick }) => {
                             className="text-[11px] font-semibold leading-4 text-left capitalize font-['Nunito']"
                             style={{ color: item?.priceColor }}
                           >
-                            {item?.price}
+                            {item?.price === 0
+                              ? "FREE /-"
+                              : `${item?.price} ₹/-`}
                           </p>
                         </div>
 
