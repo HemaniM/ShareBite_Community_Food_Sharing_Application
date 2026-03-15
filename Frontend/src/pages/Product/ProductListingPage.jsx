@@ -4,6 +4,10 @@ import NavBarHomepage from "../../components/common/NavBarHomepage";
 import Footer from "../../components/common/Footer";
 import Button1 from "../../components/ui/Button1";
 import ProductCard from "../../components/common/ProductCard";
+import ContactBar from "../../components/common/ContactBar";
+import HeroSection from "../Homepage/HeroSection";
+import CategoriesSection from "../Homepage/CategoriesSection";
+import SearchSection from "../Homepage/SearchSection";
 
 const PRODUCTS = [
   {
@@ -84,6 +88,18 @@ const isWithinBudget = (price, budget) => {
   return true;
 };
 
+/* ---------- HEADING HELPER FUNCTION ---------- */
+const formatHeading = (text = "") => {
+  if (!text) return "";
+
+  return text
+    .replace(/[_-]/g, " ")
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+};
+/* ----------------------------------------- */
+
 const ProductListingPage = () => {
   const locationHook = useLocation();
   const navigate = useNavigate();
@@ -117,20 +133,59 @@ const ProductListingPage = () => {
     return matchSection && matchCategory && matchLocation && matchBudget;
   });
 
-  return (
-    <main className="min-h-screen bg-[#ffffff]">
-      <NavBarHomepage />
+  const navigateToBrowsePage = (filters = {}) => {
+    const browseFilters = {
+      sourceSection: "",
+      category: "",
+      location: "",
+      budget: "",
+      ...filters,
+    };
 
-      <section className="w-full pt-8 pb-14 px-5">
+    const queryParams = new URLSearchParams();
+    queryParams.set("sourceSection", browseFilters.sourceSection);
+    queryParams.set("category", browseFilters.category);
+    queryParams.set("location", browseFilters.location);
+    queryParams.set("budget", browseFilters.budget);
+
+    navigate(`/products?${queryParams.toString()}`, {
+      state: browseFilters,
+    });
+  };
+
+  const handleCategoryClick = (categoryName) => {
+    navigateToBrowsePage({
+      category: categoryName,
+    });
+  };
+
+  const handleSearch = ({ location = "", category = "", budget = "" }) => {
+    navigateToBrowsePage({
+      location,
+      category,
+      budget,
+    });
+  };
+
+  /* ---------- DYNAMIC HEADING ---------- */
+  const heading =
+    formatHeading(sourceSection) || formatHeading(category) || "Food Results";
+  /* ------------------------------------- */
+
+  console.log(routeState);
+
+  return (
+    <main className="min-h-screen flex flex-col w-full bg-white">
+      <ContactBar />
+      <HeroSection />
+      <SearchSection onSearch={handleSearch} />
+      <CategoriesSection onCategoryClick={handleCategoryClick} />
+
+      <section className="w-full py-[80px] px-5 bg-[#fffaef]">
         <div className="w-full max-w-[1100px] mx-auto">
-          <div className="flex flex-col gap-3 mb-8">
-            <h1 className="text-2xl font-bold text-black">Food Results</h1>
-            <p className="text-sm text-[#595957]">
-              sourceSection: <b>{sourceSection || ""}</b> | category:{" "}
-              <b>{category || ""}</b> | location: <b>{location || ""}</b> |
-              budget: <b>{budget || ""}</b>
-            </p>
-          </div>
+          <h1 className="mb-[40px] text-[22px] font-bold text-black tracking-[0.5px]">
+            {heading}
+          </h1>
 
           {filteredProducts.length === 0 ? (
             <div className="rounded-xl border border-[#f2ebe5] bg-[#fffaef] p-6">
