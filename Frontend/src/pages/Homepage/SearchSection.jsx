@@ -4,7 +4,7 @@ import EditText from "../../components/ui/EditText";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
 
-const SearchSection = () => {
+const SearchSection = ({ onSearch }) => {
   const [location, setLocation] = useState("");
   const [category, setCategory] = useState("");
   const [budget, setBudget] = useState("");
@@ -54,6 +54,12 @@ const SearchSection = () => {
   const handleSearch = () => {
     // Handle search functionality
     console.log("Search:", { location, category, budget });
+
+    onSearch?.({
+      location: location?.trim() || "",
+      category: category || "",
+      budget: budget || "",
+    });
   };
 
   const renderDropdown = ({

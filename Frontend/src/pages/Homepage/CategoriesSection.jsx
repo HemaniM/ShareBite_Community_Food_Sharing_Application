@@ -1,14 +1,14 @@
-import React from 'react';
+import React from "react";
 
-const CategoriesSection = () => {
+const CategoriesSection = ({ onCategoryClick }) => {
   const categories = [
-    { id: 1, name: 'Groceries', image: '/images/Grocery_image.jpg' },
-    { id: 2, name: 'Vegetable', image: '/images/Vegetable_image.jpg' },
-    { id: 3, name: 'Fruits', image: '/images/Fruits_image.jpg' },
-    { id: 4, name: 'Snacks', image: '/images/Snacks_image.jpg' },
-    { id: 5, name: 'Meals', image: '/images/Meals_image.jpg' },
-    { id: 6, name: 'Fast Food', image: '/images/Fast_food_image.jpg' },
-    { id: 7, name: 'Drinks', image: '/images/Drinks_image.jpg' },
+    { id: 1, name: "Groceries", image: "/images/Grocery_image.jpg" },
+    { id: 2, name: "Vegetable", image: "/images/Vegetable_image.jpg" },
+    { id: 3, name: "Fruits", image: "/images/Fruits_image.jpg" },
+    { id: 4, name: "Snacks", image: "/images/Snacks_image.jpg" },
+    { id: 5, name: "Meals", image: "/images/Meals_image.jpg" },
+    { id: 6, name: "Fast Food", image: "/images/Fast_food_image.jpg" },
+    { id: 7, name: "Drinks", image: "/images/Drinks_image.jpg" },
   ];
 
   return (
@@ -25,6 +25,7 @@ const CategoriesSection = () => {
             {categories?.map((category) => (
               <div
                 key={category?.id}
+                onClick={() => onCategoryClick?.(category?.name)}
                 className="flex flex-col gap-1.5 lg:gap-[6px] items-center w-full max-w-[108px] mx-auto cursor-pointer hover:transform hover:scale-110 transition-transform duration-200"
               >
                 {/* Category Image */}

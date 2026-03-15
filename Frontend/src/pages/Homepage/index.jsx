@@ -22,6 +22,26 @@ const slugifyProductName = (name = "") =>
 const Homepage = () => {
   const navigate = useNavigate();
 
+  const navigateToBrowsePage = (filters = {}) => {
+    const browseFilters = {
+      sourceSection: "",
+      category: "",
+      location: "",
+      budget: "",
+      ...filters,
+    };
+
+    const queryParams = new URLSearchParams();
+    queryParams.set("sourceSection", browseFilters.sourceSection);
+    queryParams.set("category", browseFilters.category);
+    queryParams.set("location", browseFilters.location);
+    queryParams.set("budget", browseFilters.budget);
+
+    navigate(`/products?${queryParams.toString()}`, {
+      state: browseFilters,
+    });
+  };
+
   const handleProductClick = (item) => {
     if (!item?.id) {
       return;
@@ -35,6 +55,26 @@ const Homepage = () => {
       state: {
         product: item,
       },
+    });
+  };
+
+  const handleViewMoreClick = (sectionName) => {
+    navigateToBrowsePage({
+      sourceSection: sectionName,
+    });
+  };
+
+  const handleCategoryClick = (categoryName) => {
+    navigateToBrowsePage({
+      category: categoryName,
+    });
+  };
+
+  const handleSearch = ({ location = "", category = "", budget = "" }) => {
+    navigateToBrowsePage({
+      location,
+      category,
+      budget,
     });
   };
 
@@ -61,12 +101,26 @@ const Homepage = () => {
       <main className="w-full bg-[#ffffff]">
         <ContactBar />
         <HeroSection />
-        <SearchSection />
-        <CategoriesSection />
-        <TrustedDonorsSection onProductClick={handleProductClick} />
-        <FoodNearYouSection onProductClick={handleProductClick} />
-        <RecentlyUploadedSection onProductClick={handleProductClick} />
-        <AllProductsSection onProductClick={handleProductClick} />
+        <SearchSection onSearch={handleSearch} />
+        <CategoriesSection onCategoryClick={handleCategoryClick} />
+        <TrustedDonorsSection
+          onProductClick={handleProductClick}
+          onViewMoreClick={() =>
+            handleViewMoreClick("from_most_trusted_donors")
+          }
+        />
+        <FoodNearYouSection
+          onProductClick={handleProductClick}
+          onViewMoreClick={() => handleViewMoreClick("food_near_you")}
+        />
+        <RecentlyUploadedSection
+          onProductClick={handleProductClick}
+          onViewMoreClick={() => handleViewMoreClick("recently_uploaded")}
+        />
+        <AllProductsSection
+          onProductClick={handleProductClick}
+          onViewMoreClick={() => handleViewMoreClick("all_products")}
+        />
         <MapSection />
         <Footer />
       </main>

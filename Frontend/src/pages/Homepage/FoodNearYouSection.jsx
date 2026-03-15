@@ -3,7 +3,7 @@ import ProductCard from "../../components/common/ProductCard";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
 
-const FoodNearYouSection = ({ onProductClick }) => {
+const FoodNearYouSection = ({ onProductClick, onViewMoreClick }) => {
   const foodItems = [
     {
       id: 1,
@@ -86,6 +86,7 @@ const FoodNearYouSection = ({ onProductClick }) => {
               variant="filled"
               color="green"
               size="sm"
+              onClick={onViewMoreClick}
               className="w-[47px] h-[30px] lg:w-[47px] lg:h-[30px] rounded-[10px]"
             >
               <Icon name="right_arrow" />

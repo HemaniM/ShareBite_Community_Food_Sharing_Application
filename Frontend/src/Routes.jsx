@@ -17,6 +17,7 @@ import FoodPostRequestsPage from "./pages/Profile/FoodPostRequestsPage";
 import CartPage from "./pages/Cart/CartPage";
 import ProductPage from "./pages/Product/ProductPage";
 import PublicProfilePage from "./pages/publicProfile/PublicProfilePage";
+import ProductListingPage from "./pages/Product/ProductListingPage";
 
 import ProtectedRoute from "./routes/ProtectedRoute";
 
@@ -45,6 +46,15 @@ const AppRoutes = () => {
         element={
           <ProtectedRoute>
             <ProductPage />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/products"
+        element={
+          <ProtectedRoute>
+            <ProductListingPage />
           </ProtectedRoute>
         }
       />

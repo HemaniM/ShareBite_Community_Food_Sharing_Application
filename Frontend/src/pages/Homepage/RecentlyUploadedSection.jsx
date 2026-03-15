@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
 
-const RecentlyUploadedSection = ({ onProductClick }) => {
+const RecentlyUploadedSection = ({ onProductClic, onViewMoreClick }) => {
   const [currentPage, setCurrentPage] = useState(0);
 
   const recentItems = [
@@ -79,6 +79,7 @@ const RecentlyUploadedSection = ({ onProductClick }) => {
               variant="filled"
               color="green"
               size="sm"
+              onClick={onViewMoreClick}
               className="w-[47px] h-[30px] lg:w-[47px] lg:h-[30px] rounded-[10px]"
             >
               <Icon name="right_arrow" />

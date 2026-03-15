@@ -4,7 +4,7 @@ import ProductCard from "../../components/common/ProductCard";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
 
-const AllProductsSection = ({ onProductClick }) => {
+const AllProductsSection = ({ onProductClick, onViewMoreClick }) => {
   const allProducts = [
     {
       id: 1,
@@ -103,6 +103,7 @@ const AllProductsSection = ({ onProductClick }) => {
               variant="filled"
               color="green"
               size="sm"
+              onClick={onViewMoreClick}
               className="w-[47px] h-[30px] lg:w-[47px] lg:h-[30px] rounded-[10px]"
             >
               <Icon name="right_arrow" />
