@@ -62,9 +62,7 @@ const initialFormState = {
 const CreateFoodPost = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { createLoading, error, createSuccess } = useAppSelector(
-    (state) => state.listings,
-  );
+  const { createLoading } = useAppSelector((state) => state.listings);
 
   const [images, setImages] = useState([]);
   const [openDropdown, setOpenDropdown] = useState("");
@@ -72,7 +70,7 @@ const CreateFoodPost = () => {
   const [free, setFree] = useState("No");
   const [stockMeasure, setStockMeasure] = useState("");
   const [formData, setFormData] = useState(initialFormState);
-  const [uploadError, setUploadError] = useState("");
+  const [toast, setToast] = useState({ message: "", type: "success" });
 
   const fileInputRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -92,16 +90,21 @@ const CreateFoodPost = () => {
   }, []);
 
   useEffect(() => {
-    if (createSuccess) {
-      setFormData(initialFormState);
-      setImages([]);
-      setCategory("");
-      setFree("No");
-      setStockMeasure("");
-      dispatch(resetCreateListingState());
-      navigate("/profile/food-posts");
+    if (!toast.message) {
+      return undefined;
     }
-  }, [createSuccess, dispatch, navigate]);
+
+    const timeoutId = setTimeout(
+      () => setToast({ message: "", type: "success" }),
+      3000,
+    );
+
+    return () => clearTimeout(timeoutId);
+  }, [toast]);
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+  };
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
@@ -127,9 +130,76 @@ const CreateFoodPost = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const validateFormData = () => {
+    const missingFields = [];
+    const requiredFields = [
+      ["Food Name", formData.title],
+      ["Category", category],
+      ["Address Line One", formData.addressLineOne],
+      ["City", formData.city],
+      ["District", formData.district],
+      ["State", formData.state],
+      ["Country", formData.country],
+      ["Pincode", formData.pincode],
+      ["Expiry Date/Time", formData.expiresAt],
+      ["Food Stock", formData.stockQuantity],
+      ["Stock Measure", stockMeasure],
+      ["Phone Number", formData.phoneNumber],
+      ["Email Address", formData.email],
+    ];
+
+    requiredFields.forEach(([label, value]) => {
+      if (!String(value || "").trim()) {
+        missingFields.push(label);
+      }
+    });
+
+    if (images.length === 0) {
+      missingFields.push("Food Image");
+    }
+
+    if (missingFields.length > 0) {
+      const imageMissing = missingFields.includes("Food Image");
+      const fieldMessages = missingFields.filter(
+        (field) => field !== "Food Image",
+      );
+      const messages = [];
+
+      if (fieldMessages.length > 0) {
+        messages.push(`Please fill these fields: ${fieldMessages.join(", ")}`);
+      }
+
+      if (imageMissing) {
+        messages.push("Image should be uploaded");
+      }
+
+      return messages;
+    }
+
+    const validationErrors = [];
+
+    if (free !== "Yes" && Number(formData.priceAmount || 0) <= 0) {
+      validationErrors.push(
+        "Price Amount must be greater than 0 for paid listings",
+      );
+    }
+
+    if (Number(formData.stockQuantity || 0) <= 0) {
+      validationErrors.push("Food Stock must be greater than 0");
+    }
+
+    return validationErrors;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setUploadError("");
+
+    const validationErrors = validateFormData();
+
+    if (validationErrors.length) {
+      showToast(validationErrors[0], "error");
+      return;
+    }
 
     try {
       const imageUrls = await Promise.all(
@@ -170,14 +240,33 @@ const CreateFoodPost = () => {
         expiresAt: formData.expiresAt,
       };
 
-      dispatch(createListing(payload));
+      await dispatch(createListing(payload)).unwrap();
+      setFormData(initialFormState);
+      setImages([]);
+      setCategory("");
+      setFree("No");
+      setStockMeasure("");
+      dispatch(resetCreateListingState());
+      navigate("/profile/food-posts", {
+        state: { toastMessage: "Post created successfully" },
+      });
     } catch (uploadErr) {
-      setUploadError(uploadErr.message || "Image upload failed");
+      console.error("Create post failed:", uploadErr);
+      showToast("Not able to create post", "error");
     }
   };
 
   return (
     <section className="mx-auto mt-[80px] w-full max-w-[975px] pb-20">
+      {toast.message && (
+        <div
+          className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${
+            toast.type === "error" ? "bg-orange-500" : "bg-green-500"
+          }`}
+        >
+          {toast.message}
+        </div>
+      )}
       <h1 className="mb-[50px] text-[22px] font-bold tracking-[0.4px] text-black">
         CREATE NEW FOOD POST
       </h1>
@@ -518,10 +607,6 @@ const CreateFoodPost = () => {
             />
           </div>
         </div>
-
-        {(uploadError || error) && (
-          <p className="text-red-500 text-sm">{uploadError || error}</p>
-        )}
 
         <div className="flex justify-center pt-3">
           <Button1

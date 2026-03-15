@@ -1,5 +1,9 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
-import { createListingAPI, getMyListingsAPI } from "./listingsAPI";
+import {
+  createListingAPI,
+  deleteMyListingAPI,
+  getMyListingsAPI,
+} from "./listingsAPI";
 
 export const createListing = createAsyncThunk(
   "listings/createListing",
@@ -9,10 +13,24 @@ export const createListing = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Unable to create food post"
+        error.response?.data?.message || "Unable to create food post",
       );
     }
-  }
+  },
+);
+
+export const deleteMyListing = createAsyncThunk(
+  "listings/deleteMyListing",
+  async (listingId, { rejectWithValue }) => {
+    try {
+      const response = await deleteMyListingAPI(listingId);
+      return { listingId, ...response.data };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Unable to delete food post",
+      );
+    }
+  },
 );
 
 export const fetchMyListings = createAsyncThunk(
@@ -23,16 +41,17 @@ export const fetchMyListings = createAsyncThunk(
       return response.data;
     } catch (error) {
       return rejectWithValue(
-        error.response?.data?.message || "Unable to fetch your food posts"
+        error.response?.data?.message || "Unable to fetch your food posts",
       );
     }
-  }
+  },
 );
 
 const initialState = {
   myListings: [],
   loading: false,
   createLoading: false,
+  deleteLoading: false,
   error: null,
   createSuccess: false,
 };
@@ -63,6 +82,21 @@ const listingsSlice = createSlice({
       .addCase(createListing.rejected, (state, action) => {
         state.createLoading = false;
         state.createSuccess = false;
+        state.error = action.payload;
+      })
+      .addCase(deleteMyListing.pending, (state) => {
+        state.deleteLoading = true;
+        state.error = null;
+      })
+      .addCase(deleteMyListing.fulfilled, (state, action) => {
+        state.deleteLoading = false;
+        state.error = null;
+        state.myListings = state.myListings.filter(
+          (listing) => listing._id !== action.payload.listingId,
+        );
+      })
+      .addCase(deleteMyListing.rejected, (state, action) => {
+        state.deleteLoading = false;
         state.error = action.payload;
       })
       .addCase(fetchMyListings.pending, (state) => {

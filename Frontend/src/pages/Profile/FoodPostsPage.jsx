@@ -1,73 +1,72 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
-
-// const foodPosts = [
-//   {
-//     id: 1,
-//     title: "PAV BHAJI",
-//     category: "Meals",
-//     price: "FREE",
-//     inStock: "3 Plates",
-//     expiryDate: "10 Hrs",
-//     ingredients:
-//       "Potatoes, Cauliflower, Green Peas, Tomatoes, Onion, Capsicum, Butter, Pav, Bhaji Masala, Red Chili Powder, Coriander.",
-//     description:
-//       "Freshly prepared Pav Bhaji made with classic high-quality ingredients and hygienic cooking practices.",
-//     contact: "+91 82242 43156",
-//     email: "priyasingh@gmail.com",
-//     address: "Bhayander (E), Newyork Road, Sakhar Nagar",
-//     image: "/images/Pav_Bhaji.jpg",
-//   },
-//   {
-//     id: 2,
-//     title: "KULFI",
-//     category: "Snacks",
-//     price: "10 ₹/-",
-//     inStock: "4 Kulfis",
-//     expiryDate: "24 Hrs",
-//     ingredients: "Milk, Sugar, Cardamom, Saffron, Chopped Nuts.",
-//     description:
-//       "Freshly prepared kulfi made using desi ingredients and hygienic conditions. Perfect sweet snack for every weather.",
-//     contact: "+91 22471 75462",
-//     email: "priyasingh@gmail.com",
-//     address: "Bhayander (E), Newyork Road, Sakhar Nagar",
-//     image: "/images/Kulfi.jpg",
-//   },
-//   {
-//     id: 3,
-//     title: "TOAST SANDWITCH",
-//     category: "Fast Food",
-//     price: "FREE",
-//     inStock: "3 Plates",
-//     expiryDate: "3-4 Hrs",
-//     ingredients:
-//       "Bread, butter, vegetables (potato, onion, tomato, cucumber), spices and cheese.",
-//     description:
-//       "Freshly made sandwich prepared from quality ingredients under hygienic conditions. Best consumed within 3-4 hours.",
-//     contact: "+91 22342 73656",
-//     email: "priyasingh@gmail.com",
-//     address: "Bhayander (E), Newyork Road, Sakhar Nagar",
-//     image: "/images/Toast_Sandwitch.jpg",
-//   },
-// ];
-
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import { fetchMyListings } from "../../features/listings/listingsSlice";
+import {
+  deleteMyListing,
+  fetchMyListings,
+} from "../../features/listings/listingsSlice";
 
 const FoodPostsPage = () => {
   const dispatch = useAppDispatch();
-  const { myListings, loading, error } = useAppSelector(
+  const location = useLocation();
+  const { myListings, loading, error, deleteLoading } = useAppSelector(
     (state) => state.listings,
   );
+
+  const [toast, setToast] = useState(() => ({
+    message: location.state?.toastMessage || "",
+    type: "success",
+  }));
 
   useEffect(() => {
     dispatch(fetchMyListings());
   }, [dispatch]);
 
+  useEffect(() => {
+    if (!toast.message) {
+      return undefined;
+    }
+
+    window.history.replaceState({}, document.title);
+    const timeoutId = setTimeout(
+      () => setToast({ message: "", type: "success" }),
+      3000,
+    );
+    return () => clearTimeout(timeoutId);
+  }, [toast]);
+
+  const showToast = (message, type = "success") => {
+    setToast({ message, type });
+  };
+
+  const handleDeletePost = async (postId) => {
+    try {
+      const action = await dispatch(deleteMyListing(postId));
+      if (deleteMyListing.fulfilled.match(action)) {
+        showToast("Post deleted successfully", "success");
+      } else {
+        console.error("Delete post failed:", action.payload);
+        showToast("Not able to delete post", "error");
+      }
+    } catch (deleteError) {
+      console.error("Delete post failed:", deleteError);
+      showToast("Not able to delete post", "error");
+    }
+  };
+
   return (
     <section className="w-full max-w-[975px] mx-auto pb-16 mt-[80px]">
+      {toast.message && (
+        <div
+          className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${
+            toast.type === "error" ? "bg-orange-500" : "bg-green-500"
+          }`}
+        >
+          {toast.message}
+        </div>
+      )}
       <div className="flex justify-center">
         <Link
           to="/profile/food-posts/create-post"
@@ -210,8 +209,10 @@ const FoodPostsPage = () => {
                   color="orange"
                   size="sm"
                   className="mt-4 font-bold rounded-[10px] text-[12px] px-[18px] py-[10px]"
+                  onClick={() => handleDeletePost(post._id)}
+                  disabled={deleteLoading}
                 >
-                  DELETE POST
+                  {deleteLoading ? "DELETING..." : "DELETE POST"}
                 </Button1>
               </div>
             </div>
