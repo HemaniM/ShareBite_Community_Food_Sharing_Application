@@ -1,33 +1,43 @@
-import mongoose, { Schema, Document } from 'mongoose';
+import mongoose, { Schema, Document } from "mongoose";
 
 export enum RequestStatus {
-  PENDING = 'pending',
-  APPROVED = 'approved',
-  REJECTED = 'rejected',
-  COMPLETED = 'completed', // Handover done
-  CANCELLED = 'cancelled'
+  PENDING = "pending",
+  APPROVED = "approved",
+  REJECTED = "rejected",
+  COMPLETED = "completed",
+  CANCELLED = "cancelled",
 }
 
 export interface IRequest extends Document {
   listingId: mongoose.Types.ObjectId;
   requester: mongoose.Types.ObjectId;
   donor: mongoose.Types.ObjectId;
+  requestedQuantity: number;
   status: RequestStatus;
   message?: string;
+  donorToastMessage?: string;
   createdAt: Date;
   updatedAt: Date;
 }
 
-const RequestSchema: Schema = new Schema({
-  listingId: { type: Schema.Types.ObjectId, ref: 'Listing', required: true },
-  requester: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-  donor: { type: Schema.Types.ObjectId, ref: 'User', required: true }, // Denormalized for query speed
-  status: {
-    type: String,
-    enum: Object.values(RequestStatus),
-    default: RequestStatus.PENDING
+const RequestSchema: Schema = new Schema(
+  {
+    listingId: { type: Schema.Types.ObjectId, ref: "Listing", required: true },
+    requester: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    donor: { type: Schema.Types.ObjectId, ref: "User", required: true },
+    requestedQuantity: { type: Number, required: true, min: 1 },
+    status: {
+      type: String,
+      enum: Object.values(RequestStatus),
+      default: RequestStatus.PENDING,
+    },
+    message: { type: String },
+    donorToastMessage: { type: String },
   },
-  message: { type: String }
-}, { timestamps: true });
+  { timestamps: true },
+);
 
-export default mongoose.model<IRequest>('Request', RequestSchema);
+RequestSchema.index({ listingId: 1, status: 1, createdAt: -1 });
+RequestSchema.index({ requester: 1, createdAt: -1 });
+
+export default mongoose.model<IRequest>("Request", RequestSchema);

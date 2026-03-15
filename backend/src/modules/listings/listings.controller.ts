@@ -5,6 +5,16 @@ import { ListingsService } from "./listings.service";
 import { logger } from "../../config/logger";
 
 export class ListingsController {
+  static async getActive(_req: AuthRequest, res: Response) {
+    try {
+      const listings = await ListingsService.getActiveListings();
+      return res.status(200).json({ listings });
+    } catch (error: any) {
+      logger.error(`Get Active Listings Error: ${error.message}`);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
   static async create(req: AuthRequest, res: Response) {
     try {
       if (!req.user?.id) {

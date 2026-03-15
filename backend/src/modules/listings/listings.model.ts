@@ -1,14 +1,8 @@
 import mongoose, { Schema, Document } from "mongoose";
 
-// export enum ListingCategory {
-//   COOKED = 'cooked',
-//   RAW = 'raw',
-//   PACKAGED = 'packaged'
-// }
-
 export enum ListingStatus {
   AVAILABLE = "available",
-  CLAIMED = "claimed",
+  NOT_AVAILABLE = "not available",
   EXPIRED = "expired",
 }
 
@@ -87,8 +81,6 @@ const ListingSchema: Schema = new Schema(
   { timestamps: true },
 );
 
-// Index for expiry
-ListingSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 ListingSchema.index({ donor: 1, createdAt: -1 });
 
 export default mongoose.model<IListing>("Listing", ListingSchema);
