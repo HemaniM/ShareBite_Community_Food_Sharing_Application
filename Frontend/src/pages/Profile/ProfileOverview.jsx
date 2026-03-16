@@ -19,7 +19,7 @@ const ProfileOverview = () => {
         {/* IMAGE */}
         <div>
           <img
-            src="../images/profile_image.jpg"
+            src="../images/profile_cover_image.jpg"
             alt="Priya Singh"
             className="w-[260px] h-[260px] object-cover rounded-[12px]"
           />
