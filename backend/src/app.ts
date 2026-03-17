@@ -6,6 +6,7 @@ import { httpLogger } from './common/middleware/httpLogger.middleware';
 import { authRouter } from './modules/auth/auth.route';
 import { listingsRouter } from './modules/listings/listings.route';
 import { requestRouter } from './modules/request/request.route';
+import { userRouter } from './modules/user/user.route';
 
 export const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use('/api/auth', authRouter);
 app.use('/api/listings', listingsRouter);
 app.use('/api/requests', requestRouter);
+app.use('/api/users', userRouter);
 app.use(httpLogger);
 app.get('/favicon.ico', (_req, res) => res.status(204));
 app.use('/health', healthRouter);
