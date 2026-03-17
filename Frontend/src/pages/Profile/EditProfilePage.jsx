@@ -231,8 +231,6 @@ const EditProfilePage = () => {
       {isPasswordModalOpen && (
         <PasswordModal onClose={() => setIsPasswordModalOpen(false)} />
       )}
-
-      <Footer />
     </>
   );
 };
