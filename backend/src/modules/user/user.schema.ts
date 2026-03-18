@@ -33,16 +33,4 @@ export const updateProfileSchema = z.object({
   profileImage: optionalUrlOrEmpty,
 });
 
-export const uploadProfileImageSchema = z.object({
-  imageData: z.string().trim().min(1, "imageData is required"),
-  mimeType: z
-    .string()
-    .trim()
-    .regex(
-      /^image\/[a-zA-Z0-9.+-]+$/,
-      "mimeType must be a valid image mime type",
-    ),
-});
-
 export type UpdateProfileDto = z.infer<typeof updateProfileSchema>;
-export type UploadProfileImageDto = z.infer<typeof uploadProfileImageSchema>;

@@ -19,6 +19,7 @@ export interface IUser extends Document {
   state?: string;
   pincode?: string;
   profileImage?: string;
+  isTrusted: boolean;
   role: UserRole;
   isVerified: boolean;
   verificationDocuments: string[]; // URLs
@@ -44,6 +45,7 @@ const UserSchema: Schema = new Schema(
     state: { type: String, default: "" },
     pincode: { type: String, default: "" },
     profileImage: { type: String, default: "" },
+    isTrusted: { type: Boolean, default: false },
     role: {
       type: String,
       enum: Object.values(UserRole),

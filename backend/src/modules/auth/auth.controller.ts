@@ -52,6 +52,7 @@ export class AuthController {
           state: user.state,
           pincode: user.pincode,
           profileImage: user.profileImage,
+           isTrusted: user.isTrusted,
           role: user.role
         },
       });

@@ -6,4 +6,3 @@ export const userRouter = Router();
 
 userRouter.get('/profile', protect, UserController.getProfile);
 userRouter.put('/profile', protect, UserController.updateProfile);
-userRouter.post('/profile/image', protect, UserController.uploadProfileImage);
