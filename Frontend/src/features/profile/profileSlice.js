@@ -1,9 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import {
-  getMyProfileAPI,
-  updateMyProfileAPI,
-  uploadProfileImageAPI,
-} from "./profileAPI";
+import { getMyProfileAPI, updateMyProfileAPI } from "./profileAPI";
 
 export const fetchMyProfile = createAsyncThunk(
   "profile/fetchMyProfile",
@@ -33,26 +29,11 @@ export const updateMyProfile = createAsyncThunk(
   },
 );
 
-export const uploadMyProfileImage = createAsyncThunk(
-  "profile/uploadMyProfileImage",
-  async (payload, { rejectWithValue }) => {
-    try {
-      const response = await uploadProfileImageAPI(payload);
-      return response.data.profileImage;
-    } catch (error) {
-      return rejectWithValue(
-        error.response?.data?.message || "Failed to upload profile image",
-      );
-    }
-  },
-);
-
 const initialState = {
   profileData: null,
   loading: false,
   error: null,
   updateLoading: false,
-  imageUploading: false,
 };
 
 const profileSlice = createSlice({
@@ -87,21 +68,6 @@ const profileSlice = createSlice({
       })
       .addCase(updateMyProfile.rejected, (state, action) => {
         state.updateLoading = false;
-        state.error = action.payload;
-      })
-      .addCase(uploadMyProfileImage.pending, (state) => {
-        state.imageUploading = true;
-        state.error = null;
-      })
-      .addCase(uploadMyProfileImage.fulfilled, (state, action) => {
-        state.imageUploading = false;
-        if (!state.profileData) {
-          state.profileData = {};
-        }
-        state.profileData.profileImage = action.payload;
-      })
-      .addCase(uploadMyProfileImage.rejected, (state, action) => {
-        state.imageUploading = false;
         state.error = action.payload;
       });
   },

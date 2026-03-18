@@ -3,8 +3,8 @@ import { useNavigate } from "react-router-dom";
 import {
   fetchMyProfile,
   updateMyProfile,
-  uploadMyProfileImage,
 } from "../../features/profile/profileSlice";
+import { uploadImageToCloudinary } from "../../utils/cloudinaryAPI";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 
 const defaultFormData = {
@@ -21,20 +21,6 @@ const defaultFormData = {
   pincode: "",
   profileImage: "",
 };
-
-const fileToBase64 = (file) =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      const result = String(reader.result || "");
-      const commaIndex = result.indexOf(",");
-      resolve(commaIndex > -1 ? result.slice(commaIndex + 1) : "");
-    };
-
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
-  });
 
 const DefaultProfileIcon = () => (
   <div className="flex h-full w-full items-center justify-center rounded-[12px] bg-[#d9d9d9] text-[#f2f2f2]">
@@ -55,11 +41,12 @@ const EditProfilePage = () => {
   const dispatch = useAppDispatch();
   const fileInputRef = useRef(null);
 
-  const { profileData, updateLoading, imageUploading } = useAppSelector(
+  const { profileData, updateLoading } = useAppSelector(
     (state) => state.profile,
   );
 
   const [formData, setFormData] = useState(defaultFormData);
+  const [imageUploading, setImageUploading] = useState(false);
 
   useEffect(() => {
     dispatch(fetchMyProfile());
@@ -70,10 +57,14 @@ const EditProfilePage = () => {
       return;
     }
 
-    setFormData((prev) => ({
-      ...prev,
-      ...profileData,
-    }));
+    const syncProfile = setTimeout(() => {
+      setFormData((prev) => ({
+        ...prev,
+        ...profileData,
+      }));
+    }, 0);
+
+    return () => clearTimeout(syncProfile);
   }, [profileData]);
 
   const previewImage = useMemo(
@@ -97,12 +88,18 @@ const EditProfilePage = () => {
       return;
     }
 
-    const imageData = await fileToBase64(file);
-    const imageUrl = await dispatch(
-      uploadMyProfileImage({ imageData, mimeType: file.type }),
-    ).unwrap();
+    setImageUploading(true);
 
-    setFormData((previous) => ({ ...previous, profileImage: imageUrl }));
+    try {
+      const imageUrl = await uploadImageToCloudinary(
+        file,
+        "sharebite/profile-images",
+      );
+
+      setFormData((previous) => ({ ...previous, profileImage: imageUrl }));
+    } finally {
+      setImageUploading(false);
+    }
   };
 
   const handleSubmit = async (e) => {

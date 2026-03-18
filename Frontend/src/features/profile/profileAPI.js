@@ -14,5 +14,3 @@ API.interceptors.request.use((req) => {
 
 export const getMyProfileAPI = () => API.get("/users/profile");
 export const updateMyProfileAPI = (data) => API.put("/users/profile", data);
-export const uploadProfileImageAPI = (data) =>
-  API.post("/users/profile/image", data);

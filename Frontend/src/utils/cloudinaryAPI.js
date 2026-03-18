@@ -4,17 +4,20 @@ const CLOUDINARY_UPLOAD_PRESET = import.meta.env.VITE_CLOUDINARY_UPLOAD_PRESET;
 const getCloudinaryUploadUrl = () =>
   `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
-export const uploadImageToCloudinary = async (file) => {
+export const uploadImageToCloudinary = async (
+  file,
+  folder = "sharebite/listings",
+) => {
   if (!CLOUDINARY_CLOUD_NAME || !CLOUDINARY_UPLOAD_PRESET) {
     throw new Error(
-      "Cloudinary is not configured. Set VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET in Frontend/.env"
+      "Cloudinary is not configured. Set VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET in Frontend/.env",
     );
   }
 
   const formData = new FormData();
   formData.append("file", file);
   formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
-  formData.append("folder", "sharebite/listings");
+  formData.append("folder", folder);
 
   const response = await fetch(getCloudinaryUploadUrl(), {
     method: "POST",
