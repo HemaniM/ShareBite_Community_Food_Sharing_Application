@@ -108,7 +108,12 @@ const EditProfilePage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await dispatch(updateMyProfile(formData)).unwrap();
+    const payload = { ...formData };
+    if (!payload.profileImage) {
+      delete payload.profileImage;
+    }
+
+    await dispatch(updateMyProfile(payload)).unwrap();
     navigate("/profile/overview");
   };
 
