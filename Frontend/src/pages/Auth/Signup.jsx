@@ -27,11 +27,17 @@ const Signup = () => {
     dispatch(clearRegisterError());
   }, [dispatch]);
 
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!passwordsMatch) return;
 
-    const { confirmPassword, ...payload } = form;
+    const payload = {
+      name: form.name,
+      email: form.email,
+      password: form.password,
+      role: form.role,
+    };
 
     try {
       await dispatch(registerUser(payload)).unwrap();

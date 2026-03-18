@@ -1,12 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppDispatch } from "../../hooks/reduxHooks";
+import { useAppDispatch,  useAppSelector } from "../../hooks/reduxHooks";
 import { logout } from "../../features/auth/authSlice";
 import Button1 from "../../components/ui/Button1";
+import { fetchMyProfile } from "../../features/profile/profileSlice";
+
+const DefaultProfileIcon = () => (
+  <div className="flex h-full w-full items-center justify-center rounded-[12px] bg-[#d9d9d9] text-[#f2f2f2]">
+    <svg
+      viewBox="0 0 120 120"
+      className="h-[170px] w-[170px]"
+      fill="currentColor"
+      aria-hidden="true"
+    >
+      <circle cx="60" cy="40" r="18" />
+      <rect x="26" y="66" width="68" height="34" rx="17" />
+    </svg>
+  </div>
+);
 
 const ProfileOverview = () => {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+  const { profileData } = useAppSelector((state) => state.profile);
+
+  useEffect(() => {
+    dispatch(fetchMyProfile());
+  }, [dispatch]);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -17,20 +37,26 @@ const ProfileOverview = () => {
     <div className="w-full max-w-[975px] mx-auto px-4 sm:px-6 lg:px-8 pb-16 mt-[80px]">
       <div className="flex flex-col lg:grid lg:grid-cols-[320px_1fr] gap-10">
         {/* IMAGE */}
-        <div>
-          <img
-            src="../images/profile_cover_image.jpg"
-            alt="Priya Singh"
-            className="w-[260px] h-[260px] object-cover rounded-[12px]"
-          />
+        <div className="w-[260px] h-[260px] rounded-[12px] overflow-hidden">
+          {profileData?.profileImage ? (
+            <img
+              src={profileData.profileImage}
+              alt={profileData?.name || "Profile"}
+              className="w-[260px] h-[260px] object-cover rounded-[12px]"
+            />
+          ) : (
+            <DefaultProfileIcon />
+          )}
         </div>
 
         {/* USER DETAILS */}
         <div>
-          <h1 className="text-[31px] font-bold text-black">PRIYA SINGH</h1>
+          <h1 className="text-[31px] font-bold text-black uppercase">
+            {profileData?.name || "SHAREBITE USER"}
+          </h1>
 
           <p className="text-[16px] text-[var(--text-grey-3)] mt-1 font-semibold">
-            Priyasingh@GMail.Com
+            {profileData?.email || "-"}
           </p>
 
           <div className="mt-6">
@@ -39,8 +65,7 @@ const ProfileOverview = () => {
             </h2>
 
             <p className="max-w-[520px] text-[12px] leading-[20px] text-[var(--text-grey-4)]">
-              Hi, I'm Priya Singh, a friendly and community-minded individual
-              who believes in sharing kindness through small actions.
+              {profileData?.about || "No description added yet."}
             </p>
           </div>
 
@@ -49,14 +74,14 @@ const ProfileOverview = () => {
               <span className="font-bold mr-4 text-[var(--text-grey-5)]">
                 Location
               </span>
-              Bhayander
+              {profileData?.city || "-"}
             </p>
 
             <p className="text-[var(--text-grey-3)]">
               <span className="font-bold mr-5 text-[var(--text-grey-5)]">
                 Contact
               </span>
-              +91 34456 98356
+              {profileData?.phone || "-"}
             </p>
           </div>
         </div>
@@ -70,7 +95,7 @@ const ProfileOverview = () => {
               </label>
 
               <input
-                value="Priya_Singh"
+                value={profileData?.name || ""}
                 readOnly
                 className="w-full h-[38px] rounded-[6px] border border-[var(--primary-green-50)] bg-[var(--primary-green-50)] px-3 text-[14px] text-[var(--text-grey-3)] focus:outline-none focus:ring-0 focus:ring-transparent"
               />
