@@ -6,6 +6,15 @@ const nullableTrimmedString = z
   .optional()
   .transform((value) => value ?? "");
 
+const optionalUrlOrEmpty = z
+  .string()
+  .trim()
+  .optional()
+  .refine((value) => !value || /^https?:\/\//.test(value), {
+    message: "Profile image must be a valid URL",
+  })
+  .transform((value) => (value ? value : undefined));
+
 export const updateProfileSchema = z.object({
   name: z
     .string()
@@ -21,11 +30,7 @@ export const updateProfileSchema = z.object({
   district: nullableTrimmedString,
   state: nullableTrimmedString,
   pincode: nullableTrimmedString,
-  profileImage: z
-    .string()
-    .trim()
-    .url("Profile image must be a valid URL")
-    .optional(),
+  profileImage: optionalUrlOrEmpty,
 });
 
 export const uploadProfileImageSchema = z.object({

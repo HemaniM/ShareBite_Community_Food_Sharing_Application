@@ -52,7 +52,7 @@ export class AuthController {
           state: user.state,
           pincode: user.pincode,
           profileImage: user.profileImage,
-          role: user.role,
+          role: user.role
         },
       });
       logger.info(`Login Successful: ${user._id}`);
