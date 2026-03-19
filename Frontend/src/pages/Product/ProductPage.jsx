@@ -9,14 +9,13 @@ import ProductCard from "../../components/common/ProductCard";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+
 import { fetchActiveListings } from "../../features/listings/listingsSlice";
 import {
   isDisplayableListing,
   mapListingToProduct,
   slugifyProductName,
 } from "../../utils/listingTransforms";
-
-const requestOptions = ["Pickup Today", "Pickup Tomorrow", "Home Delivery"];
 
 const reviewData = [
   {
@@ -73,8 +72,6 @@ const ProductPage = () => {
 
   const [quantity, setQuantity] = useState(1);
 
-  const [requestType] = useState(requestOptions[0]);
-
   const { activeListings, activeListingsLoading } = useAppSelector(
     (state) => state.listings,
   );
@@ -103,7 +100,6 @@ const ProductPage = () => {
   );
 
   const readableProductName = productName?.split("-").join(" ");
-
   const stockQuantity = Number(product?.stock?.quantity || 0);
   const stockUnit = product?.stock?.unit || "Plates";
   const stockLabel = product
@@ -212,9 +208,10 @@ const ProductPage = () => {
                         to={product?.donorId ? `/user/${product.donorId}` : "#"}
                       >
                         <p className="mb-[5px] text-14 font-bold text-[var(--text-grey-5)] hover:text-orange">
-                          {product?.contactInfo?.email || "ShareBite Donor"}
+                          {product?.donorName || "ShareBite Donor"}
                         </p>
                       </Link>
+
                       <p>{productDescription}</p>
                     </div>
 
@@ -252,6 +249,7 @@ const ProductPage = () => {
                         >
                           REQUEST
                         </Button1>
+                        
                       </div>
                     </div>
                     <div className="mt-[35px] rounded-[8px] border border-[var(--white-600)] text-[12px] text-[var(--text-grey-4)]">
@@ -286,6 +284,70 @@ const ProductPage = () => {
                           </span>
                           {productContact || "Not specified"}
                         </p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="mt-[70px] rounded-[12px] border border-[#eceae4] bg-white p-6">
+                  <h2 className="text-[22px] font-bold text-black">
+                    Ratings & Reviews Of{" "}
+                    {product?.donorName || "ShareBite Donor"}
+                  </h2>
+
+                  <div className="mt-8 flex flex-col gap-6 lg:flex-row lg:items-start">
+                    <div className="min-w-[160px] shrink-0">
+                      <div className="flex items-end gap-2">
+                        <p className="text-[44px] font-bold leading-none text-[#2e2c27]">
+                          4/5
+                        </p>
+                        <Icon name="star_icon_md" />
+                      </div>
+                      <p className="mt-4 text-[16px] text-[var(--text-grey-4)]">
+                        50 Reviews
+                      </p>
+
+                      <Button1
+                        type="button"
+                        variant="filled"
+                        color="green"
+                        size="sm"
+                        className="mt-6 rounded-full bg-[var(--primary-green-50)] px-[20px] py-[6px] text-[14px] font-medium normal-case text-[var(--text-grey-4)]"
+                      >
+                        <span className="mr-[10px]">
+                          <Icon name="green_tick_icon" />
+                        </span>
+                        Trusted
+                      </Button1>
+                    </div>
+
+                    <div className="flex-1 overflow-x-auto">
+                      <div className="flex min-w-max gap-4 pb-2">
+                        {reviewData.map((review) => (
+                          <article
+                            key={review.id}
+                            className="w-[320px] shrink-0 rounded-[14px] border border-[#eceae4] bg-[#fffdf9] p-4"
+                          >
+                            <div className="flex items-center justify-between gap-3">
+                              <div className="flex items-center gap-3">
+                                <img
+                                  src={review.image}
+                                  alt={review.name}
+                                  className="h-12 w-12 rounded-full object-cover"
+                                />
+                                <p className="text-[14px] font-bold tracking-[0.2px] text-[var(--text-grey-5)]">
+                                  {review.name}
+                                </p>
+                              </div>
+                              <p className="text-[12px] text-[var(--text-grey-4)]">
+                                {review.date}
+                              </p>
+                            </div>
+                            <p className="mt-5 text-[13px] leading-7 text-[var(--text-grey-4)]">
+                              “{review.comment}”
+                            </p>
+                          </article>
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -333,58 +395,6 @@ const ProductPage = () => {
                 </div>
               </>
             )}
-          </div>
-
-          <div className="mx-auto w-full max-w-[975px] pb-[100px]">
-            <div className="rounded-[12px] border border-[#f2ebe5] bg-[#fffaef] p-6">
-              <div className="mb-5 flex items-center justify-between">
-                <h2 className="text-[20px] font-bold uppercase text-black">
-                  Reviews
-                </h2>
-                <Button1
-                  variant="filled"
-                  color="green"
-                  size="sm"
-                  className="h-[34px] w-[47px] rounded-[10px]"
-                >
-                  <Icon name="right_arrow" />
-                </Button1>
-              </div>
-
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-                {reviewData.map((review) => (
-                  <div
-                    key={review.id}
-                    className="rounded-[10px] border border-white bg-white p-4"
-                  >
-                    <div className="mb-4 flex items-center gap-3">
-                      <img
-                        src={review.image}
-                        alt={review.name}
-                        className="h-12 w-12 rounded-full object-cover"
-                      />
-                      <div>
-                        <p className="text-[14px] font-bold text-[var(--text-grey-5)]">
-                          {review.name}
-                        </p>
-                        <p className="text-[12px] text-[var(--text-grey-4)]">
-                          {review.location}
-                        </p>
-                      </div>
-                    </div>
-                    <p className="mb-2 text-[12px] text-[var(--text-grey-4)]">
-                      {review.date}
-                    </p>
-                    <p className="mb-2 text-[12px] font-semibold text-[var(--primary-green-700)]">
-                      Rating: {review.rating}
-                    </p>
-                    <p className="text-[12px] leading-5 text-[var(--text-grey-4)]">
-                      {review.comment}
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
           </div>
         </section>
         <Footer />

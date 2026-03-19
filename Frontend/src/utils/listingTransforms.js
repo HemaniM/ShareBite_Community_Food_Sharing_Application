@@ -45,7 +45,12 @@ export const mapListingToProduct = (listing = {}) => {
     description: listing.description,
     ingredients: listing.ingredients,
     contactInfo: listing.contactInfo,
-    donorId: listing.donor,
+    donorId:
+      typeof listing.donor === "object" ? listing.donor?._id : listing.donor,
+    donorName:
+      listing.donorName ||
+      (typeof listing.donor === "object" ? listing.donor?.name : "") ||
+      "ShareBite Donor",
     createdAt: listing.createdAt,
     rawListing: listing,
   };
