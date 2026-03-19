@@ -2,6 +2,12 @@ import User, { IUser } from "./user.model";
 import { UpdateProfileDto } from "./user.schema";
 
 export class UserService {
+  static async getPublicProfile(userId: string): Promise<IUser | null> {
+    return User.findById(userId).select(
+      "name email phone about address city district state pincode profileImage isTrusted role createdAt",
+    );
+  }
+
   static async getProfile(userId: string): Promise<IUser | null> {
     return User.findById(userId).select("-password");
   }
