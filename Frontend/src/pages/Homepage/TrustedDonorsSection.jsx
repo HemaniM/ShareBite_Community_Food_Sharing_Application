@@ -184,21 +184,20 @@ const TrustedDonorsSection = ({ onProductClick, onViewMoreClick }) => {
                     </p>
                   </div>
 
-                  {/* <button
-                    type="button"
-                    className="flex h-7 w-7 shrink-0 items-center justify-center rounded-[8px] bg-[#efa13d] transition-opacity hover:opacity-90"
-                    aria-label={`Add ${item.title}`}
-                  >
-                    <img
-                      src="/images/img_frame_37.svg"
-                      alt="Add"
-                      className="h-4 w-4 object-contain"
-                    />
-                  </button> */}
-                  <Icon
+                  {/* <Icon
                     name="cart_small"
                     className="hover:opacity-90 transition-opacity"
-                  />
+                  /> */}
+
+                  <Button1
+                    variant="filled"
+                    color="orange"
+                    size="sm"
+                    onClick={onViewMoreClick}
+                    className="py-2.5 px-3.5"
+                  >
+                    <Icon name="right_arrow" />
+                  </Button1>
                 </div>
               </article>
             ))}

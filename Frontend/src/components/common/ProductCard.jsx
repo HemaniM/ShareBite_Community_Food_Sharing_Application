@@ -22,9 +22,9 @@ const ProductCard = ({
           loading="lazy"
         />
 
-        <div className="absolute top-3 right-3 lg:top-[12px] lg:right-[10px] hover:opacity-80 transition-opacity">
+        {/* <div className="absolute top-3 right-3 lg:top-[12px] lg:right-[10px] hover:opacity-80 transition-opacity">
           <Icon name="cart_small" />
-        </div>
+        </div> */}
       </div>
 
       <div className="flex flex-col gap-0.5 lg:gap-[2px] items-start w-full">
