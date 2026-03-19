@@ -20,6 +20,7 @@ import {
 const reviewData = [
   {
     id: 1,
+    userId: "1",
     name: "Aanya Mishra",
     image: "/images/Ananya_Mishra.jpg",
     date: "4/10/2025",
@@ -30,6 +31,7 @@ const reviewData = [
   },
   {
     id: 2,
+    userId: "2",
     name: "Aarav Shah",
     image: "/images/Aarav_Shah.jpg",
     date: "15/8/2025",
@@ -40,6 +42,7 @@ const reviewData = [
   },
   {
     id: 3,
+    userId: "3",
     name: "Kavya Malkiye",
     image: "/images/Kavya_Melviya.jpg",
     date: "20/12/2025",
@@ -204,13 +207,18 @@ const ProductPage = () => {
                     </div>
 
                     <div className="mt-[25px] text-[12px] leading-5 text-[var(--text-grey-4)]">
-                      <Link
-                        to={product?.donorId ? `/user/${product.donorId}` : "#"}
-                      >
-                        <p className="mb-[5px] text-14 font-bold text-[var(--text-grey-5)] hover:text-orange">
+                      {product?.donorId ? (
+                        <Link
+                          to={`/user/${product.donorId}`}
+                          className="mb-[5px] inline-block text-14 font-bold text-[var(--text-grey-5)] transition hover:text-orange"
+                        >
+                          {product?.donorName || "ShareBite Donor"}
+                        </Link>
+                      ) : (
+                        <p className="mb-[5px] text-14 font-bold text-[var(--text-grey-5)]">
                           {product?.donorName || "ShareBite Donor"}
                         </p>
-                      </Link>
+                      )}
 
                       <p>{productDescription}</p>
                     </div>
@@ -249,7 +257,6 @@ const ProductPage = () => {
                         >
                           REQUEST
                         </Button1>
-                        
                       </div>
                     </div>
                     <div className="mt-[35px] rounded-[8px] border border-[var(--white-600)] text-[12px] text-[var(--text-grey-4)]">
@@ -330,14 +337,32 @@ const ProductPage = () => {
                           >
                             <div className="flex items-center justify-between gap-3">
                               <div className="flex items-center gap-3">
-                                <img
-                                  src={review.image}
-                                  alt={review.name}
-                                  className="h-12 w-12 rounded-full object-cover"
-                                />
-                                <p className="text-[14px] font-bold tracking-[0.2px] text-[var(--text-grey-5)]">
-                                  {review.name}
-                                </p>
+                                {review.userId ? (
+                                  <Link
+                                    to={`/user/${review.userId}`}
+                                    className="flex items-center gap-3"
+                                  >
+                                    <img
+                                      src={review.image}
+                                      alt={review.name}
+                                      className="h-12 w-12 rounded-full object-cover transition hover:opacity-90"
+                                    />
+                                    <p className="text-[14px] font-bold tracking-[0.2px] text-[var(--text-grey-5)] transition hover:text-orange">
+                                      {review.name}
+                                    </p>
+                                  </Link>
+                                ) : (
+                                  <>
+                                    <img
+                                      src={review.image}
+                                      alt={review.name}
+                                      className="h-12 w-12 rounded-full object-cover"
+                                    />
+                                    <p className="text-[14px] font-bold tracking-[0.2px] text-[var(--text-grey-5)]">
+                                      {review.name}
+                                    </p>
+                                  </>
+                                )}
                               </div>
                               <p className="text-[12px] text-[var(--text-grey-4)]">
                                 {review.date}

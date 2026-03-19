@@ -5,6 +5,7 @@ import Button1 from "../../components/ui/Button1";
 const reviewData = [
   {
     id: 1,
+    userId: "1",
     name: "Aanya Mishra",
     image: "../images/Ananya_Mishra.jpg",
     date: "4/10/2025",
@@ -15,6 +16,7 @@ const reviewData = [
   },
   {
     id: 2,
+    userId: "2",
     name: "Aarav Shah",
     image: "../images/Aarav_Shah.jpg",
     date: "15/8/2025",
@@ -25,6 +27,7 @@ const reviewData = [
   },
   {
     id: 3,
+    userId: "3",
     name: "Kavya Malkiye",
     image: "../images/Kavya_Melviya.jpg",
     date: "20/12/2025",
@@ -76,14 +79,32 @@ const ReviewsPage = () => {
             >
               <div className="flex items-center justify-between gap-4">
                 <div className="flex items-center gap-[20px]">
-                  <img
-                    src={review.image}
-                    alt={review.name}
-                    className="h-10 w-10 rounded-full object-cover rounded-[12px]"
-                  />
-                  <h3 className="text-[13px] font-semibold text-[#2e2c27]">
-                    {review.name}
-                  </h3>
+                  {review.userId ? (
+                    <Link
+                      to={`/user/${review.userId}`}
+                      className="flex items-center gap-[20px]"
+                    >
+                      <img
+                        src={review.image}
+                        alt={review.name}
+                        className="h-10 w-10 rounded-[12px] rounded-full object-cover transition hover:opacity-90"
+                      />
+                      <h3 className="text-[13px] font-semibold text-[#2e2c27] transition hover:text-orange">
+                        {review.name}
+                      </h3>
+                    </Link>
+                  ) : (
+                    <>
+                      <img
+                        src={review.image}
+                        alt={review.name}
+                        className="h-10 w-10 rounded-[12px] rounded-full object-cover"
+                      />
+                      <h3 className="text-[13px] font-semibold text-[#2e2c27]">
+                        {review.name}
+                      </h3>
+                    </>
+                  )}
                 </div>
 
                 <p className="text-[12px]  text-[var(--text-grey-5)]">

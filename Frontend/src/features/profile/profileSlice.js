@@ -1,5 +1,9 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { getMyProfileAPI, updateMyProfileAPI } from "./profileAPI";
+import {
+  getMyProfileAPI,
+  getPublicProfileAPI,
+  updateMyProfileAPI,
+} from "./profileAPI";
 
 export const fetchMyProfile = createAsyncThunk(
   "profile/fetchMyProfile",
@@ -10,6 +14,20 @@ export const fetchMyProfile = createAsyncThunk(
     } catch (error) {
       return rejectWithValue(
         error.response?.data?.message || "Failed to fetch profile",
+      );
+    }
+  },
+);
+
+export const fetchPublicProfileById = createAsyncThunk(
+  "profile/fetchPublicProfileById",
+  async (userId, { rejectWithValue }) => {
+    try {
+      const response = await getPublicProfileAPI(userId);
+      return response.data.user;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch user profile",
       );
     }
   },
@@ -34,6 +52,9 @@ const initialState = {
   loading: false,
   error: null,
   updateLoading: false,
+  userProfile: null,
+  userProfileLoading: false,
+  userProfileError: null,
 };
 
 const profileSlice = createSlice({
@@ -42,6 +63,11 @@ const profileSlice = createSlice({
   reducers: {
     clearProfileError: (state) => {
       state.error = null;
+    },
+    clearUserProfile: (state) => {
+      state.userProfile = null;
+      state.userProfileError = null;
+      state.userProfileLoading = false;
     },
   },
   extraReducers: (builder) => {
@@ -58,6 +84,18 @@ const profileSlice = createSlice({
         state.loading = false;
         state.error = action.payload;
       })
+      .addCase(fetchPublicProfileById.pending, (state) => {
+        state.userProfileLoading = true;
+        state.userProfileError = null;
+      })
+      .addCase(fetchPublicProfileById.fulfilled, (state, action) => {
+        state.userProfileLoading = false;
+        state.userProfile = action.payload;
+      })
+      .addCase(fetchPublicProfileById.rejected, (state, action) => {
+        state.userProfileLoading = false;
+        state.userProfileError = action.payload;
+      })
       .addCase(updateMyProfile.pending, (state) => {
         state.updateLoading = true;
         state.error = null;
@@ -73,5 +111,5 @@ const profileSlice = createSlice({
   },
 });
 
-export const { clearProfileError } = profileSlice.actions;
+export const { clearProfileError, clearUserProfile } = profileSlice.actions;
 export default profileSlice.reducer;

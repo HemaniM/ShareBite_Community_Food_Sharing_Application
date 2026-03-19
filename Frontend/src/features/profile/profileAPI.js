@@ -13,4 +13,6 @@ API.interceptors.request.use((req) => {
 });
 
 export const getMyProfileAPI = () => API.get("/users/profile");
+export const getPublicProfileAPI = (userId) =>
+  API.get(`/users/profile/${userId}`);
 export const updateMyProfileAPI = (data) => API.put("/users/profile", data);
