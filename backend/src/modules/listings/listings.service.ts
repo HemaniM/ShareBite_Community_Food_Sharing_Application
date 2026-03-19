@@ -79,9 +79,11 @@ export class ListingsService {
       status: ListingStatus.AVAILABLE,
       expiresAt: { $gt: now },
       "stock.quantity": { $gt: 0 },
-    }).sort({
-      createdAt: -1,
-    });
+    })
+      .populate("donor", "name")
+      .sort({
+        createdAt: -1,
+      });
   }
 
   static async deleteMyListing(
