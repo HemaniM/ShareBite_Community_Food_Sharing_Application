@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import ProductCard from "../../components/common/ProductCard";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
@@ -10,6 +10,8 @@ const AllProductsSection = ({
   loading = false,
   error = null,
 }) => {
+  const visibleProducts = useMemo(() => products.slice(0, 8), [products]);
+
   return (
     <section className="w-full py-[60px] bg-[#fffaef]">
       <div className="w-full max-w-[975px] mx-auto">
@@ -21,15 +23,23 @@ const AllProductsSection = ({
             </h2>
 
             {/* View More Button */}
-            <Button1
-              variant="filled"
-              color="green"
-              size="sm"
-              onClick={onViewMoreClick}
-              className="w-[47px] h-[30px] lg:w-[47px] lg:h-[30px] rounded-[10px]"
-            >
-              <Icon name="right_arrow" />
-            </Button1>
+            <div className="flex items-center gap-3">
+              {products.length > 8 ? (
+                <p className="text-[12px] font-semibold uppercase tracking-[0.2px] text-[#6b6961]">
+                  Showing 8 of {products.length} posts
+                </p>
+              ) : null}
+              <Button1
+                variant="filled"
+                color="green"
+                size="sm"
+                onClick={onViewMoreClick}
+                className="w-[47px] h-[30px] lg:w-[47px] lg:h-[30px] rounded-[10px]"
+                aria-label="Show all food posts"
+              >
+                <Icon name="right_arrow" />
+              </Button1>
+            </div>
           </div>
 
           {/* Products Grid */}
@@ -47,7 +57,7 @@ const AllProductsSection = ({
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 w-full">
-              {products.map((product) => (
+              {visibleProducts.map((product) => (
                 <ProductCard
                   key={product.id}
                   product={product}

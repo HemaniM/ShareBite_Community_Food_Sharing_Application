@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useEffect, useMemo } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import NavBarHomepage from "../../components/common/NavBarHomepage";
 import Footer from "../../components/common/Footer";
 import Button1 from "../../components/ui/Button1";
 import ProductCard from "../../components/common/ProductCard";
@@ -9,62 +8,13 @@ import HeroSection from "../Homepage/HeroSection";
 import CategoriesSection from "../Homepage/CategoriesSection";
 import SearchSection from "../Homepage/SearchSection";
 
-const PRODUCTS = [
-  {
-    id: 1,
-    title: "Poha",
-    image: "/images/Poha.jpg",
-    location: "BHAYANDER",
-    price: 20,
-    category: "snacks",
-    sections: ["food_near_you", "recently_uploaded"],
-  },
-  {
-    id: 2,
-    title: "Lunch Box",
-    image: "/images/Lunch_Box.jpg",
-    location: "BHAYANDER",
-    price: 40,
-    category: "meals",
-    sections: ["food_near_you", "from_most_trusted_donors"],
-  },
-  {
-    id: 3,
-    title: "Rajama Chaval",
-    image: "/images/Rajama_Chawal.jpg",
-    location: "MALAD",
-    price: 0,
-    category: "meals",
-    sections: ["from_most_trusted_donors", "recently_uploaded"],
-  },
-  {
-    id: 4,
-    title: "Dry Fruits Pack",
-    image: "/images/Dry_Fruits_Pack.jpg",
-    location: "BHAYANDER",
-    price: 100,
-    category: "groceries",
-    sections: ["food_near_you"],
-  },
-  {
-    id: 5,
-    title: "Pineapple Juice",
-    image: "/images/Pineapple_Juice.jpg",
-    location: "MIRA ROAD",
-    price: 0,
-    category: "drinks",
-    sections: ["recently_uploaded"],
-  },
-  {
-    id: 6,
-    title: "Spring Rolls",
-    image: "/images/Spring_Rolls.jpg",
-    location: "ANDHERI",
-    price: 15,
-    category: "fast-food",
-    sections: ["recently_uploaded", "food_near_you"],
-  },
-];
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import { fetchActiveListings } from "../../features/listings/listingsSlice";
+import {
+  isDisplayableListing,
+  mapListingToProduct,
+  slugifyProductName,
+} from "../../utils/listingTransforms";
 
 const normalizeCategory = (value = "") =>
   value.toString().trim().toLowerCase().replace(/\s+/g, "-");
@@ -103,6 +53,13 @@ const formatHeading = (text = "") => {
 const ProductListingPage = () => {
   const locationHook = useLocation();
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { activeListings, activeListingsLoading, activeListingsError } =
+    useAppSelector((state) => state.listings);
+
+  useEffect(() => {
+    dispatch(fetchActiveListings());
+  }, [dispatch]);
 
   const routeQuery = new URLSearchParams(locationHook.search);
   const routeState = locationHook.state || {};
@@ -115,23 +72,33 @@ const ProductListingPage = () => {
 
   const normalizedCategory = normalizeCategory(category);
 
-  const filteredProducts = PRODUCTS.filter((product) => {
-    const matchSection = sourceSection
-      ? product.sections.includes(sourceSection)
-      : true;
+  const allProducts = useMemo(
+    () => activeListings.filter(isDisplayableListing).map(mapListingToProduct),
+    [activeListings],
+  );
 
-    const matchCategory = normalizedCategory
-      ? normalizeCategory(product.category) === normalizedCategory
-      : true;
+  const filteredProducts = useMemo(
+    () =>
+      allProducts.filter((product) => {
+        const productCategory = normalizeCategory(product.category);
+        const productLocation = `${product.location} ${product.fullLocation}`
+          .toLowerCase()
+          .trim();
 
-    const matchLocation = location
-      ? product.location.toLowerCase().includes(location.toLowerCase().trim())
-      : true;
+        const matchCategory = normalizedCategory
+          ? productCategory === normalizedCategory
+          : true;
 
-    const matchBudget = isWithinBudget(product.price, budget);
+        const matchLocation = location
+          ? productLocation.includes(location.toLowerCase().trim())
+          : true;
 
-    return matchSection && matchCategory && matchLocation && matchBudget;
-  });
+        const matchBudget = isWithinBudget(product.price, budget);
+
+        return matchCategory && matchLocation && matchBudget;
+      }),
+    [allProducts, budget, location, normalizedCategory],
+  );
 
   const navigateToBrowsePage = (filters = {}) => {
     const browseFilters = {
@@ -167,12 +134,26 @@ const ProductListingPage = () => {
     });
   };
 
-  /* ---------- DYNAMIC HEADING ---------- */
-  const heading =
-    formatHeading(sourceSection) || formatHeading(category) || "Food Results";
-  /* ------------------------------------- */
+  const handleProductClick = (product) => {
+    if (!product?.id) {
+      return;
+    }
 
-  console.log(routeState);
+    const productSlug = slugifyProductName(product.title || "product");
+
+    navigate(`/product/${product.id}/${productSlug}`, {
+      state: {
+        product,
+      },
+    });
+  };
+
+  const heading =
+    sourceSection === "all_products"
+      ? "All Food Posts"
+      : formatHeading(sourceSection) ||
+        formatHeading(category) ||
+        "Food Results";
 
   return (
     <main className="min-h-screen flex flex-col w-full bg-white">
@@ -187,7 +168,15 @@ const ProductListingPage = () => {
             {heading}
           </h1>
 
-          {filteredProducts.length === 0 ? (
+          {activeListingsLoading ? (
+            <div className="rounded-xl border border-[#f2ebe5] bg-[#fffaef] p-6 text-[#595957]">
+              Loading available food posts...
+            </div>
+          ) : activeListingsError ? (
+            <div className="rounded-xl border border-[#f4c7c3] bg-[#fffaef] p-6 text-[#b45309]">
+              {activeListingsError}
+            </div>
+          ) : filteredProducts.length === 0 ? (
             <div className="rounded-xl border border-[#f2ebe5] bg-[#fffaef] p-6">
               <p className="text-[#595957] mb-4">
                 No products found for selected filters.
@@ -205,7 +194,12 @@ const ProductListingPage = () => {
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6">
               {filteredProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  priceColor={product.priceColor}
+                  onProductClick={() => handleProductClick(product)}
+                />
               ))}
             </div>
           )}

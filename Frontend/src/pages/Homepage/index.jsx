@@ -13,42 +13,11 @@ import AllProductsSection from "./AllProductsSection";
 import MapSection from "./MapSection";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { fetchActiveListings } from "../../features/listings/listingsSlice";
-
-const slugifyProductName = (name = "") =>
-  name
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, "")
-    .replace(/\s+/g, "-");
-
-const isDisplayableListing = (listing = {}) => {
-  const expiresAtTime = new Date(listing.expiresAt).getTime();
-  const hasFutureExpiry = Number.isFinite(expiresAtTime)
-    ? expiresAtTime > Date.now()
-    : false;
-
-  return (
-    listing.status === "available" &&
-    hasFutureExpiry &&
-    Number(listing?.stock?.quantity || 0) > 0
-  );
-};
-
-const mapListingToProduct = (listing) => ({
-  id: listing._id,
-  title: listing.title,
-  image: listing.images?.[0] || "/images/Meals_image.jpg",
-  location: [listing.location?.city, listing.location?.state]
-    .filter(Boolean)
-    .join(", ")
-    .toUpperCase(),
-  price: listing.price?.isFree ? 0 : listing.price?.amount || 0,
-  priceColor: listing.price?.isFree ? "#7d8d2a" : "#d99338",
-  status: listing.status,
-  expiresAt: listing.expiresAt,
-  stock: listing.stock,
-  rawListing: listing,
-});
+import {
+  isDisplayableListing,
+  mapListingToProduct,
+  slugifyProductName,
+} from "../../utils/listingTransforms";
 
 const Homepage = () => {
   const navigate = useNavigate();

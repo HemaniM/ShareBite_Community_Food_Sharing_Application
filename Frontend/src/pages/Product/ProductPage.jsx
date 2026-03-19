@@ -1,53 +1,22 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Helmet } from "react-helmet";
-import { Link, useLocation, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 
 import ContactBar from "../../components/common/ContactBar";
 import Footer from "../../components/common/Footer";
 import NavbarHomepage from "../../components/common/NavBarHomepage";
 import ProductCard from "../../components/common/ProductCard";
 import Button1 from "../../components/ui/Button1";
-import DropdownField from "../../components/ui/DropdownField";
 import { Icon } from "../../components/Icons/Icons";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-// import { fetchProductById } from "../../features/products/productSlice";
+import { fetchActiveListings } from "../../features/listings/listingsSlice";
+import {
+  isDisplayableListing,
+  mapListingToProduct,
+  slugifyProductName,
+} from "../../utils/listingTransforms";
 
 const requestOptions = ["Pickup Today", "Pickup Tomorrow", "Home Delivery"];
-
-const browseMoreProducts = [
-  {
-    id: "lunch-box-1",
-    image: "/images/Lunch_Box_1.jpg",
-    location: "BHAYANDER",
-    title: "Lunch Box",
-    price: "40 ₹ /-",
-    priceColor: "#d99338",
-  },
-  {
-    id: "kathi-roll-1",
-    image: "/images/Kathi_Roll.jpg",
-    location: "VASAI",
-    title: "Kathi Roll",
-    price: "55 ₹ /-",
-    priceColor: "#d99338",
-  },
-  {
-    id: "dry-fruits-pack-1",
-    image: "/images/Dry_Fruits_Pack.jpg",
-    location: "MIRA ROAD",
-    title: "Dry Fruits Pack",
-    price: "100 ₹ /-",
-    priceColor: "#d99338",
-  },
-  {
-    id: "watermelon-juice-1",
-    image: "/images/Watermelon_Juice.jpg",
-    location: "BORIVALI",
-    title: "Watermelon Juice",
-    price: "Free",
-    priceColor: "#7d8d2a",
-  },
-];
 
 const reviewData = [
   {
@@ -82,42 +51,92 @@ const reviewData = [
   },
 ];
 
+const formatExpiryText = (expiresAt) => {
+  if (!expiresAt) {
+    return "Not specified";
+  }
+
+  const expiryDate = new Date(expiresAt);
+
+  if (Number.isNaN(expiryDate.getTime())) {
+    return "Not specified";
+  }
+
+  return expiryDate.toLocaleString();
+};
+
 const ProductPage = () => {
   const { productId, productName } = useParams();
   const location = useLocation();
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
   const [quantity, setQuantity] = useState(1);
-  const [requestType, setRequestType] = useState(requestOptions[0]);
-  const [isRequestTypeOpen, setIsRequestTypeOpen] = useState(false);
 
-  //   const productFromNavigation = location.state?.product;
-  //   const productFromStore = useAppSelector(
-  //     (state) => state.products.byId[productId],
-  //   );
-  //   const requestStatus = useAppSelector(
-  //     (state) => state.products.statusById[productId],
-  //   );
+  const [requestType] = useState(requestOptions[0]);
 
-  //   useEffect(() => {
-  //     if (!productId) {
-  //       return;
-  //     }
+  const { activeListings, activeListingsLoading } = useAppSelector(
+    (state) => state.listings,
+  );
 
-  //     if (!productFromStore) {
-  //       dispatch(fetchProductById(productId));
-  //     }
-  //   }, [dispatch, productId, productFromStore]);
+  useEffect(() => {
+    dispatch(fetchActiveListings());
+  }, [dispatch]);
 
-  //   const product = useMemo(
-  //     () => productFromStore || productFromNavigation,
-  //     [productFromStore, productFromNavigation],
-  //   );
+  const allProducts = useMemo(
+    () => activeListings.filter(isDisplayableListing).map(mapListingToProduct),
+    [activeListings],
+  );
 
-  const product = {};
+  const productFromNavigation = location.state?.product;
+  const product = useMemo(() => {
+    if (productFromNavigation?.id === productId) {
+      return productFromNavigation;
+    }
 
-  const displayPrice = product?.price || `${product?.priceValue || 0} ₹ /-`;
+    return allProducts.find((item) => item.id === productId) || null;
+  }, [allProducts, productFromNavigation, productId]);
+
+  const relatedProducts = useMemo(
+    () => allProducts.filter((item) => item.id !== productId).slice(0, 8),
+    [allProducts, productId],
+  );
+
   const readableProductName = productName?.split("-").join(" ");
+
+  const stockQuantity = Number(product?.stock?.quantity || 0);
+  const stockUnit = product?.stock?.unit || "Plates";
+  const stockLabel = product
+    ? `${stockQuantity} ${stockUnit}`
+    : "Not available";
+  const maxQuantity = Math.max(1, stockQuantity || 1);
+  const productDescription =
+    product?.description ||
+    "No description has been shared for this food post yet.";
+  const productIngredients = Array.isArray(product?.ingredients)
+    ? product.ingredients.filter(Boolean).join(", ")
+    : product?.ingredients || "Not specified";
+  const productContact = [
+    product?.contactInfo?.phoneNumber,
+    product?.contactInfo?.alternatePhoneNumber,
+    product?.contactInfo?.email,
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  const handleProductClick = (item) => {
+    if (!item?.id) {
+      return;
+    }
+
+    const productSlug = slugifyProductName(item.title || "product");
+
+    navigate(`/product/${item.id}/${productSlug}`, {
+      state: {
+        product: item,
+      },
+    });
+  };
 
   return (
     <>
@@ -133,10 +152,28 @@ const ProductPage = () => {
           <NavbarHomepage showBorder={true} />
 
           <div className="mx-auto w-full max-w-[975px] py-2 mt-[50px] mb-[100px]">
-            {!product && requestStatus === "loading" ? (
+            {!product && activeListingsLoading ? (
               <p className="text-[16px] text-[var(--text-grey-4)]">
                 Loading product details...
               </p>
+            ) : !product ? (
+              <div className="rounded-[12px] border border-[#f2ebe5] bg-[#fffaef] p-6 text-center">
+                <p className="text-[16px] text-[var(--text-grey-4)]">
+                  This food post is no longer available.
+                </p>
+                <Button1
+                  variant="filled"
+                  color="green"
+                  className="mt-4 rounded-[8px] px-6 py-3 text-[13px] font-bold"
+                  onClick={() =>
+                    navigate(
+                      "/products?sourceSection=all_products&category=&location=&budget=",
+                    )
+                  }
+                >
+                  Browse all food posts
+                </Button1>
+              </div>
             ) : (
               <>
                 <div className="grid grid-cols-1 gap-[50px] md:grid-cols-[360px_1fr]">
@@ -150,34 +187,35 @@ const ProductPage = () => {
 
                   <div>
                     <div className="mb-[15px] inline-flex rounded-full border border-[var(--primary-orange-200)] px-[20px] py-[5px] text-[12px] font-semibold text-[var(--text-grey-4)]">
-                      Meal
+                      {product?.category || "Meal"}
                     </div>
                     <h1 className="text-[22px] font-bold uppercase text-black">
-                      {product?.title || readableProductName || "Pav Bhaji"}
+                      {product?.title || readableProductName || "Product"}
                     </h1>
                     <p className="mt-[10px] text-[18px] font-bold uppercase text-[var(--primary-green-700)]">
                       {product?.price === 0
                         ? "FREE /-"
-                        : `${product.price} ₹/-`}
+                        : `${product?.price || 0} ₹/-`}
                     </p>
 
                     <div className="mt-[35px] flex flex-wrap items-center gap-[14px] text-[14px] font-bold text-[var(--text-grey-5)]">
-                      <span>In Stock</span>
+                      <span>
+                        {stockQuantity > 0 ? "In Stock" : "Out of Stock"}
+                      </span>
                       <span className="rounded-[8px] bg-[var(--primary-green-50)] px-[10px] py-[4px] font-semibold text-[var(--primary-green-700)]">
-                        {product?.stockLabel || "3 Plates"}
+                        {stockLabel}
                       </span>
                     </div>
 
                     <div className="mt-[25px] text-[12px] leading-5 text-[var(--text-grey-4)]">
-                      <Link to={`/user/${product?.donorId}`}>
+                      <Link
+                        to={product?.donorId ? `/user/${product.donorId}` : "#"}
+                      >
                         <p className="mb-[5px] text-14 font-bold text-[var(--text-grey-5)] hover:text-orange">
-                          {product?.donorName || "Priya Singh"}
+                          {product?.contactInfo?.email || "ShareBite Donor"}
                         </p>
                       </Link>
-                      <p>
-                        {product?.description ||
-                          "Freshly prepared Pav Bhaji made with clean, high-quality vegetables and hygienic cooking practices. Stored properly and safe to consume within 6–8 hours if kept covered at room temperature"}
-                      </p>
+                      <p>{productDescription}</p>
                     </div>
 
                     <div className="mt-[25px]">
@@ -197,7 +235,9 @@ const ProductPage = () => {
                         <button
                           type="button"
                           onClick={() =>
-                            setQuantity((previous) => previous + 1)
+                            setQuantity((previous) =>
+                              Math.min(maxQuantity, previous + 1),
+                            )
                           }
                           className="h-[34px] w-[32px] border border-[var(--text-grey-2)] rounded-tr-[8px] rounded-br-[8px] text-[16px] font-bold text-[var(--text-grey-4)] hover:bg-[var(--primary-green-200)] hover:border-[var(--primary-green-200)]"
                         >
@@ -212,13 +252,6 @@ const ProductPage = () => {
                         >
                           REQUEST
                         </Button1>
-                        <Button1
-                          variant="outline"
-                          color="orange"
-                          className="rounded-[10px] px-6 py-[9px] text-[12px]"
-                        >
-                          ADD TO CART
-                        </Button1>
                       </div>
                     </div>
                     <div className="mt-[35px] rounded-[8px] border border-[var(--white-600)] text-[12px] text-[var(--text-grey-4)]">
@@ -231,130 +264,130 @@ const ProductPage = () => {
                           <span className="font-semibold text-[var(--text-grey-5)] mr-[52px]">
                             Expiry Date
                           </span>
-                          {product?.expiryDate || "10 Hours"}
+                          {formatExpiryText(product?.expiresAt)}
                         </p>
                         <p className="md:row-span-3 flex items-start">
                           <span className="font-semibold text-[var(--text-grey-5)] mr-[55px]">
                             Ingredients
                           </span>
-                          {product?.ingredients ||
-                            "Potatoes, cauliflower, green peas, tomatoes, onions, capsicum, butter, pav bhaji masala, red chili powder, turmeric powder, ginger-garlic paste, salt, lemon, fresh coriander leaves, pav"}
+                          {productIngredients}
                         </p>
                         <p className="md:row-span-2 flex items-start">
                           <span className="font-semibold text-[var(--text-grey-5)] mr-[70px]">
                             Location
                           </span>
-                          {product?.location || "Bhayander East, Navghar Road"}
+                          {product?.fullLocation ||
+                            product?.location ||
+                            "Not specified"}
                         </p>
                         <p>
                           <span className="font-semibold text-[var(--text-grey-5)] mr-[8px]">
                             Contact Information
                           </span>
-                          {product?.location ||
-                            "+91 23876 73663, priyasingh@gmail.com"}
+                          {productContact || "Not specified"}
                         </p>
                       </div>
                     </div>
                   </div>
                 </div>
 
-                <section className="mt-16">
-                  <h2 className="text-[22px] font-bold text-black">
-                    Ratings & Reviews For{" "}
-                    {product?.donor || (
-                      <Link to={`/user/${product?.donorId}`}>
-                        <span className="text-orange hover:text-[var(--primary-orange-300)]">
-                          Priya Singh
-                        </span>
-                      </Link>
-                    )}
-                  </h2>
-                  <div className="flex items-end gap-[25px] mt-10">
-                    <div className="flex items-start gap-[18px]">
-                      <p className="text-[38px] leading-none font-bold text-[#2e2c27]">
-                        4/5
-                      </p>
-                      <Icon name="star_icon_md" />
-                    </div>
-                    <p className="text-[16px] text-[var(--text-grey-4)]">
-                      50 Reviews
-                    </p>
-                  </div>
-                  <div className="mt-3">
-                    <Button1
-                      type="button"
-                      variant="filled"
-                      color="green"
-                      size="sm"
-                      className="bg-[var(--primary-green-50)] py-[6px] rounded-full px-[20px] text-[14px] font-medium text-[var(--text-grey-4)] normal-case mt-3"
-                    >
-                      <span className="mr-[10px]">
-                        <Icon name="green_tick_icon" />
-                      </span>
-                      Trusted
-                    </Button1>
-                  </div>
-                  <div className="mt-[50px] grid grid-cols-1 gap-4 md:grid-cols-3">
-                    {reviewData.map((review) => (
-                      <article
-                        key={review.id}
-                        className="rounded-[10px] border border-[#eceae4] p-4"
-                      >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-[10px]">
-                            <img
-                              src={review.image}
-                              alt={review.name}
-                              className="h-10 w-10 rounded-full object-cover rounded-[12px]"
-                            />
-                            <p className="text-[14px] font-semibold text-[var(--text-grey-5)]">
-                              {review.name}
-                            </p>
-                          </div>
-                          <p className="text-[12px] text-[var(--text-grey-3)]">
-                            {review.date}
-                          </p>
-                        </div>
-
-                        <p className="mt-[20px] text-[13px] text-[var(--text-grey-4)]">
-                          "{review.comment}"
-                        </p>
-                      </article>
-                    ))}
-                  </div>
-                </section>
-
-                <section className="mt-16">
-                  <div className="mb-6 flex items-center justify-between">
-                    <h2 className="text-[20px] font-bold uppercase text-[var(--text-grey-5)]">
-                      Browse For More
+                <div className="mt-[70px]">
+                  <div className="mb-[35px] flex items-center justify-between">
+                    <h2 className="text-[20px] font-bold uppercase text-black">
+                      Browse More Food Posts
                     </h2>
                     <Button1
                       variant="filled"
                       color="green"
                       size="sm"
-                      className="h-[30px] w-[47px] rounded-[10px]"
+                      className="h-[34px] w-[47px] rounded-[10px]"
+                      onClick={() =>
+                        navigate(
+                          "/products?sourceSection=all_products&category=&location=&budget=",
+                        )
+                      }
+                      aria-label="Show all food posts"
                     >
                       <Icon name="right_arrow" />
                     </Button1>
                   </div>
 
-                  <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:grid-cols-4">
-                    {browseMoreProducts.map((product) => (
-                      <ProductCard
-                        key={product.id}
-                        product={product}
-                        priceColor={product.priceColor}
-                      />
-                    ))}
-                  </div>
-                </section>
+                  {relatedProducts.length > 0 ? (
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                      {relatedProducts.map((relatedProduct) => (
+                        <ProductCard
+                          key={relatedProduct.id}
+                          product={relatedProduct}
+                          priceColor={relatedProduct.priceColor}
+                          onProductClick={() =>
+                            handleProductClick(relatedProduct)
+                          }
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <div className="rounded-[12px] border border-[#f2ebe5] bg-[#fffaef] px-6 py-8 text-center text-[#6b6961]">
+                      No additional food posts are available right now.
+                    </div>
+                  )}
+                </div>
               </>
             )}
           </div>
-        </section>
 
-        <Footer className="mt-0" />
+          <div className="mx-auto w-full max-w-[975px] pb-[100px]">
+            <div className="rounded-[12px] border border-[#f2ebe5] bg-[#fffaef] p-6">
+              <div className="mb-5 flex items-center justify-between">
+                <h2 className="text-[20px] font-bold uppercase text-black">
+                  Reviews
+                </h2>
+                <Button1
+                  variant="filled"
+                  color="green"
+                  size="sm"
+                  className="h-[34px] w-[47px] rounded-[10px]"
+                >
+                  <Icon name="right_arrow" />
+                </Button1>
+              </div>
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                {reviewData.map((review) => (
+                  <div
+                    key={review.id}
+                    className="rounded-[10px] border border-white bg-white p-4"
+                  >
+                    <div className="mb-4 flex items-center gap-3">
+                      <img
+                        src={review.image}
+                        alt={review.name}
+                        className="h-12 w-12 rounded-full object-cover"
+                      />
+                      <div>
+                        <p className="text-[14px] font-bold text-[var(--text-grey-5)]">
+                          {review.name}
+                        </p>
+                        <p className="text-[12px] text-[var(--text-grey-4)]">
+                          {review.location}
+                        </p>
+                      </div>
+                    </div>
+                    <p className="mb-2 text-[12px] text-[var(--text-grey-4)]">
+                      {review.date}
+                    </p>
+                    <p className="mb-2 text-[12px] font-semibold text-[var(--primary-green-700)]">
+                      Rating: {review.rating}
+                    </p>
+                    <p className="text-[12px] leading-5 text-[var(--text-grey-4)]">
+                      {review.comment}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+        <Footer />
       </main>
     </>
   );
