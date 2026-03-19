@@ -1,83 +1,67 @@
-import React from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "../../components/Icons/Icons";
 import Button1 from "../../components/ui/Button1";
-import { useEffect, useMemo, useRef, useState } from "react";
 
-const requests = [
-  {
-    id: "R6327YEg3",
-    foodName: "Kathi Roll",
-    price: 10,
-    username: "Riya Mehata",
-    address: "Bhayander (W), BP Road, Shiv Nagar",
-    date: "Today",
-    quantity: "3 Rolls",
-    contactNumber: "+91 87759 50643",
-    contactEmail: "riya.mehata243@gmail.com",
-    image: "/images/Kathi_Roll.jpg",
-    status: "accepted",
-  },
-  {
-    id: "R6327SE5f4",
-    foodName: "Noodles",
-    price: 20,
-    address: "Bhayander (W), Jesal Park, Shiv Nagar",
-    username: "Nira Sharma",
-    date: "30/01/2026",
-    quantity: "3",
-    contactNumber: "+91 87779 50643",
-    contactEmail: "nira.sharma23@gmail.com",
-    image: "/images/Noodles.jpg",
-    status: "requested",
-  },
-  {
-    id: "R4452ME771",
-    foodName: "Watermelon Juice",
-    price: 0,
-    address: "Bhayander (E), Maxus Road",
-    username: "Aman Gracias",
-    date: "30/01/2026",
-    quantity: "2 Plates",
-    contactNumber: "+91 93472 13456",
-    contactEmail: "aman.gr12@gmail.com",
-    image: "/images/Watermelon_Juice.jpg",
-    status: "requested",
-  },
-  {
-    id: "R44534577d",
-    foodName: "Badami Paneer",
-    price: 40,
-    address: "Bhayander (E), Shivar Garden",
-    username: "Shruti Kadam",
-    date: "29/01/2026",
-    quantity: "2 Bottles",
-    contactNumber: "+91 93472 13456",
-    contactEmail: "kadam.shruti22@gmail.com",
-    image: "/images/Badami_Paneer.jpg",
-    status: "accepted",
-  },
-  {
-    id: "R4452hj97d",
-    foodName: "Mango Milkshake",
-    price: 25,
-    address: "Bhayander (E), Goddev Village, Pooja Nagar",
-    username: "Manish Goyal",
-    date: "29/01/2026",
-    quantity: "2 Bottles",
-    contactNumber: "+91 93472 13456",
-    contactEmail: "goyaldj12@gmail.com",
-    image: "/images/Mango_milkshake.jpg",
-    status: "accepted",
-  },
-];
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import { fetchMyRequests } from "../../features/requests/requestsSlice";
 
 const requestFilterOptions = [
   { value: "all", label: "ALL" },
-  { value: "requested", label: "Requested" },
-  { value: "accepted", label: "Accepted" },
+  { value: "pending", label: "Requested" },
+  { value: "approved", label: "Accepted" },
+  { value: "rejected", label: "Rejected" },
+  { value: "completed", label: "Completed" },
+  { value: "cancelled", label: "Cancelled" },
 ];
 
+const formatRequestDate = (value) => {
+  if (!value) {
+    return "-";
+  }
+
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) {
+    return "-";
+  }
+
+  return date.toLocaleDateString();
+};
+
+const getStatusLabel = (status) => {
+  switch (status) {
+    case "approved":
+      return "REQUEST ACCEPTED";
+    case "pending":
+      return "REQUESTED";
+    case "rejected":
+      return "REQUEST REJECTED";
+    case "completed":
+      return "COMPLETED";
+    case "cancelled":
+      return "CANCELLED";
+    default:
+      return (status || "REQUESTED").toUpperCase();
+  }
+};
+
+const getStatusColor = (status) => {
+  if (status === "approved" || status === "completed") {
+    return "green";
+  }
+
+  if (status === "pending") {
+    return "green";
+  }
+
+  return "orange";
+};
+
 export const RequestsPage = () => {
+  const dispatch = useAppDispatch();
+  const { myRequests, myRequestsLoading, myRequestsError } = useAppSelector(
+    (state) => state.requests,
+  );
+
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const filterRef = useRef(null);
@@ -86,6 +70,10 @@ export const RequestsPage = () => {
   const [activeRequestId, setActiveRequestId] = useState("");
   const [feedbackText, setFeedbackText] = useState("");
   const [feedbackRating, setFeedbackRating] = useState(0);
+
+  useEffect(() => {
+    dispatch(fetchMyRequests());
+  }, [dispatch]);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -103,11 +91,11 @@ export const RequestsPage = () => {
 
   const filteredRequests = useMemo(() => {
     if (selectedFilter === "all") {
-      return requests;
+      return myRequests;
     }
 
-    return requests.filter((request) => request.status === selectedFilter);
-  }, [selectedFilter]);
+    return myRequests.filter((request) => request.status === selectedFilter);
+  }, [myRequests, selectedFilter]);
 
   const selectedFilterLabel =
     requestFilterOptions.find((option) => option.value === selectedFilter)
@@ -135,7 +123,6 @@ export const RequestsPage = () => {
       submittedAt: new Date().toISOString(),
     };
 
-    // Replace this with your API/service call.
     console.log("Feedback submitted:", feedbackPayload);
 
     return feedbackPayload;
@@ -162,18 +149,6 @@ export const RequestsPage = () => {
           <h2 className="text-[22px] font-bold tracking-[0.4px] text-black">
             ALL REQUESTS
           </h2>
-
-          {/* <Button1
-          type="button"
-          variant="filled"
-          color="orange"
-          size="sm"
-          className="px-[20px] py-[10px] rounded-[8px] text-[12px] font-semibold gap-[20px]"
-        >
-          All
-          <Icon name="arrow_down_white" className="scale-[0.7]" />
-        </Button1>
-      </div> */}
 
           <div ref={filterRef} className="relative">
             <Button1
@@ -219,189 +194,200 @@ export const RequestsPage = () => {
           </div>
         </div>
 
+        {myRequestsLoading && <p>Loading requests...</p>}
+        {myRequestsError && <p className="text-red-500">{myRequestsError}</p>}
+
         <div className="space-y-4">
-          {filteredRequests.map((request) => (
-            <article
-              key={request.id}
-              className="rounded-[8px] border border-[var(--white-600)] bg-white py-[25px] px-[30px]"
-            >
-              <div className="flex items-start justify-between gap-[30px]">
-                <div className="flex gap-[30px]">
-                  <img
-                    src={request.image}
-                    alt={request.foodName}
-                    className="h-[200px] w-[165px] rounded-[8px] object-cover"
-                  />
+          {!myRequestsLoading && !filteredRequests.length && (
+            <div className="rounded-[8px] border border-dashed border-[var(--white-600)] px-6 py-10 text-center text-[14px] text-[var(--text-grey-4)]">
+              No requests found for the selected filter.
+            </div>
+          )}
 
-                  <div className="text-[12px] text-[#77746d] leading-[17px] p-1">
-                    <h3 className="text-[20px] leading-none font-bold text-[#31302b] mb-[10px]">
-                      {request.foodName}
-                    </h3>
+          {filteredRequests.map((request) => {
+            const listing = request.listingId || {};
+            const donor = request.donor || {};
+            const image = listing.images?.[0] || "/images/Meals_image.jpg";
+            const address = [
+              listing.location?.addressLineOne,
+              listing.location?.city,
+              listing.location?.state,
+            ]
+              .filter(Boolean)
+              .join(", ");
 
-                    <p className="text-[13px] my-[6px]">{request.address}</p>
-                    <p className="text-[13px]">{request.username}</p>
+            return (
+              <article
+                key={request._id}
+                className="rounded-[8px] border border-[var(--white-600)] bg-white py-[25px] px-[30px]"
+              >
+                <div className="flex items-start justify-between gap-[30px]">
+                  <div className="flex gap-[30px]">
+                    <img
+                      src={image}
+                      alt={listing.title || "Requested food post"}
+                      className="h-[200px] w-[165px] rounded-[8px] object-cover"
+                    />
 
-                    <div className="mt-[16px] grid grid-cols-2 gap-x-[100px] gap-y-2 max-w-[600px]">
-                      <p>
-                        <span className="font-semibold text-[#2f2e2b] mr-[40px]">
-                          Price
-                        </span>
-                        <span className="ml-2">
-                          {request?.price === 0
-                            ? "FREE /-"
-                            : `${request?.price} ₹/-`}
-                        </span>
+                    <div className="text-[12px] text-[#77746d] leading-[17px] p-1">
+                      <h3 className="text-[20px] leading-none font-bold text-[#31302b] mb-[10px]">
+                        {listing.title || "Food post"}
+                      </h3>
+
+                      <p className="text-[13px] my-[6px]">{address || "-"}</p>
+                      <p className="text-[13px]">
+                        From, {donor.name || "ShareBite Donor"}
                       </p>
-                      <p className="font-semibold text-[#2f2e2b]">Contact</p>
-                      <p>
-                        <span className="font-semibold text-[#2f2e2b] mr-[7px]">
-                          Request ID
-                        </span>
-                        <span className="ml-2">{request.id}</span>
-                      </p>
-                      <p>{request.contactNumber}</p>
-                      <p>
-                        <span className="font-semibold text-[#2f2e2b] mr-[20px]">
-                          Quantity
-                        </span>
-                        <span className="ml-2">{request.quantity}</span>
-                      </p>
-                      <p className="truncate">{request.contactEmail}</p>
-                    </div>
 
-                    <div className="mt-[16px] flex items-center gap-[15px]">
-                      <Button1
-                        type="button"
-                        variant="filled"
-                        color="green"
-                        size="sm"
-                        className="px-[18px] py-[10px] rounded-[8px] text-[12px] font-semibold bg-[var(--primary-green-50)] text-green pointer-events-none"
-                      >
-                        {request.status === "accepted"
-                          ? "REQUEST ACCEPTED"
-                          : "REQUESTED"}
-                      </Button1>
+                      <div className="mt-[16px] grid grid-cols-2 gap-x-[100px] gap-y-2 max-w-[600px]">
+                        <p>
+                          <span className="font-semibold text-[#2f2e2b] mr-[40px]">
+                            Price
+                          </span>
+                          <span className="ml-2">
+                            {listing.price?.isFree
+                              ? "FREE /-"
+                              : `${listing.price?.amount || 0} ₹/-`}
+                          </span>
+                        </p>
+                        <p className="font-semibold text-[#2f2e2b]">Contact</p>
+                        <p>
+                          <span className="font-semibold text-[#2f2e2b] mr-[7px]">
+                            Request ID
+                          </span>
+                          <span className="ml-2">{request._id}</span>
+                        </p>
+                        <p>
+                          {listing.contactInfo?.phoneNumber ||
+                            donor.phone ||
+                            "-"}
+                        </p>
+                        <p>
+                          <span className="font-semibold text-[#2f2e2b] mr-[16px]">
+                            Quantity
+                          </span>
+                          <span className="ml-2">
+                            {request.requestedQuantity}{" "}
+                            {listing.stock?.unit || "items"}
+                          </span>
+                        </p>
+                        <p>
+                          {listing.contactInfo?.email || donor.email || "-"}
+                        </p>
+                      </div>
 
-                      <Button1
-                        type="button"
-                        variant="outline"
-                        color="orange"
-                        size="sm"
-                        className="px-[18px] py-[8px] rounded-[8px] px-3 text-[12px] font-semibold"
-                      >
-                        DELETE REQUEST
-                      </Button1>
+                      <div className="mt-[15px] flex flex-wrap items-center gap-[15px]">
+                        <Button1
+                          type="button"
+                          variant={
+                            getStatusColor(request.status) === "green"
+                              ? "filled"
+                              : "outline"
+                          }
+                          color={getStatusColor(request.status)}
+                          size="sm"
+                          className="rounded-[8px] px-[18px] py-[10px] text-[12px] font-semibold"
+                        >
+                          {getStatusLabel(request.status)}
+                        </Button1>
+
+                        {request.status === "approved" && (
+                          <Button1
+                            type="button"
+                            variant="outline"
+                            color="orange"
+                            size="sm"
+                            className="rounded-[8px] px-[18px] py-[9px] text-[12px] font-semibold"
+                            onClick={() => handleOpenFeedbackModal(request._id)}
+                          >
+                            SHARE YOUR FEEDBACK
+                          </Button1>
+                        )}
+                      </div>
+
+                      {request.donorToastMessage && (
+                        <p className="mt-4 text-[12px] text-[var(--text-grey-4)]">
+                          {request.donorToastMessage}
+                        </p>
+                      )}
                     </div>
                   </div>
+
+                  <p className="text-[14px] text-[var(--text-grey-5)] mt-3 font-medium">
+                    {formatRequestDate(request.createdAt)}
+                  </p>
                 </div>
-
-                <p className="text-[14px] pt-1 text-[var(--text-grey-5)]">
-                  {request.date}
-                </p>
-              </div>
-
-              <div
-                className={`mt-3 ml-[200px] ${request.status === "accepted" ? "" : "hidden"}`}
-              >
-                <p className="text-[13px] text-[var(--text-grey-5)]">
-                  You can now contact the owner to pick the product using
-                  contact details
-                </p>
-
-                <Button1
-                  type="button"
-                  variant="filled"
-                  color="orange"
-                  size="md"
-                  onClick={() => handleOpenFeedbackModal(request.id)}
-                  className="group mt-3 bg-[var(--primary-orange-50)] text-[var(--primary-orange-600)] rounded-[10px] px-[18px] py-[15px] text-[12px] font-semibold inline-flex gap-[15px] hover:bg-orange hover:text-white"
-                >
-                  <Icon
-                    name="feedback_msg_orange_icon"
-                    className="group-hover:hidden"
-                  />
-                  <Icon
-                    name="feedback_msg_white_icon"
-                    className="hidden group-hover:block"
-                  />
-                  SHARE YOUR FEEDBACK
-                </Button1>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       </section>
 
       {isFeedbackModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-[2px]">
-          <div className="relative w-full max-w-[500px] rounded-[15px] bg-white px-8 py-9 shadow-[0px_16px_40px_#00000029]">
-            {/* <button
-              type="button"
-              onClick={handleCloseFeedbackModal}
-              className="absolute right-4 top-3 text-[#8c8c8a] text-[18px] leading-none"
-              aria-label="Close feedback modal"
-            >
-              ×
-            </button> */}
-            <div className="flex justify-end mb-2">
-              <div onClick={handleCloseFeedbackModal}>
-                <Icon name="cross_icon" />
-              </div>
-            </div>
-            <div className="px-4">
-              <h3 className="text-center text-[18px] font-bold tracking-[0.4px] text-black uppercase">
-                HOW WAS YOUR EXPERIENCE?
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
+          <div className="w-full max-w-[520px] rounded-[14px] bg-white p-6 shadow-xl">
+            <div className="flex items-center justify-between">
+              <h3 className="text-[20px] font-bold text-[#2f2e2b]">
+                Share feedback
               </h3>
-              <p className="mt-[20px] w-[300px] text-center mx-auto text-[12px] font-medium leading-[14px] text-[var(--text-grey-4)] uppercase">
-                YOUR FEEDBACK HELPS US TO IMPROVE. TAP A STAR TO RATE YOUR
-                EXPERIENCE.
-              </p>
+              <button
+                type="button"
+                onClick={handleCloseFeedbackModal}
+                className="text-[22px] leading-none text-[#77746d]"
+              >
+                ×
+              </button>
+            </div>
 
-              <form onSubmit={handleFeedbackSubmit} className="mt-[60px]">
-                <div className="flex items-center justify-center gap-2 mb-[45px]">
-                  {[1, 2, 3, 4, 5].map((starValue) => {
-                    const isFilled = starValue <= feedbackRating;
+            <form className="mt-6" onSubmit={handleFeedbackSubmit}>
+              <label className="block text-[13px] font-semibold text-[#2f2e2b]">
+                Rating
+                <input
+                  type="number"
+                  min="0"
+                  max="5"
+                  step="1"
+                  value={feedbackRating}
+                  onChange={(event) =>
+                    setFeedbackRating(Number(event.target.value))
+                  }
+                  className="mt-2 w-full rounded-[8px] border border-[#e5e4df] px-3 py-2"
+                />
+              </label>
 
-                    return (
-                      <button
-                        key={starValue}
-                        type="button"
-                        onClick={() => setFeedbackRating(starValue)}
-                        className="leading-none leading-none transition-transform duration-150 hover:scale-110"
-                        aria-label={`Rate ${starValue} star`}
-                      >
-                        <Icon
-                          name={
-                            isFilled
-                              ? "feedback_star_icon_filled"
-                              : "feedback_star_icon_outlined"
-                          }
-                        />
-                      </button>
-                    );
-                  })}
-                </div>
-
+              <label className="mt-4 block text-[13px] font-semibold text-[#2f2e2b]">
+                Feedback
                 <textarea
+                  rows="4"
                   value={feedbackText}
                   onChange={(event) => setFeedbackText(event.target.value)}
-                  placeholder="Type your feedback here..."
-                  className="w-full h-[100px] rounded-[8px] border border-[var(--text-grey-2)] px-3 py-2 text-[14px] text-[var(--text-grey-4)] outline-none resize-none"
-                  required
+                  className="mt-2 w-full rounded-[8px] border border-[#e5e4df] px-3 py-2"
+                  placeholder="Share your experience"
                 />
+              </label>
 
+              <div className="mt-6 flex justify-end gap-3">
+                <Button1
+                  type="button"
+                  variant="outline"
+                  color="orange"
+                  size="sm"
+                  onClick={handleCloseFeedbackModal}
+                  className="rounded-[8px] px-4 py-2 text-[12px] font-semibold"
+                >
+                  CANCEL
+                </Button1>
                 <Button1
                   type="submit"
                   variant="filled"
-                  color="orange"
-                  size="md"
-                  disabled={feedbackRating === 0}
-                  className="mx-auto mt-[60px] block tracking-[0.4px] rounded-[8px] px-[20px] py-[15px] text-[14px] font-bold"
+                  color="green"
+                  size="sm"
+                  className="rounded-[8px] px-4 py-2 text-[12px] font-semibold"
                 >
-                  SUBMIT REVIEW
+                  SUBMIT FEEDBACK
                 </Button1>
-              </form>
-            </div>
+              </div>
+            </form>
           </div>
         </div>
       )}

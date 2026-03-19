@@ -12,6 +12,11 @@ import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 
 import { fetchActiveListings } from "../../features/listings/listingsSlice";
 import {
+  clearRequestFeedback,
+  createRequest,
+  fetchMyRequests,
+} from "../../features/requests/requestsSlice";
+import {
   isDisplayableListing,
   mapListingToProduct,
   slugifyProductName,
@@ -74,14 +79,30 @@ const ProductPage = () => {
   const dispatch = useAppDispatch();
 
   const [quantity, setQuantity] = useState(1);
+  const [requestMessage, setRequestMessage] = useState("");
+  const [toast, setToast] = useState({ message: "", type: "success" });
 
   const { activeListings, activeListingsLoading } = useAppSelector(
     (state) => state.listings,
   );
+  const { createLoading } = useAppSelector((state) => state.requests);
 
   useEffect(() => {
     dispatch(fetchActiveListings());
   }, [dispatch]);
+
+  useEffect(() => {
+    if (!toast.message) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setToast({ message: "", type: "success" });
+      dispatch(clearRequestFeedback());
+    }, 3000);
+
+    return () => clearTimeout(timeoutId);
+  }, [dispatch, toast]);
 
   const allProducts = useMemo(
     () => activeListings.filter(isDisplayableListing).map(mapListingToProduct),
@@ -123,6 +144,35 @@ const ProductPage = () => {
     .filter(Boolean)
     .join(", ");
 
+  const handleCreateRequest = async () => {
+    if (!product?.id) {
+      setToast({ message: "Food post not found", type: "error" });
+      return;
+    }
+
+    const action = await dispatch(
+      createRequest({
+        listingId: product.id,
+        requestedQuantity: quantity,
+        message: requestMessage.trim() || undefined,
+      }),
+    );
+
+    if (createRequest.fulfilled.match(action)) {
+      setToast({
+        message: action.payload.message || "Request placed successfully",
+        type: "success",
+      });
+      setRequestMessage("");
+      dispatch(fetchMyRequests());
+    } else {
+      setToast({
+        message: action.payload || "Unable to place request",
+        type: "error",
+      });
+    }
+  };
+
   const handleProductClick = (item) => {
     if (!item?.id) {
       return;
@@ -146,6 +196,15 @@ const ProductPage = () => {
       </Helmet>
 
       <main className="w-full bg-white">
+        {toast.message && (
+          <div
+            className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${
+              toast.type === "error" ? "bg-orange-500" : "bg-green-500"
+            }`}
+          >
+            {toast.message}
+          </div>
+        )}
         <ContactBar />
         <section className="w-full">
           <NavbarHomepage showBorder={true} />
@@ -249,13 +308,29 @@ const ProductPage = () => {
                           +
                         </button>
                       </div>
+
+                      <label className="mt-4 block text-[12px] font-semibold text-[var(--text-grey-5)]">
+                        Request message (optional)
+                        <textarea
+                          rows="3"
+                          value={requestMessage}
+                          onChange={(event) =>
+                            setRequestMessage(event.target.value)
+                          }
+                          placeholder="Add a short note for the donor"
+                          className="mt-2 w-full max-w-[420px] rounded-[8px] border border-[#e5e4df] px-3 py-2 text-[12px] font-normal text-[var(--text-grey-4)]"
+                        />
+                      </label>
+
                       <div className="mt-[15px] flex items-center gap-[20px]">
                         <Button1
                           variant="filled"
                           color="orange"
                           className="rounded-[8px] px-[25px] py-[10px] font-bold text-[13px]"
+                          onClick={handleCreateRequest}
+                          disabled={createLoading || stockQuantity <= 0}
                         >
-                          REQUEST
+                          {createLoading ? "REQUESTING..." : "REQUEST"}
                         </Button1>
                       </div>
                     </div>
