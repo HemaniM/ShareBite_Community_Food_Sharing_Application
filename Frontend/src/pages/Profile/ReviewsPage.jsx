@@ -87,7 +87,7 @@ const ReviewsPage = () => {
                       <img
                         src={review.image}
                         alt={review.name}
-                        className="h-10 w-10 rounded-[12px] rounded-full object-cover transition hover:opacity-90"
+                        className="h-10 w-10 rounded-[12px] object-cover transition hover:opacity-90"
                       />
                       <h3 className="text-[13px] font-semibold text-[#2e2c27] transition hover:text-orange">
                         {review.name}
@@ -98,7 +98,7 @@ const ReviewsPage = () => {
                       <img
                         src={review.image}
                         alt={review.name}
-                        className="h-10 w-10 rounded-[12px] rounded-full object-cover"
+                        className="h-10 w-10 rounded-[12px] object-cover"
                       />
                       <h3 className="text-[13px] font-semibold text-[#2e2c27]">
                         {review.name}
