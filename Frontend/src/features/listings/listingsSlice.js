@@ -2,6 +2,7 @@ import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
   createListingAPI,
   deleteMyListingAPI,
+  getActiveListingsAPI,
   getMyListingsAPI,
 } from "./listingsAPI";
 
@@ -47,12 +48,29 @@ export const fetchMyListings = createAsyncThunk(
   },
 );
 
+export const fetchActiveListings = createAsyncThunk(
+  "listings/fetchActiveListings",
+  async (_, { rejectWithValue }) => {
+    try {
+      const response = await getActiveListingsAPI();
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Unable to fetch available food posts",
+      );
+    }
+  },
+);
+
 const initialState = {
   myListings: [],
+  activeListings: [],
   loading: false,
+  activeListingsLoading: false,
   createLoading: false,
   deleteLoading: false,
   error: null,
+  activeListingsError: null,
   createSuccess: false,
 };
 
@@ -110,6 +128,18 @@ const listingsSlice = createSlice({
       .addCase(fetchMyListings.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
+       })
+      .addCase(fetchActiveListings.pending, (state) => {
+        state.activeListingsLoading = true;
+        state.activeListingsError = null;
+      })
+      .addCase(fetchActiveListings.fulfilled, (state, action) => {
+        state.activeListingsLoading = false;
+        state.activeListings = action.payload.listings || [];
+      })
+      .addCase(fetchActiveListings.rejected, (state, action) => {
+        state.activeListingsLoading = false;
+        state.activeListingsError = action.payload;
       });
   },
 });

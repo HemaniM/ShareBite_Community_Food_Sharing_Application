@@ -1,93 +1,15 @@
 import React from "react";
-import Button from "../../components/ui/Button";
 import ProductCard from "../../components/common/ProductCard";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
 
-const AllProductsSection = ({ onProductClick, onViewMoreClick }) => {
-  const allProducts = [
-    {
-      id: 1,
-      image: "/images/Lunch_Box_1.jpg",
-      location: "BHAYANDER",
-      title: "Lunch Box",
-      price: 40,
-      priceColor: "#d99338",
-    },
-    {
-      id: 2,
-      image: "/images/Roti_Sabzi.jpg",
-      location: "BHAYANDER WEST",
-      title: "Roti Sabzi",
-      price: 0,
-      priceColor: "#7d8d2a",
-    },
-    {
-      id: 3,
-      image: "/images/Orange_Juice.jpg",
-      location: "VASAI",
-      title: "Orange Juice",
-      price: 15,
-      priceColor: "#d99338",
-    },
-    {
-      id: 4,
-      image: "/images/Kiwi.jpg",
-      location: "MIRA ROAD",
-      title: "kiwi",
-      price: 50,
-      priceColor: "#d99338",
-    },
-    {
-      id: 5,
-      image: "/images/Noodles.jpg",
-      location: "BHAYANDER EAST",
-      title: "Noodles",
-      price: 30,
-      priceColor: "#d99338",
-    },
-    {
-      id: 6,
-      image: "/images/Rice_1kg.jpg",
-      location: "BHAYANDER",
-      title: "Rice 1kg",
-      price: 25,
-      priceColor: "#d99338",
-    },
-    {
-      id: 7,
-      image: "/images/Rajama_Chawal.jpg",
-      location: "MALAD",
-      title: "Rajama Chaval",
-      price: 0,
-      priceColor: "#7d8d2a",
-    },
-    {
-      id: 8,
-      image: "/images/Carrot_Juice.jpg",
-      location: "BORIVALI",
-      title: "Carrot Juice",
-      price: 10,
-      priceColor: "#d99338",
-    },
-    {
-      id: 9,
-      image: "/images/Apple_Cider_Vinegar.jpg",
-      location: "DAHISAR",
-      title: "Apple Cider Vinegar",
-      price: 80,
-      priceColor: "#d99338",
-    },
-    {
-      id: 10,
-      image: "/images/Ramen.jpg",
-      location: "ANDHERI",
-      title: "Ramen",
-      price: 40,
-      priceColor: "#d99338",
-    },
-  ];
-
+const AllProductsSection = ({
+  onProductClick,
+  onViewMoreClick,
+  products = [],
+  loading = false,
+  error = null,
+}) => {
   return (
     <section className="w-full py-[60px] bg-[#fffaef]">
       <div className="w-full max-w-[975px] mx-auto">
@@ -111,16 +33,30 @@ const AllProductsSection = ({ onProductClick, onViewMoreClick }) => {
           </div>
 
           {/* Products Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 w-full">
-            {allProducts?.map((product) => (
-              <ProductCard
-                key={product?.id}
-                product={product}
-                priceColor={product?.priceColor}
-                onProductClick={() => onProductClick?.(product)}
-              />
-            ))}
-          </div>
+          {loading ? (
+            <div className="w-full rounded-[10px] border border-[#f2ebe5] bg-white px-6 py-8 text-center text-[#6b6961]">
+              Loading available food posts...
+            </div>
+          ) : error ? (
+            <div className="w-full rounded-[10px] border border-[#f4c7c3] bg-white px-6 py-8 text-center text-[#b45309]">
+              {error}
+            </div>
+          ) : products.length === 0 ? (
+            <div className="w-full rounded-[10px] border border-[#f2ebe5] bg-white px-6 py-8 text-center text-[#6b6961]">
+              No available food posts right now.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 w-full">
+              {products.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  priceColor={product.priceColor}
+                  onProductClick={() => onProductClick?.(product)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>
