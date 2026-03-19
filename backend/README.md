@@ -303,7 +303,7 @@ Represents food items being shared.
 ```
 
 **Features:**
-- Automatic expiration via MongoDB TTL Index
+- Expired posts are kept in MongoDB and their `status` is updated to `expired`
 - Categorical food classification
 - Location-based queries
 - Status tracking
