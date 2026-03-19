@@ -71,8 +71,15 @@ export class ListingsService {
   }
 
   static async getActiveListings(): Promise<IListing[]> {
+    const now = new Date();
+
     await ListingsService.syncListingStatuses();
-    return Listing.find({ status: ListingStatus.AVAILABLE }).sort({
+
+    return Listing.find({
+      status: ListingStatus.AVAILABLE,
+      expiresAt: { $gt: now },
+      "stock.quantity": { $gt: 0 },
+    }).sort({
       createdAt: -1,
     });
   }
