@@ -35,7 +35,7 @@ const HomepageNavBar = ({ showBorder = false }) => {
               <Icon name="shareBite_logo_header" />
             </Link>
 
-            <div className="flex flex-row gap-[50px] items-center">
+            <div className="flex flex-row gap-[50px] items-center mr-[50px]">
               {navItems.map((item) => (
                 <NavLink
                   key={item.label}
@@ -52,13 +52,13 @@ const HomepageNavBar = ({ showBorder = false }) => {
             </div>
 
             <div className="flex flex-row items-center gap-[12px] lg:gap-[12px]">
-              <Link
+              {/* <Link
                 to="/cart"
                 className="hover:opacity-90 transition-opacity"
                 aria-label="Open cart"
               >
                 <Icon name="cart_big_header" />
-              </Link>
+              </Link> */}
 
               <Link
                 to="/profile"

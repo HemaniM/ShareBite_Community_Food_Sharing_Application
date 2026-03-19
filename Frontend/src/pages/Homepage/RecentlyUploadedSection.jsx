@@ -131,7 +131,15 @@ const RecentlyUploadedSection = ({ onProductClic, onViewMoreClick }) => {
                         </div>
 
                         {/* Add Button */}
-                        <Icon name="cart_small" />
+                        <Button1
+                          variant="filled"
+                          color="orange"
+                          size="sm"
+                          onClick={onViewMoreClick}
+                          className="py-2 px-3"
+                        >
+                          <Icon name="right_arrow" />
+                        </Button1>
                       </div>
                     </div>
                   </div>
