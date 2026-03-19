@@ -11,6 +11,22 @@ interface AcceptRequestResult {
   notificationMessage: string;
 }
 
+const requesterPopulate = {
+  path: "requester",
+  select: "name email phone address city district state profileImage",
+};
+
+const donorPopulate = {
+  path: "donor",
+  select: "name email phone address city district state profileImage",
+};
+
+const listingPopulate = {
+  path: "listingId",
+  select:
+    "title images price stock contactInfo location expiresAt status donor",
+};
+
 export class RequestService {
   static async createRequest(
     userId: string,
@@ -45,20 +61,38 @@ export class RequestService {
       throw new Error("You already have a pending request for this listing");
     }
 
-    return Request.create({
+    const request = await Request.create({
       listingId: listing._id,
       requester: userId,
       donor: listing.donor,
       requestedQuantity: data.requestedQuantity,
       message: data.message,
     });
+
+    return Request.findById(request._id)
+      .populate(listingPopulate)
+      .populate(donorPopulate)
+      .populate(requesterPopulate)
+      .orFail();
+  }
+
+  static async getRequesterRequests(userId: string): Promise<IRequest[]> {
+    await ListingsService.syncListingStatuses();
+
+    return Request.find({ requester: userId })
+      .populate(listingPopulate)
+      .populate(donorPopulate)
+      .sort({ createdAt: -1 });
   }
 
   static async getDonorRequests(
     userId: string,
     listingId: string,
   ): Promise<IRequest[]> {
-    return Request.find({ donor: userId, listingId }).sort({ createdAt: -1 });
+    return Request.find({ donor: userId, listingId })
+      .populate(requesterPopulate)
+      .populate(listingPopulate)
+      .sort({ createdAt: -1 });
   }
 
   static async acceptRequest(
@@ -142,8 +176,13 @@ export class RequestService {
 
       await session.commitTransaction();
 
+      const approvedRequest = await Request.findById(request._id)
+        .populate(requesterPopulate)
+        .populate(listingPopulate)
+        .orFail();
+
       return {
-        approvedRequest: request,
+        approvedRequest,
         updatedListing: listing,
         affectedRequestsCount: updateResult.modifiedCount,
         notificationMessage,

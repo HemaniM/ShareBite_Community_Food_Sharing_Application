@@ -28,6 +28,20 @@ export class RequestController {
     }
   }
 
+static async getMine(req: AuthRequest, res: Response) {
+    try {
+      if (!req.user?.id) {
+        return res.status(401).json({ message: 'Unauthorized' });
+      }
+
+      const requests = await RequestService.getRequesterRequests(req.user.id);
+      return res.status(200).json({ requests });
+    } catch (error: any) {
+      logger.error(`Get My Requests Error: ${error.message}`);
+      return res.status(500).json({ message: 'Internal Server Error' });
+    }
+  }
+
   static async getByListing(req: AuthRequest, res: Response) {
     try {
       if (!req.user?.id) {

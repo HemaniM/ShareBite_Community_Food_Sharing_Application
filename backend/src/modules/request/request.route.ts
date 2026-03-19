@@ -5,5 +5,6 @@ import { RequestController } from './request.controller';
 export const requestRouter = Router();
 
 requestRouter.post('/', protect, RequestController.create);
+requestRouter.get('/mine', protect, RequestController.getMine);
 requestRouter.get('/listing/:listingId', protect, RequestController.getByListing);
 requestRouter.patch('/accept', protect, RequestController.accept);
