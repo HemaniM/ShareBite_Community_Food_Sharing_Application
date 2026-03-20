@@ -163,7 +163,7 @@ const ProductListingPage = () => {
       <CategoriesSection onCategoryClick={handleCategoryClick} />
 
       <section className="w-full py-[80px] px-5 bg-[#fffaef]">
-        <div className="w-full max-w-[1100px] mx-auto">
+        <div className="w-full max-w-[975px] mx-auto">
           <h1 className="mb-[40px] text-[22px] font-bold text-black tracking-[0.5px]">
             {heading}
           </h1>

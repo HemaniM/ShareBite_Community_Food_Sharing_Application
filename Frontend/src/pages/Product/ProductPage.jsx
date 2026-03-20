@@ -371,7 +371,7 @@ const ProductPage = () => {
                   </div>
                 </div>
 
-                <div className="mt-[70px] rounded-[12px] border border-[#eceae4] bg-white p-6">
+                <div className="mt-[70px] rounded-[12px] bg-white">
                   <h2 className="text-[22px] font-bold text-black">
                     Ratings & Reviews Of{" "}
                     {product?.donorName || "ShareBite Donor"}
@@ -403,7 +403,7 @@ const ProductPage = () => {
                       </Button1>
                     </div>
 
-                    <div className="flex-1 overflow-x-auto">
+                    <div className="flex-1 overflow-x-auto no-scrollbar">
                       <div className="flex min-w-max gap-4 pb-2">
                         {reviewData.map((review) => (
                           <article
