@@ -7,6 +7,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import {
   acceptRequest,
   fetchRequestsForListing,
+  rejectRequest,
 } from "../../features/requests/requestsSlice";
 
 const dropdownOptions = ["ALL", "Pending", "Accepted", "Rejected"];
@@ -58,6 +59,7 @@ const FoodPostRequestsPage = () => {
     listingRequestsLoading,
     listingRequestsError,
     acceptLoading,
+    rejectLoading,
   } = useAppSelector((state) => state.requests);
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -126,6 +128,21 @@ const FoodPostRequestsPage = () => {
     }
   };
 
+  const handleRejectRequest = async (requestId) => {
+    const action = await dispatch(
+      rejectRequest({ requestId, listingId: postId }),
+    );
+    if (rejectRequest.fulfilled.match(action)) {
+      setToast({ message: "Request rejected successfully", type: "success" });
+      dispatch(fetchRequestsForListing(postId));
+    } else {
+      setToast({
+        message: action.payload || "Unable to reject request",
+        type: "error",
+      });
+    }
+  };
+
   return (
     <section className="w-full max-w-[975px] mx-auto pb-16 mt-[80px]">
       {toast.message && (
@@ -173,6 +190,7 @@ const FoodPostRequestsPage = () => {
           const address = [requester.address, requester.city, requester.state]
             .filter(Boolean)
             .join(", ");
+          const isBusy = acceptLoading || rejectLoading;
 
           return (
             <article
@@ -244,17 +262,30 @@ const FoodPostRequestsPage = () => {
 
                     <div className="mt-[15px] flex items-center gap-[15px]">
                       {request.status === "pending" ? (
-                        <Button1
-                          type="button"
-                          variant="filled"
-                          color="green"
-                          size="sm"
-                          onClick={() => handleAcceptRequest(request._id)}
-                          disabled={acceptLoading}
-                          className="rounded-[8px] px-[18px] py-[10px] text-[12px] font-semibold"
-                        >
-                          {acceptLoading ? "PROCESSING..." : "ACCEPT REQUEST"}
-                        </Button1>
+                        <>
+                          <Button1
+                            type="button"
+                            variant="filled"
+                            color="green"
+                            size="sm"
+                            onClick={() => handleAcceptRequest(request._id)}
+                            disabled={isBusy}
+                            className="rounded-[8px] px-[18px] py-[10px] text-[12px] font-semibold"
+                          >
+                            {acceptLoading ? "PROCESSING..." : "ACCEPT REQUEST"}
+                          </Button1>
+                          <Button1
+                            type="button"
+                            variant="outline"
+                            color="orange"
+                            size="sm"
+                            onClick={() => handleRejectRequest(request._id)}
+                            disabled={isBusy}
+                            className="rounded-[8px] px-[18px] py-[10px] text-[12px] font-semibold"
+                          >
+                            {rejectLoading ? "PROCESSING..." : "REJECT REQUEST"}
+                          </Button1>
+                        </>
                       ) : (
                         <Button1
                           type="button"
@@ -265,7 +296,7 @@ const FoodPostRequestsPage = () => {
                             request.status === "approved" ? "green" : "orange"
                           }
                           size="sm"
-                          className="rounded-[8px] px-[18px] py-[10px] text-[12px] font-semibold"
+                          className="rounded-[8px] px-[18px] py-[10px] text-[12px] font-semibold pointer-events-none"
                         >
                           {request.status.toUpperCase()}
                         </Button1>

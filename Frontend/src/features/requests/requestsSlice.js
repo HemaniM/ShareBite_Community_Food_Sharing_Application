@@ -4,6 +4,7 @@ import {
   createRequestAPI,
   getMyRequestsAPI,
   getRequestsForListingAPI,
+  rejectRequestAPI,
 } from "./requestsAPI";
 
 export const createRequest = createAsyncThunk(
@@ -63,6 +64,20 @@ export const acceptRequest = createAsyncThunk(
   },
 );
 
+export const rejectRequest = createAsyncThunk(
+  "requests/rejectRequest",
+  async ({ requestId, listingId }, { rejectWithValue }) => {
+    try {
+      const response = await rejectRequestAPI(requestId);
+      return { listingId, requestId, ...response.data };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Unable to reject request",
+      );
+    }
+  },
+);
+
 const initialState = {
   myRequests: [],
   listingRequests: [],
@@ -70,12 +85,24 @@ const initialState = {
   listingRequestsLoading: false,
   createLoading: false,
   acceptLoading: false,
+  rejectLoading: false,
   createError: null,
   myRequestsError: null,
   listingRequestsError: null,
   acceptError: null,
+  rejectError: null,
   createSuccessMessage: "",
 };
+
+const mergeUpdatedRequest = (requests, updatedRequest) =>
+  requests.map((request) =>
+    request._id === updatedRequest?._id
+      ? {
+          ...request,
+          ...updatedRequest,
+        }
+      : request,
+  );
 
 const requestsSlice = createSlice({
   name: "requests",
@@ -84,6 +111,7 @@ const requestsSlice = createSlice({
     clearRequestFeedback: (state) => {
       state.createError = null;
       state.acceptError = null;
+      state.rejectError = null;
       state.createSuccessMessage = "";
     },
   },
@@ -138,42 +166,12 @@ const requestsSlice = createSlice({
       .addCase(acceptRequest.fulfilled, (state, action) => {
         state.acceptLoading = false;
         state.acceptError = null;
-        const approvedRequestId = action.payload.approvedRequest?._id;
-        state.listingRequests = state.listingRequests.map((request) => {
-          if (request._id === approvedRequestId) {
-            return {
-              ...request,
-              ...action.payload.approvedRequest,
-            };
-          }
-
+        state.listingRequests = mergeUpdatedRequest(
+          state.listingRequests,
+          action.payload.approvedRequest,
+        ).map((request) => {
           if (
-            request.listingId === action.payload.listingId &&
-            request._id !== approvedRequestId &&
-            request.status === "pending"
-          ) {
-            return {
-              ...request,
-              status: "rejected",
-              donorToastMessage:
-                action.payload.toastNotificationForOtherRequesters,
-            };
-          }
-
-          return request;
-        });
-
-        state.myRequests = state.myRequests.map((request) => {
-          if (request._id === approvedRequestId) {
-            return {
-              ...request,
-              ...action.payload.approvedRequest,
-            };
-          }
-
-          if (
-            request.listingId?._id === action.payload.listingId &&
-            request._id !== approvedRequestId &&
+            request._id !== action.payload.approvedRequest?._id &&
             request.status === "pending"
           ) {
             return {
@@ -190,6 +188,26 @@ const requestsSlice = createSlice({
       .addCase(acceptRequest.rejected, (state, action) => {
         state.acceptLoading = false;
         state.acceptError = action.payload;
+      })
+      .addCase(rejectRequest.pending, (state) => {
+        state.rejectLoading = true;
+        state.rejectError = null;
+      })
+      .addCase(rejectRequest.fulfilled, (state, action) => {
+        state.rejectLoading = false;
+        state.rejectError = null;
+        state.listingRequests = mergeUpdatedRequest(
+          state.listingRequests,
+          action.payload.rejectedRequest,
+        );
+        state.myRequests = mergeUpdatedRequest(
+          state.myRequests,
+          action.payload.rejectedRequest,
+        );
+      })
+      .addCase(rejectRequest.rejected, (state, action) => {
+        state.rejectLoading = false;
+        state.rejectError = action.payload;
       });
   },
 });

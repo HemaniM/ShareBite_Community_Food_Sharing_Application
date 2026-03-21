@@ -18,3 +18,5 @@ export const getRequestsForListingAPI = (listingId) =>
   API.get(`/requests/listing/${listingId}`);
 export const acceptRequestAPI = (requestId) =>
   API.patch("/requests/accept", { requestId });
+export const rejectRequestAPI = (requestId) =>
+  API.patch("/requests/reject", { requestId });

@@ -10,10 +10,7 @@ const requestFilterOptions = [
   { value: "pending", label: "Requested" },
   { value: "approved", label: "Accepted" },
   { value: "rejected", label: "Rejected" },
-  { value: "completed", label: "Completed" },
-  { value: "cancelled", label: "Cancelled" },
 ];
-
 const formatRequestDate = (value) => {
   if (!value) {
     return "-";
@@ -35,25 +32,33 @@ const getStatusLabel = (status) => {
       return "REQUESTED";
     case "rejected":
       return "REQUEST REJECTED";
-    case "completed":
-      return "COMPLETED";
-    case "cancelled":
-      return "CANCELLED";
     default:
       return (status || "REQUESTED").toUpperCase();
   }
 };
 
-const getStatusColor = (status) => {
-  if (status === "approved" || status === "completed") {
-    return "green";
+const getStatusStyles = (status) => {
+  if (status === "approved") {
+    return {
+      variant: "filled",
+      color: "green",
+      className: "bg-[var(--primary-green-50)] text-green pointer-events-none",
+    };
   }
 
   if (status === "pending") {
-    return "green";
+    return {
+      variant: "outline",
+      color: "green",
+      className: "pointer-events-none",
+    };
   }
 
-  return "orange";
+  return {
+    variant: "outline",
+    color: "orange",
+    className: "pointer-events-none",
+  };
 };
 
 export const RequestsPage = () => {
@@ -91,7 +96,9 @@ export const RequestsPage = () => {
 
   const filteredRequests = useMemo(() => {
     if (selectedFilter === "all") {
-      return myRequests;
+      return myRequests.filter((request) =>
+        ["pending", "approved", "rejected"].includes(request.status),
+      );
     }
 
     return myRequests.filter((request) => request.status === selectedFilter);
@@ -162,7 +169,9 @@ export const RequestsPage = () => {
               {selectedFilterLabel}
               <Icon
                 name="arrow_down_white"
-                className={`scale-[0.7] transition-transform ${isFilterOpen ? "rotate-180" : ""}`}
+                className={`scale-[0.7] transition-transform ${
+                  isFilterOpen ? "rotate-180" : ""
+                }`}
               />
             </Button1>
 
@@ -215,6 +224,7 @@ export const RequestsPage = () => {
             ]
               .filter(Boolean)
               .join(", ");
+            const statusStyles = getStatusStyles(request.status);
 
             return (
               <article
@@ -279,14 +289,10 @@ export const RequestsPage = () => {
                       <div className="mt-[15px] flex flex-wrap items-center gap-[15px]">
                         <Button1
                           type="button"
-                          variant={
-                            getStatusColor(request.status) === "green"
-                              ? "filled"
-                              : "outline"
-                          }
-                          color={getStatusColor(request.status)}
+                          variant={statusStyles.variant}
+                          color={statusStyles.color}
                           size="sm"
-                          className="rounded-[8px] px-[18px] py-[10px] text-[12px] font-semibold"
+                          className={`rounded-[8px] px-[18px] py-[10px] text-[12px] font-semibold ${statusStyles.className}`}
                         >
                           {getStatusLabel(request.status)}
                         </Button1>
@@ -294,10 +300,10 @@ export const RequestsPage = () => {
                         {request.status === "approved" && (
                           <Button1
                             type="button"
-                            variant="outline"
+                            variant="filled"
                             color="orange"
                             size="sm"
-                            className="rounded-[8px] px-[18px] py-[9px] text-[12px] font-semibold"
+                            className="rounded-[10px] px-[18px] py-[10px] text-[12px] font-semibold"
                             onClick={() => handleOpenFeedbackModal(request._id)}
                           >
                             SHARE YOUR FEEDBACK
@@ -324,69 +330,68 @@ export const RequestsPage = () => {
       </section>
 
       {isFeedbackModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-4">
-          <div className="w-full max-w-[520px] rounded-[14px] bg-white p-6 shadow-xl">
-            <div className="flex items-center justify-between">
-              <h3 className="text-[20px] font-bold text-[#2f2e2b]">
-                Share feedback
-              </h3>
-              <button
-                type="button"
-                onClick={handleCloseFeedbackModal}
-                className="text-[22px] leading-none text-[#77746d]"
-              >
-                ×
-              </button>
-            </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(49,48,43,0.16)] backdrop-blur-[3px] px-4">
+          <div className="relative w-full max-w-[520px] rounded-[8px] bg-white px-[44px] py-[36px] shadow-[0px_16px_40px_#00000029]">
+            <button
+              type="button"
+              onClick={handleCloseFeedbackModal}
+              className="absolute right-[24px] top-[22px]"
+              aria-label="Close feedback modal"
+            >
+              <Icon name="cross_icon" />
+            </button>
 
-            <form className="mt-6" onSubmit={handleFeedbackSubmit}>
-              <label className="block text-[13px] font-semibold text-[#2f2e2b]">
-                Rating
-                <input
-                  type="number"
-                  min="0"
-                  max="5"
-                  step="1"
-                  value={feedbackRating}
-                  onChange={(event) =>
-                    setFeedbackRating(Number(event.target.value))
-                  }
-                  className="mt-2 w-full rounded-[8px] border border-[#e5e4df] px-3 py-2"
-                />
-              </label>
+            <h3 className="text-center text-[22px] font-semibold tracking-[0.2px] text-[#31302b] uppercase">
+              HOW WAS YOUR EXPERIENCE?
+            </h3>
+            <p className="mx-auto mt-[14px] max-w-[275px] text-center text-[11px] font-medium uppercase leading-[16px] text-[var(--text-grey-4)]">
+              YOUR FEEDBACK HELPS US TO IMPROVE. TAP A STAR TO RATE YOUR
+              EXPERIENCE.
+            </p>
 
-              <label className="mt-4 block text-[13px] font-semibold text-[#2f2e2b]">
-                Feedback
-                <textarea
-                  rows="4"
-                  value={feedbackText}
-                  onChange={(event) => setFeedbackText(event.target.value)}
-                  className="mt-2 w-full rounded-[8px] border border-[#e5e4df] px-3 py-2"
-                  placeholder="Share your experience"
-                />
-              </label>
+            <form className="mt-[34px]" onSubmit={handleFeedbackSubmit}>
+              <div className="mb-[28px] flex items-center justify-center gap-[10px]">
+                {[1, 2, 3, 4, 5].map((starValue) => {
+                  const isFilled = starValue <= feedbackRating;
 
-              <div className="mt-6 flex justify-end gap-3">
-                <Button1
-                  type="button"
-                  variant="outline"
-                  color="orange"
-                  size="sm"
-                  onClick={handleCloseFeedbackModal}
-                  className="rounded-[8px] px-4 py-2 text-[12px] font-semibold"
-                >
-                  CANCEL
-                </Button1>
-                <Button1
-                  type="submit"
-                  variant="filled"
-                  color="green"
-                  size="sm"
-                  className="rounded-[8px] px-4 py-2 text-[12px] font-semibold"
-                >
-                  SUBMIT FEEDBACK
-                </Button1>
+                  return (
+                    <button
+                      key={starValue}
+                      type="button"
+                      onClick={() => setFeedbackRating(starValue)}
+                      className="transition-transform duration-150 hover:scale-110"
+                      aria-label={`Rate ${starValue} star`}
+                    >
+                      <Icon
+                        name={
+                          isFilled
+                            ? "feedback_star_icon_filled"
+                            : "feedback_star_icon_outlined"
+                        }
+                      />
+                    </button>
+                  );
+                })}
               </div>
+
+              <textarea
+                value={feedbackText}
+                onChange={(event) => setFeedbackText(event.target.value)}
+                placeholder="Type Your Feedback Here..."
+                className="h-[112px] w-full rounded-[6px] border border-[#e5dfd6] px-[18px] py-[16px] text-[12px] text-[var(--text-grey-4)] outline-none resize-none placeholder:text-[#b5ada3]"
+                required
+              />
+
+              <Button1
+                type="submit"
+                variant="filled"
+                color="orange"
+                size="md"
+                disabled={feedbackRating === 0}
+                className="mx-auto mt-[28px] block rounded-[8px] px-[20px] py-[12px] text-[12px] font-bold tracking-[0.4px]"
+              >
+                SUBMIT REVIEW
+              </Button1>
             </form>
           </div>
         </div>
