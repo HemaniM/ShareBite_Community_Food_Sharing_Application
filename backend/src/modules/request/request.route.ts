@@ -8,3 +8,4 @@ requestRouter.post('/', protect, RequestController.create);
 requestRouter.get('/mine', protect, RequestController.getMine);
 requestRouter.get('/listing/:listingId', protect, RequestController.getByListing);
 requestRouter.patch('/accept', protect, RequestController.accept);
+requestRouter.patch('/reject', protect, RequestController.reject);

@@ -4,8 +4,8 @@ import Request, { IRequest, RequestStatus } from "./request.model";
 import { CreateRequestDto } from "./request.schema";
 import { ListingsService } from "../listings/listings.service";
 
-interface AcceptRequestResult {
-  approvedRequest: IRequest;
+interface RequestMutationResult {
+  updatedRequest: IRequest;
   updatedListing: IListing;
   affectedRequestsCount: number;
   notificationMessage: string;
@@ -98,7 +98,7 @@ export class RequestService {
   static async acceptRequest(
     userId: string,
     requestId: string,
-  ): Promise<AcceptRequestResult> {
+  ): Promise<RequestMutationResult> {
     const session = await mongoose.startSession();
 
     try {
@@ -176,16 +176,70 @@ export class RequestService {
 
       await session.commitTransaction();
 
-      const approvedRequest = await Request.findById(request._id)
+      const updatedRequest = await Request.findById(request._id)
         .populate(requesterPopulate)
         .populate(listingPopulate)
         .orFail();
 
       return {
-        approvedRequest,
+        updatedRequest,
         updatedListing: listing,
         affectedRequestsCount: updateResult.modifiedCount,
         notificationMessage,
+      };
+    } catch (error) {
+      await session.abortTransaction();
+      throw error;
+    } finally {
+      session.endSession();
+    }
+  }
+
+  static async rejectRequest(
+    userId: string,
+    requestId: string,
+  ): Promise<RequestMutationResult> {
+    const session = await mongoose.startSession();
+
+    try {
+      session.startTransaction();
+
+      const request = await Request.findOne({
+        _id: requestId,
+        donor: userId,
+      }).session(session);
+      if (!request) {
+        throw new Error("Request not found");
+      }
+
+      if (request.status !== RequestStatus.PENDING) {
+        throw new Error("Only pending requests can be rejected");
+      }
+
+      const listing = await Listing.findOne({
+        _id: request.listingId,
+        donor: userId,
+      }).session(session);
+      if (!listing) {
+        throw new Error("Listing not found");
+      }
+
+      request.status = RequestStatus.REJECTED;
+      request.donorToastMessage = "Your request was rejected by the donor.";
+      await request.save({ session });
+
+      await session.commitTransaction();
+
+      const updatedRequest = await Request.findById(request._id)
+        .populate(requesterPopulate)
+        .populate(listingPopulate)
+        .orFail();
+
+      return {
+        updatedRequest,
+        updatedListing: listing,
+        affectedRequestsCount: 1,
+        notificationMessage: request.donorToastMessage,
       };
     } catch (error) {
       await session.abortTransaction();
