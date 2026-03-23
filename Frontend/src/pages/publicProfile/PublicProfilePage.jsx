@@ -53,6 +53,20 @@ const PublicProfilePage = () => {
       ? userProfile.reviews
       : [];
 
+    const totalReviews = Number(
+      userProfile.totalReviews ||
+        userProfile.reviewsCount ||
+        reviews.length ||
+        0,
+    );
+
+    const averageRating = Number(
+      userProfile.averageRating ||
+        userProfile.rating ||
+        userProfile.avgRating ||
+        0,
+    );
+
     return {
       fullName:
         userProfile.fullName ||
@@ -75,21 +89,9 @@ const PublicProfilePage = () => {
         userProfile.avatar ||
         userProfile.profileImage ||
         "/images/profile_image.jpg",
-      rating: Number(userProfile.rating || userProfile.avgRating || 0),
-      totalReviews: Number(
-        userProfile.totalReviews ||
-          userProfile.reviewsCount ||
-          reviews.length ||
-          0,
-      ),
-      isTrusted:
-        Boolean(userProfile.isTrusted) ||
-        Number(
-          userProfile.averageRating ||
-            userProfile.rating ||
-            userProfile.avgRating ||
-            0,
-        ) >= 4,
+      rating: totalReviews ? averageRating : 0,
+      totalReviews,
+      isTrusted: Boolean(userProfile.isTrusted) || averageRating >= 4,
       reviews,
     };
   }, [userProfile]);
