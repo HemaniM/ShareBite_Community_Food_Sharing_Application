@@ -319,7 +319,7 @@ const ProductPage = () => {
                           onClick={handleCreateRequest}
                           disabled={createLoading || stockQuantity <= 0}
                         >
-                          {createLoading ? "REQUESTING..." : "REQUEST"}
+                          {createLoading ? "REQUESTING..." : "SEND REQUEST"}
                         </Button1>
                       </div>
                     </div>
