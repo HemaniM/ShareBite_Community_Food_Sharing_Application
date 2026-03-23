@@ -101,7 +101,6 @@ const FoodPostsPage = () => {
 
       <div className="space-y-[30px]">
         {myListings.map((post) => {
-          const requestCount = Number(post.requestCount || 0);
           const pendingRequestCount = Number(post.pendingRequestCount || 0);
 
           return (
@@ -132,13 +131,9 @@ const FoodPostsPage = () => {
                       </h3>
                       <div className="inline-flex items-center gap-2 rounded-full bg-[var(--primary-orange-50)] px-3 py-1 text-[11px] font-semibold text-[var(--primary-orange-700)]">
                         <span>
-                          {requestCount} request{requestCount === 1 ? "" : "s"}
+                          {pendingRequestCount} pending request
+                          {pendingRequestCount === 1 ? "" : "s"}
                         </span>
-                        {pendingRequestCount > 0 ? (
-                          <span className="rounded-full bg-white px-2 py-[2px] text-[10px] text-[var(--primary-green-700)]">
-                            {pendingRequestCount} pending
-                          </span>
-                        ) : null}
                       </div>
                     </div>
                     <Link

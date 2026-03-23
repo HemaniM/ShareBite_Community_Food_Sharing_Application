@@ -105,6 +105,26 @@ const mergeUpdatedRequest = (requests, updatedRequest) =>
       : request,
   );
 
+const mergeUpdatedRequests = (requests, updatedRequests = []) => {
+  if (!updatedRequests.length) {
+    return requests;
+  }
+
+  const updatedRequestMap = new Map(
+    updatedRequests.map((request) => [String(request._id), request]),
+  );
+
+  return requests.map((request) => {
+    const updatedRequest = updatedRequestMap.get(String(request._id));
+    return updatedRequest
+      ? {
+          ...request,
+          ...updatedRequest,
+        }
+      : request;
+  });
+};
+
 const requestsSlice = createSlice({
   name: "requests",
   initialState,
@@ -167,44 +187,49 @@ const requestsSlice = createSlice({
       .addCase(acceptRequest.fulfilled, (state, action) => {
         state.acceptLoading = false;
         state.acceptError = null;
-        state.listingRequests = mergeUpdatedRequest(
-          state.listingRequests,
-          action.payload.approvedRequest,
-        ).map((request) => {
-          if (
-            request._id !== action.payload.approvedRequest?._id &&
-            request.status === "pending"
-          ) {
-            return {
-              ...request,
-              status: "rejected",
-              donorToastMessage:
-                action.payload.toastNotificationForOtherRequesters,
-            };
-          }
+        const updatedListing = action.payload.listing;
+        const autoRejectedRequests = action.payload.autoRejectedRequests || [];
 
-         return request;
-        });
-        state.myRequests = mergeUpdatedRequest(
-          state.myRequests,
-          action.payload.approvedRequest,
-        ).map((request) => {
-          if (
-            request._id !== action.payload.approvedRequest?._id &&
-            request.status === "pending" &&
-            String(request.listingId?._id || request.listingId) ===
-              String(action.payload.listingId)
-          ) {
-            return {
-              ...request,
-              status: "rejected",
-              donorToastMessage:
-                action.payload.toastNotificationForOtherRequesters,
-            };
-          }
+        state.listingRequests = mergeUpdatedRequests(
+          mergeUpdatedRequest(
+            state.listingRequests,
+            action.payload.approvedRequest,
+          ),
+          autoRejectedRequests,
+        ).map((request) =>
+          String(request.listingId?._id || request.listingId) ===
+          String(updatedListing?._id)
+            ? {
+                ...request,
+                listingId: request.listingId
+                  ? {
+                      ...request.listingId,
+                      ...updatedListing,
+                    }
+                  : updatedListing,
+              }
+            : request,
+        );
 
-          return request;
-        });
+        state.myRequests = mergeUpdatedRequests(
+          mergeUpdatedRequest(state.myRequests, action.payload.approvedRequest),
+          autoRejectedRequests,
+        ).map((request) =>
+          String(request.listingId?._id || request.listingId) ===
+          String(action.payload.listingId)
+            ? {
+                ...request,
+                listingId:
+                  typeof request.listingId === "object" &&
+                  request.listingId !== null
+                    ? {
+                        ...request.listingId,
+                        ...updatedListing,
+                      }
+                    : updatedListing || request.listingId,
+              }
+            : request,
+        );
       })
       .addCase(acceptRequest.rejected, (state, action) => {
         state.acceptLoading = false;
