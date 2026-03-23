@@ -1,4 +1,6 @@
+import mongoose from "mongoose";
 import Listing, { IListing, ListingStatus } from "./listings.model";
+import Request from "../request/request.model";
 import { CreateListingDto } from "./listings.schema";
 
 export class ListingsService {
@@ -65,9 +67,51 @@ export class ListingsService {
     return listing;
   }
 
-  static async getMyListings(userId: string): Promise<IListing[]> {
+  static async getMyListings(userId: string): Promise<any[]> {
     await ListingsService.syncListingStatuses();
-    return Listing.find({ donor: userId }).sort({ createdAt: -1 });
+
+    const listings = await Listing.find({ donor: userId })
+      .sort({ createdAt: -1 })
+      .lean();
+
+    if (!listings.length) {
+      return [];
+    }
+
+    const listingIds = listings.map((listing) => listing._id);
+    const requestCounts = await Request.aggregate([
+      {
+        $match: {
+          donor: new mongoose.Types.ObjectId(userId),
+          listingId: { $in: listingIds },
+        },
+      },
+      {
+        $group: {
+          _id: "$listingId",
+          requestCount: { $sum: 1 },
+          pendingRequestCount: {
+            $sum: {
+              $cond: [{ $eq: ["$status", "pending"] }, 1, 0],
+            },
+          },
+        },
+      },
+    ]);
+
+    const requestCountByListingId = new Map(
+      requestCounts.map((item) => [String(item._id), item]),
+    );
+
+    return listings.map((listing) => {
+      const counts = requestCountByListingId.get(String(listing._id));
+
+      return {
+        ...listing,
+        requestCount: counts?.requestCount || 0,
+        pendingRequestCount: counts?.pendingRequestCount || 0,
+      };
+    });
   }
 
   static async getActiveListings(): Promise<IListing[]> {
