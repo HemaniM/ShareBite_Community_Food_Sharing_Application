@@ -9,6 +9,7 @@ interface RequestMutationResult {
   updatedListing: IListing;
   affectedRequestsCount: number;
   notificationMessage: string;
+  autoRejectedRequests?: IRequest[];
 }
 
 const requesterPopulate = {
@@ -168,37 +169,63 @@ export class RequestService {
 
       const notificationMessage =
         listing.stock.quantity === 0
-          ? "This food request is out of stock."
+          ? "This food post is now out of stock."
           : `Stock updated. Remaining stock: ${listing.stock.quantity} ${listing.stock.unit}.`;
 
-      const updateResult = await Request.updateMany(
-        {
-          listingId: listing._id,
-          _id: { $ne: request._id },
-          status: RequestStatus.PENDING,
-        },
-        {
-          $set: {
-            status: RequestStatus.REJECTED,
-            donorToastMessage: notificationMessage,
+      const autoRejectedRequestIds = (
+        await Request.find(
+          {
+            listingId: listing._id,
+            _id: { $ne: request._id },
+            status: RequestStatus.PENDING,
+            requestedQuantity: { $gt: listing.stock.quantity },
           },
-        },
-        { session },
-      );
+          { _id: 1 },
+          { session },
+        )
+      ).map((pendingRequest) => pendingRequest._id);
+
+      let affectedRequestsCount = 0;
+
+      if (autoRejectedRequestIds.length) {
+        const updateResult = await Request.updateMany(
+          {
+            _id: { $in: autoRejectedRequestIds },
+          },
+          {
+            $set: {
+              status: RequestStatus.REJECTED,
+              donorToastMessage: `Automatically rejected because only ${listing.stock.quantity} ${listing.stock.unit} remain in stock.`,
+            },
+          },
+          { session },
+        );
+
+        affectedRequestsCount = updateResult.modifiedCount;
+      }
 
       await session.commitTransaction();
 
-      const updatedRequest = await Request.findById(request._id)
-        .populate(requesterPopulate)
-        .populate(listingPopulate)
-        .populate(reviewPopulate)
-        .orFail();
+      const [updatedRequest, autoRejectedRequests] = await Promise.all([
+        Request.findById(request._id)
+          .populate(requesterPopulate)
+          .populate(listingPopulate)
+          .populate(reviewPopulate)
+          .orFail(),
+        autoRejectedRequestIds.length
+          ? Request.find({ _id: { $in: autoRejectedRequestIds } })
+              .populate(requesterPopulate)
+              .populate(listingPopulate)
+              .populate(reviewPopulate)
+          : Promise.resolve([]),
+      ]);
 
       return {
         updatedRequest,
         updatedListing: listing,
-        affectedRequestsCount: updateResult.modifiedCount,
+        affectedRequestsCount,
         notificationMessage,
+        autoRejectedRequests,
       };
     } catch (error) {
       await session.abortTransaction();

@@ -81,6 +81,7 @@ export class RequestController {
         listing: result.updatedListing,
         toastNotificationForOtherRequesters: result.notificationMessage,
         impactedRequestCount: result.affectedRequestsCount,
+        autoRejectedRequests: result.autoRejectedRequests || [],
       });
     } catch (error: any) {
       logger.error(`Accept Request Error: ${error.message}`);
