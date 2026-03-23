@@ -27,6 +27,14 @@ const listingPopulate = {
     "title images price stock contactInfo location expiresAt status donor",
 };
 
+const reviewPopulate = {
+  path: "review",
+  populate: {
+    path: "reviewer",
+    select: "name city district state profileImage",
+  },
+};
+
 export class RequestService {
   static async createRequest(
     userId: string,
@@ -73,6 +81,7 @@ export class RequestService {
       .populate(listingPopulate)
       .populate(donorPopulate)
       .populate(requesterPopulate)
+      .populate(reviewPopulate)
       .orFail();
   }
 
@@ -82,6 +91,7 @@ export class RequestService {
     return Request.find({ requester: userId })
       .populate(listingPopulate)
       .populate(donorPopulate)
+      .populate(reviewPopulate)
       .sort({ createdAt: -1 });
   }
 
@@ -92,6 +102,7 @@ export class RequestService {
     return Request.find({ donor: userId, listingId })
       .populate(requesterPopulate)
       .populate(listingPopulate)
+      .populate(reviewPopulate)
       .sort({ createdAt: -1 });
   }
 
@@ -151,6 +162,7 @@ export class RequestService {
       await listing.save({ session });
 
       request.status = RequestStatus.APPROVED;
+      request.acceptedAt = new Date();
       request.donorToastMessage = `Your request was accepted. Donor approved ${request.requestedQuantity} ${listing.stock.unit}.`;
       await request.save({ session });
 
@@ -179,6 +191,7 @@ export class RequestService {
       const updatedRequest = await Request.findById(request._id)
         .populate(requesterPopulate)
         .populate(listingPopulate)
+        .populate(reviewPopulate)
         .orFail();
 
       return {
@@ -233,6 +246,7 @@ export class RequestService {
       const updatedRequest = await Request.findById(request._id)
         .populate(requesterPopulate)
         .populate(listingPopulate)
+        .populate(reviewPopulate)
         .orFail();
 
       return {

@@ -80,7 +80,7 @@ export class ListingsService {
       expiresAt: { $gt: now },
       "stock.quantity": { $gt: 0 },
     })
-      .populate("donor", "name")
+      .populate("donor", "name isTrusted")
       .sort({
         createdAt: -1,
       });

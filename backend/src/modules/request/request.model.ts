@@ -16,6 +16,8 @@ export interface IRequest extends Document {
   status: RequestStatus;
   message?: string;
   donorToastMessage?: string;
+  acceptedAt?: Date;
+  review?: mongoose.Types.ObjectId;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -33,6 +35,8 @@ const RequestSchema: Schema = new Schema(
     },
     message: { type: String },
     donorToastMessage: { type: String },
+    acceptedAt: { type: Date },
+    review: { type: Schema.Types.ObjectId, ref: "Review", default: null },
   },
   { timestamps: true },
 );
