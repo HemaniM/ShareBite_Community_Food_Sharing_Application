@@ -82,7 +82,14 @@ const PublicProfilePage = () => {
           reviews.length ||
           0,
       ),
-      isTrusted: Boolean(userProfile.isTrusted),
+      isTrusted:
+        Boolean(userProfile.isTrusted) ||
+        Number(
+          userProfile.averageRating ||
+            userProfile.rating ||
+            userProfile.avgRating ||
+            0,
+        ) >= 4,
       reviews,
     };
   }, [userProfile]);
@@ -200,11 +207,15 @@ const PublicProfilePage = () => {
                     ) : (
                       mappedUser.reviews.map((review, index) => {
                         const reviewerId =
+                          review.reviewer?._id ||
                           review.reviewerId ||
                           review.userId ||
                           review.user?._id;
                         const reviewerName =
-                          review.reviewerName || review.name || "Anonymous";
+                          review.reviewer?.name ||
+                          review.reviewerName ||
+                          review.name ||
+                          "Anonymous";
 
                         return (
                           <article
@@ -220,6 +231,7 @@ const PublicProfilePage = () => {
                                   >
                                     <img
                                       src={
+                                        review.reviewer?.profileImage ||
                                         review.reviewerAvatar ||
                                         review.image ||
                                         "/images/Aarav_Shah.jpg"
@@ -235,6 +247,7 @@ const PublicProfilePage = () => {
                                   <>
                                     <img
                                       src={
+                                        review.reviewer?.profileImage ||
                                         review.reviewerAvatar ||
                                         review.image ||
                                         "/images/Aarav_Shah.jpg"
@@ -260,7 +273,15 @@ const PublicProfilePage = () => {
                                 <Icon name="star_icon_review_page_small" />
                               </div>
                               <p className="mt-0.5 flex items-center gap-1 text-[13px] text-[var(--text-grey-5)]">
-                                {review.location || "Location not provided"}
+                                {[
+                                  review.reviewer?.city,
+                                  review.reviewer?.district,
+                                  review.reviewer?.state,
+                                ]
+                                  .filter(Boolean)
+                                  .join(", ") ||
+                                  review.location ||
+                                  "Location not provided"}
                               </p>
                             </div>
                             <p className="mt-3 text-[12px] leading-[18px] text-[var(--text-grey-4)]">

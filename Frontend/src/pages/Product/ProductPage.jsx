@@ -16,47 +16,12 @@ import {
   createRequest,
   fetchMyRequests,
 } from "../../features/requests/requestsSlice";
+import { fetchDonorReviews } from "../../features/reviews/reviewsSlice";
 import {
   isDisplayableListing,
   mapListingToProduct,
   slugifyProductName,
 } from "../../utils/listingTransforms";
-
-const reviewData = [
-  {
-    id: 1,
-    userId: "1",
-    name: "Aanya Mishra",
-    image: "/images/Ananya_Mishra.jpg",
-    date: "4/10/2025",
-    rating: 4.5,
-    location: "Bhayander (E)",
-    comment:
-      "Great initiative by the Share-Fresh. Hygiene for dry mix was rich then. Shared thoughtful food for the community in need.",
-  },
-  {
-    id: 2,
-    userId: "2",
-    name: "Aarav Shah",
-    image: "/images/Aarav_Shah.jpg",
-    date: "15/8/2025",
-    rating: 4,
-    location: "Bhayander (E)",
-    comment:
-      "Fresh and well-packed vegetable pulao. Nicely packed and safe to consume. Really appreciate the care taken while sharing.",
-  },
-  {
-    id: 3,
-    userId: "3",
-    name: "Kavya Malkiye",
-    image: "/images/Kavya_Melviya.jpg",
-    date: "20/12/2025",
-    rating: 3.5,
-    location: "Bhayander (E)",
-    comment:
-      "Soft, flavorful homemade chapatis shared in perfect condition. Serving great hygiene and thoughtfulness.",
-  },
-];
 
 const formatExpiryText = (expiresAt) => {
   if (!expiresAt) {
@@ -70,6 +35,15 @@ const formatExpiryText = (expiresAt) => {
   }
 
   return expiryDate.toLocaleString();
+};
+
+const formatReviewDate = (value) => {
+  if (!value) {
+    return "-";
+  }
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? "-" : date.toLocaleDateString();
 };
 
 const ProductPage = () => {
@@ -86,6 +60,12 @@ const ProductPage = () => {
     (state) => state.listings,
   );
   const { createLoading } = useAppSelector((state) => state.requests);
+  const {
+    donorReviews,
+    donorReviewsLoading,
+    donorAverageRating,
+    donorTotalReviews,
+  } = useAppSelector((state) => state.reviews);
 
   useEffect(() => {
     dispatch(fetchActiveListings());
@@ -117,6 +97,15 @@ const ProductPage = () => {
 
     return allProducts.find((item) => item.id === productId) || null;
   }, [allProducts, productFromNavigation, productId]);
+
+  useEffect(() => {
+    if (product?.donorId) {
+      dispatch(fetchDonorReviews({ donorId: product.donorId }));
+    }
+  }, [dispatch, product?.donorId, product?.id]);
+
+  const showTrustedBadge =
+    donorAverageRating >= 4 || Boolean(product?.rawListing?.donor?.isTrusted);
 
   const relatedProducts = useMemo(
     () => allProducts.filter((item) => item.id !== productId).slice(0, 8),
@@ -379,76 +368,95 @@ const ProductPage = () => {
 
                   <div className="mt-8 flex flex-col gap-6 lg:flex-row lg:items-start">
                     <div className="min-w-[160px] shrink-0">
-                      <div className="flex items-end gap-2">
+                      <div className="flex gap-2 items-center">
                         <p className="text-[44px] font-bold leading-none text-[#2e2c27]">
-                          4/5
+                          {donorTotalReviews
+                            ? donorAverageRating.toFixed(1)
+                            : "0.0"}
+                          /5
                         </p>
                         <Icon name="star_icon_md" />
                       </div>
                       <p className="mt-4 text-[16px] text-[var(--text-grey-4)]">
-                        50 Reviews
+                        {donorTotalReviews} Reviews
                       </p>
 
-                      <Button1
-                        type="button"
-                        variant="filled"
-                        color="green"
-                        size="sm"
-                        className="mt-6 rounded-full bg-[var(--primary-green-50)] px-[20px] py-[6px] text-[14px] font-medium normal-case text-[var(--text-grey-4)]"
-                      >
-                        <span className="mr-[10px]">
-                          <Icon name="green_tick_icon" />
-                        </span>
-                        Trusted
-                      </Button1>
+                      {showTrustedBadge ? (
+                        <Button1
+                          type="button"
+                          variant="filled"
+                          color="green"
+                          size="sm"
+                          className="mt-6 rounded-full bg-[var(--primary-green-50)] px-[20px] py-[6px] text-[14px] font-medium normal-case text-[var(--text-grey-4)]"
+                        >
+                          <span className="mr-[10px]">
+                            <Icon name="green_tick_icon" />
+                          </span>
+                          Trusted
+                        </Button1>
+                      ) : null}
                     </div>
 
                     <div className="flex-1 overflow-x-auto no-scrollbar">
-                      <div className="flex min-w-max gap-4 pb-2">
-                        {reviewData.map((review) => (
-                          <article
-                            key={review.id}
-                            className="w-[320px] shrink-0 rounded-[14px] border border-[#eceae4] bg-[#fffdf9] p-4"
-                          >
-                            <div className="flex items-center justify-between gap-3">
-                              <div className="flex items-center gap-3">
-                                {review.userId ? (
-                                  <Link
-                                    to={`/user/${review.userId}`}
-                                    className="flex items-center gap-3"
-                                  >
-                                    <img
-                                      src={review.image}
-                                      alt={review.name}
-                                      className="h-12 w-12 rounded-full object-cover transition hover:opacity-90"
-                                    />
-                                    <p className="text-[14px] font-bold tracking-[0.2px] text-[var(--text-grey-5)] transition hover:text-orange">
-                                      {review.name}
-                                    </p>
-                                  </Link>
-                                ) : (
-                                  <>
-                                    <img
-                                      src={review.image}
-                                      alt={review.name}
-                                      className="h-12 w-12 rounded-full object-cover"
-                                    />
-                                    <p className="text-[14px] font-bold tracking-[0.2px] text-[var(--text-grey-5)]">
-                                      {review.name}
-                                    </p>
-                                  </>
-                                )}
-                              </div>
-                              <p className="text-[12px] text-[var(--text-grey-4)]">
-                                {review.date}
-                              </p>
-                            </div>
-                            <p className="mt-5 text-[13px] leading-7 text-[var(--text-grey-4)]">
-                              “{review.comment}”
-                            </p>
-                          </article>
-                        ))}
-                      </div>
+                      {donorReviewsLoading ? (
+                        <p className="text-[13px] text-[var(--text-grey-4)]">
+                          Loading reviews...
+                        </p>
+                      ) : donorReviews.length === 0 ? (
+                        <div className="rounded-[14px] border border-[#eceae4] bg-[#fffdf9] p-4 text-[13px] text-[var(--text-grey-4)]">
+                          No reviews have been shared for this donor yet.
+                        </div>
+                      ) : (
+                        <div className="flex min-w-max gap-4 pb-2">
+                          {donorReviews.map((review) => {
+                            const reviewerId = review.reviewer?._id;
+                            const reviewerName =
+                              review.reviewer?.name || "Anonymous";
+                            const reviewerImage =
+                              review.reviewer?.profileImage ||
+                              "/images/profile_image.jpg";
+
+                            return (
+                              <article
+                                key={review._id}
+                                className="w-[320px] shrink-0 rounded-[14px] border border-[#eceae4] bg-[#fffdf9] p-4"
+                              >
+                                <div className="flex items-center justify-between gap-3">
+                                  <div className="flex items-center gap-3">
+                                    {reviewerId ? (
+                                      <Link
+                                        to={`/user/${reviewerId}`}
+                                        className="flex items-center gap-3"
+                                      >
+                                        <img
+                                          src={reviewerImage}
+                                          alt={reviewerName}
+                                          className="h-12 w-12 rounded-full object-cover transition hover:opacity-90"
+                                        />
+                                        <p className="text-[14px] font-bold tracking-[0.2px] text-[var(--text-grey-5)] transition hover:text-orange">
+                                          {reviewerName}
+                                        </p>
+                                      </Link>
+                                    ) : null}
+                                  </div>
+                                  <p className="text-[12px] text-[var(--text-grey-4)]">
+                                    {formatReviewDate(review.createdAt)}
+                                  </p>
+                                </div>
+                                <div className="mt-4 flex items-center gap-2 text-[13px] font-semibold text-[var(--text-grey-5)]">
+                                  <span>
+                                    {Number(review.rating || 0).toFixed(1)}/5
+                                  </span>
+                                  <Icon name="star_icon_review_page_small" />
+                                </div>
+                                <p className="mt-5 text-[13px] leading-7 text-[var(--text-grey-4)]">
+                                  “{review.comment}”
+                                </p>
+                              </article>
+                            );
+                          })}
+                        </div>
+                      )}
                     </div>
                   </div>
                 </div>

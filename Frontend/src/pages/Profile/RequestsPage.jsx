@@ -1,9 +1,13 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Icon } from "../../components/Icons/Icons";
 import Button1 from "../../components/ui/Button1";
-
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import { fetchMyRequests } from "../../features/requests/requestsSlice";
+import { fetchMyProfile } from "../../features/profile/profileSlice";
+import {
+  clearReviewFeedback,
+  submitReview,
+} from "../../features/reviews/reviewsSlice";
 
 const requestFilterOptions = [
   { value: "all", label: "ALL" },
@@ -66,6 +70,9 @@ export const RequestsPage = () => {
   const { myRequests, myRequestsLoading, myRequestsError } = useAppSelector(
     (state) => state.requests,
   );
+  const { submitLoading, submitError } = useAppSelector(
+    (state) => state.reviews,
+  );
 
   const [selectedFilter, setSelectedFilter] = useState("all");
   const [isFilterOpen, setIsFilterOpen] = useState(false);
@@ -94,6 +101,8 @@ export const RequestsPage = () => {
     };
   }, []);
 
+  useEffect(() => () => dispatch(clearReviewFeedback()), [dispatch]);
+
   const filteredRequests = useMemo(() => {
     if (selectedFilter === "all") {
       return myRequests.filter((request) =>
@@ -112,6 +121,7 @@ export const RequestsPage = () => {
     setActiveRequestId(requestId);
     setFeedbackText("");
     setFeedbackRating(0);
+    dispatch(clearReviewFeedback());
     setIsFeedbackModalOpen(true);
   };
 
@@ -120,31 +130,23 @@ export const RequestsPage = () => {
     setActiveRequestId("");
     setFeedbackText("");
     setFeedbackRating(0);
+    dispatch(clearReviewFeedback());
   };
 
-  const collectAndSubmitFeedback = ({ requestId, rating, feedback }) => {
-    const feedbackPayload = {
-      requestId,
-      rating,
-      feedback,
-      submittedAt: new Date().toISOString(),
-    };
-
-    console.log("Feedback submitted:", feedbackPayload);
-
-    return feedbackPayload;
-  };
-
-  const handleFeedbackSubmit = (event) => {
+  const handleFeedbackSubmit = async (event) => {
     event.preventDefault();
 
-    const feedbackPayload = collectAndSubmitFeedback({
-      requestId: activeRequestId,
-      rating: feedbackRating,
-      feedback: feedbackText.trim(),
-    });
+    const action = await dispatch(
+      submitReview({
+        requestId: activeRequestId,
+        rating: feedbackRating,
+        comment: feedbackText.trim(),
+      }),
+    );
 
-    if (feedbackPayload) {
+    if (submitReview.fulfilled.match(action)) {
+      dispatch(fetchMyRequests());
+      dispatch(fetchMyProfile());
       handleCloseFeedbackModal();
     }
   };
@@ -225,6 +227,7 @@ export const RequestsPage = () => {
               .filter(Boolean)
               .join(", ");
             const statusStyles = getStatusStyles(request.status);
+            const hasReview = Boolean(request.review?._id || request.review);
 
             return (
               <article
@@ -297,7 +300,7 @@ export const RequestsPage = () => {
                           {getStatusLabel(request.status)}
                         </Button1>
 
-                        {request.status === "approved" && (
+                        {request.status === "approved" && !hasReview ? (
                           <Button1
                             type="button"
                             variant="filled"
@@ -308,8 +311,21 @@ export const RequestsPage = () => {
                           >
                             SHARE YOUR FEEDBACK
                           </Button1>
-                        )}
+                        ) : null}
+
+                        {hasReview ? (
+                          <div className="rounded-[10px] border border-[var(--primary-green-200)] bg-[var(--primary-green-50)] px-[18px] py-[10px] text-[12px] font-semibold text-[var(--primary-green-700)]">
+                            REVIEW SUBMITTED •{" "}
+                            {Number(request.review?.rating || 0).toFixed(1)}/5
+                          </div>
+                        ) : null}
                       </div>
+
+                      {request.review?.comment ? (
+                        <p className="mt-4 text-[12px] text-[var(--text-grey-4)]">
+                          Your review: "{request.review.comment}"
+                        </p>
+                      ) : null}
 
                       {request.donorToastMessage && (
                         <p className="mt-4 text-[12px] text-[var(--text-grey-4)]">
@@ -382,15 +398,21 @@ export const RequestsPage = () => {
                 required
               />
 
+              {submitError ? (
+                <p className="mt-3 text-center text-[12px] text-red-500">
+                  {submitError}
+                </p>
+              ) : null}
+
               <Button1
                 type="submit"
                 variant="filled"
                 color="orange"
                 size="md"
-                disabled={feedbackRating === 0}
+                disabled={feedbackRating === 0 || submitLoading}
                 className="mx-auto mt-[28px] block rounded-[8px] px-[20px] py-[12px] text-[12px] font-bold tracking-[0.4px]"
               >
-                SUBMIT REVIEW
+                {submitLoading ? "SUBMITTING..." : "SUBMIT REVIEW"}
               </Button1>
             </form>
           </div>

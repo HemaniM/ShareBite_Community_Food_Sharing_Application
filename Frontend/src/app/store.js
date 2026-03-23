@@ -3,6 +3,7 @@ import authReducer from "../features/auth/authSlice";
 import profileReducer from "../features/profile/profileSlice";
 import listingsReducer from "../features/listings/listingsSlice";
 import requestsReducer from "../features/requests/requestsSlice";
+import reviewsReducer from "../features/reviews/reviewsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +11,6 @@ export const store = configureStore({
     profile: profileReducer,
     listings: listingsReducer,
     requests: requestsReducer,
+    reviews: reviewsReducer,
   },
 });

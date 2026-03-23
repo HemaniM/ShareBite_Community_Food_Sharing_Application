@@ -6,6 +6,7 @@ import {
   getRequestsForListingAPI,
   rejectRequestAPI,
 } from "./requestsAPI";
+import { submitReview } from "../reviews/reviewsSlice";
 
 export const createRequest = createAsyncThunk(
   "requests/createRequest",
@@ -182,6 +183,26 @@ const requestsSlice = createSlice({
             };
           }
 
+         return request;
+        });
+        state.myRequests = mergeUpdatedRequest(
+          state.myRequests,
+          action.payload.approvedRequest,
+        ).map((request) => {
+          if (
+            request._id !== action.payload.approvedRequest?._id &&
+            request.status === "pending" &&
+            String(request.listingId?._id || request.listingId) ===
+              String(action.payload.listingId)
+          ) {
+            return {
+              ...request,
+              status: "rejected",
+              donorToastMessage:
+                action.payload.toastNotificationForOtherRequesters,
+            };
+          }
+
           return request;
         });
       })
@@ -208,6 +229,21 @@ const requestsSlice = createSlice({
       .addCase(rejectRequest.rejected, (state, action) => {
         state.rejectLoading = false;
         state.rejectError = action.payload;
+      })
+      .addCase(submitReview.fulfilled, (state, action) => {
+        const review = action.payload.review;
+        if (!review) {
+          return;
+        }
+
+        state.myRequests = state.myRequests.map((request) =>
+          String(request._id) === String(review.request)
+            ? {
+                ...request,
+                review,
+              }
+            : request,
+        );
       });
   },
 });
