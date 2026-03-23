@@ -199,6 +199,7 @@ const ProductListingPage = () => {
                   product={product}
                   priceColor={product.priceColor}
                   onProductClick={() => handleProductClick(product)}
+                  onRequest={() => handleProductClick(product)}
                 />
               ))}
             </div>

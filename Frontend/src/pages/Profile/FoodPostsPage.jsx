@@ -100,124 +100,143 @@ const FoodPostsPage = () => {
       )}
 
       <div className="space-y-[30px]">
-        {myListings.map((post) => (
-          <article
-            key={post._id}
-            className="border border-[#e5e4df] rounded-[9px] p-4 sm:p-5"
-          >
-            <div className="flex flex-col lg:flex-row gap-5">
-              <div className="w-[200px] h-[240px] rounded-[8px] overflow-hidden bg-[#f2f2f2] flex items-center justify-center">
-                {post.images?.[0] ? (
-                  <img
-                    src={post.images[0]}
-                    alt={post.title}
-                    className="hover:scale-105 transition-transform duration-300 w-[200px] h-[240px] object-cover rounded-[8px]"
-                  />
-                ) : (
-                  <p className="text-sm text-[var(--text-grey-4)]">No image</p>
-                )}
-              </div>
+        {myListings.map((post) => {
+          const requestCount = Number(post.requestCount || 0);
+          const pendingRequestCount = Number(post.pendingRequestCount || 0);
 
-              <div className="flex-1">
-                <div className="flex items-start justify-between gap-4">
-                  <h3 className="text-[18px] font-bold text-black pl-1">
-                    {post.title}
-                  </h3>
-                  <Link
-                    to={`/profile/food-posts/${post._id}/requests`}
-                    state={{ postTitle: post.title }}
-                    aria-label={`View requests for ${post.title}`}
-                  >
-                    <Button1
-                      variant="outline"
-                      color="green"
-                      size="sm"
-                      className="group w-[47px] h-[30px] rounded-[10px]"
+          return (
+            <article
+              key={post._id}
+              className="border border-[#e5e4df] rounded-[9px] p-4 sm:p-5"
+            >
+              <div className="flex flex-col lg:flex-row gap-5">
+                <div className="w-[200px] h-[240px] rounded-[8px] overflow-hidden bg-[#f2f2f2] flex items-center justify-center">
+                  {post.images?.[0] ? (
+                    <img
+                      src={post.images[0]}
+                      alt={post.title}
+                      className="hover:scale-105 transition-transform duration-300 w-[200px] h-[240px] object-cover rounded-[8px]"
+                    />
+                  ) : (
+                    <p className="text-sm text-[var(--text-grey-4)]">
+                      No image
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex-1">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex items-center gap-3 pl-1">
+                      <h3 className="text-[18px] font-bold text-black">
+                        {post.title}
+                      </h3>
+                      <div className="inline-flex items-center gap-2 rounded-full bg-[var(--primary-orange-50)] px-3 py-1 text-[11px] font-semibold text-[var(--primary-orange-700)]">
+                        <span>
+                          {requestCount} request{requestCount === 1 ? "" : "s"}
+                        </span>
+                        {pendingRequestCount > 0 ? (
+                          <span className="rounded-full bg-white px-2 py-[2px] text-[10px] text-[var(--primary-green-700)]">
+                            {pendingRequestCount} pending
+                          </span>
+                        ) : null}
+                      </div>
+                    </div>
+                    <Link
+                      to={`/profile/food-posts/${post._id}/requests`}
+                      state={{ postTitle: post.title }}
+                      aria-label={`View requests for ${post.title}`}
                     >
-                      <Icon
-                        name="right_arrow_green"
-                        className="group-hover:hidden"
-                      />
-                      <Icon
-                        name="right_arrow"
-                        className="hidden group-hover:block"
-                      />
-                    </Button1>
-                  </Link>
-                </div>
+                      <Button1
+                        variant="outline"
+                        color="green"
+                        size="sm"
+                        className="group w-[47px] h-[30px] rounded-[10px]"
+                      >
+                        <Icon
+                          name="right_arrow_green"
+                          className="group-hover:hidden"
+                        />
+                        <Icon
+                          name="right_arrow"
+                          className="hidden group-hover:block"
+                        />
+                      </Button1>
+                    </Link>
+                  </div>
 
-                <div className="mt-4 p-1 grid md:grid-cols-2 gap-x-8 gap-y-2 text-[13px] text-[var(--text-grey-4)]">
-                  <p>
-                    <span className="font-bold text-[var(--text-grey-5)] mr-[30px]">
-                      Category
-                    </span>
-                    {post.category}
-                  </p>
-                  <p className="md:row-span-4 flex items-start">
-                    <span className="font-bold text-[var(--text-grey-5)] mr-[30px]">
-                      Description
-                    </span>
-                    {post.description}
-                  </p>
-                  <p>
-                    <span className="font-bold text-[var(--text-grey-5)] mr-[55px]">
-                      Price
-                    </span>
-                    {post.price?.isFree ? "FREE" : `${post.price?.amount} ₹`}
-                  </p>
-                  <p>
-                    <span className="font-bold text-[var(--text-grey-5)] mr-[35px]">
-                      In Stock
-                    </span>
-                    {post.stock?.quantity} {post.stock?.unit}
-                  </p>
-                  <p>
-                    <span className="font-bold text-[var(--text-grey-5)] mr-[12px]">
-                      Expiry Date
-                    </span>
-                    {new Date(post.expiresAt).toLocaleString()}
-                  </p>
-                  <p className="md:row-span-2 flex items-start">
-                    <span className="font-bold text-[#40403e] mr-[16px]">
-                      Ingredients
-                    </span>
-                    {post.ingredients?.join(", ") || "-"}
-                  </p>
-                  <p>
-                    <span className="font-bold text-[var(--text-grey-5)] mr-[50px]">
-                      Contact
-                    </span>
-                    {post.contactInfo?.phoneNumber}
-                  </p>
-                  <p>
-                    <span className="font-bold text-[var(--text-grey-5)] mr-[11px]">
-                      Email Address
-                    </span>
-                    {post.contactInfo?.email}
-                  </p>
-                  <p className="flex items-start gap-2">
-                    <span className="font-bold text-text-[var(--text-grey-5)] mr-[26px]">
-                      Address
-                    </span>
-                    {post.location?.addressLineOne}, {post.location?.city},{" "}
-                    {post.location?.state}
-                  </p>
-                </div>
+                  <div className="mt-4 p-1 grid md:grid-cols-2 gap-x-8 gap-y-2 text-[13px] text-[var(--text-grey-4)]">
+                    <p>
+                      <span className="font-bold text-[var(--text-grey-5)] mr-[30px]">
+                        Category
+                      </span>
+                      {post.category}
+                    </p>
+                    <p className="md:row-span-4 flex items-start">
+                      <span className="font-bold text-[var(--text-grey-5)] mr-[30px]">
+                        Description
+                      </span>
+                      {post.description}
+                    </p>
+                    <p>
+                      <span className="font-bold text-[var(--text-grey-5)] mr-[55px]">
+                        Price
+                      </span>
+                      {post.price?.isFree ? "FREE" : `${post.price?.amount} ₹`}
+                    </p>
+                    <p>
+                      <span className="font-bold text-[var(--text-grey-5)] mr-[35px]">
+                        In Stock
+                      </span>
+                      {post.stock?.quantity} {post.stock?.unit}
+                    </p>
+                    <p>
+                      <span className="font-bold text-[var(--text-grey-5)] mr-[12px]">
+                        Expiry Date
+                      </span>
+                      {new Date(post.expiresAt).toLocaleString()}
+                    </p>
+                    <p className="md:row-span-2 flex items-start">
+                      <span className="font-bold text-[#40403e] mr-[16px]">
+                        Ingredients
+                      </span>
+                      {post.ingredients?.join(", ") || "-"}
+                    </p>
+                    <p>
+                      <span className="font-bold text-[var(--text-grey-5)] mr-[50px]">
+                        Contact
+                      </span>
+                      {post.contactInfo?.phoneNumber}
+                    </p>
+                    <p>
+                      <span className="font-bold text-[var(--text-grey-5)] mr-[11px]">
+                        Email Address
+                      </span>
+                      {post.contactInfo?.email}
+                    </p>
+                    <p className="flex items-start gap-2">
+                      <span className="font-bold text-text-[var(--text-grey-5)] mr-[26px]">
+                        Address
+                      </span>
+                      {post.location?.addressLineOne}, {post.location?.city},{" "}
+                      {post.location?.state}
+                    </p>
+                  </div>
 
-                <Button1
-                  variant="outline"
-                  color="orange"
-                  size="sm"
-                  className="mt-4 font-bold rounded-[10px] text-[12px] px-[18px] py-[10px]"
-                  onClick={() => handleDeletePost(post._id)}
-                  disabled={deleteLoading}
-                >
-                  {deleteLoading ? "DELETING..." : "DELETE POST"}
-                </Button1>
+                  <Button1
+                    variant="outline"
+                    color="orange"
+                    size="sm"
+                    className="mt-4 font-bold rounded-[10px] text-[12px] px-[18px] py-[10px]"
+                    onClick={() => handleDeletePost(post._id)}
+                    disabled={deleteLoading}
+                  >
+                    {deleteLoading ? "DELETING..." : "DELETE POST"}
+                  </Button1>
+                </div>
               </div>
-            </div>
-          </article>
-        ))}
+            </article>
+          );
+        })}
       </div>
     </section>
   );

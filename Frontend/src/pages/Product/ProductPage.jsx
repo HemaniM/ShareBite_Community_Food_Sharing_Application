@@ -492,6 +492,7 @@ const ProductPage = () => {
                           onProductClick={() =>
                             handleProductClick(relatedProduct)
                           }
+                          onRequest={() => handleProductClick(relatedProduct)}
                         />
                       ))}
                     </div>

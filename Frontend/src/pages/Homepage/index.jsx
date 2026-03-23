@@ -136,7 +136,7 @@ const Homepage = () => {
           onProductClick={handleProductClick}
           onViewMoreClick={() => handleViewMoreClick("all_products")}
         />
-        <MapSection />
+        {/* <MapSection /> */}
         <Footer />
       </main>
     </>
