@@ -3,6 +3,22 @@ import Listing, { IListing, ListingStatus } from "./listings.model";
 import Request from "../request/request.model";
 import { CreateListingDto } from "./listings.schema";
 
+
+export interface FoodNearYouFilters {
+  city?: string;
+  district?: string;
+  state?: string;
+  country?: string;
+  pincode?: string;
+  limit?: number;
+}
+
+const normalizeLocationValue = (value?: string): string =>
+  String(value || "")
+    .trim()
+    .toLowerCase();
+
+
 export class ListingsService {
   static getDerivedStatus(
     listing: Pick<IListing, "expiresAt" | "stock">,
@@ -128,6 +144,85 @@ export class ListingsService {
       .sort({
         createdAt: -1,
       });
+  }
+
+
+  static async getFoodNearYouListings(
+    filters: FoodNearYouFilters = {},
+  ): Promise<{ listings: IListing[]; totalCount: number; matchedCount: number }> {
+    const normalizedFilters = {
+      city: normalizeLocationValue(filters.city),
+      district: normalizeLocationValue(filters.district),
+      state: normalizeLocationValue(filters.state),
+      country: normalizeLocationValue(filters.country),
+      pincode: normalizeLocationValue(filters.pincode),
+    };
+
+    const activeListings = await ListingsService.getActiveListings();
+
+    const scoredListings = activeListings
+      .map((listing) => {
+        const listingLocation = {
+          city: normalizeLocationValue(listing.location?.city),
+          district: normalizeLocationValue(listing.location?.district),
+          state: normalizeLocationValue(listing.location?.state),
+          country: normalizeLocationValue(listing.location?.country),
+          pincode: normalizeLocationValue(listing.location?.pincode),
+        };
+
+        let locationScore = 0;
+
+        if (normalizedFilters.pincode && listingLocation.pincode) {
+          locationScore +=
+            normalizedFilters.pincode === listingLocation.pincode ? 5 : 0;
+        }
+
+        if (normalizedFilters.city && listingLocation.city) {
+          locationScore += normalizedFilters.city === listingLocation.city ? 4 : 0;
+        }
+
+        if (normalizedFilters.district && listingLocation.district) {
+          locationScore +=
+            normalizedFilters.district === listingLocation.district ? 3 : 0;
+        }
+
+        if (normalizedFilters.state && listingLocation.state) {
+          locationScore +=
+            normalizedFilters.state === listingLocation.state ? 2 : 0;
+        }
+
+        if (normalizedFilters.country && listingLocation.country) {
+          locationScore +=
+            normalizedFilters.country === listingLocation.country ? 1 : 0;
+        }
+
+        return { listing, locationScore };
+      })
+      .filter(({ locationScore }) => {
+        const hasAnyLocationFilter = Object.values(normalizedFilters).some(Boolean);
+
+        if (!hasAnyLocationFilter) {
+          return true;
+        }
+
+        return locationScore > 3;
+      })
+      .sort((a, b) => {
+        if (b.locationScore !== a.locationScore) {
+          return b.locationScore - a.locationScore;
+        }
+
+        return (
+          new Date(b.listing.createdAt).getTime() -
+          new Date(a.listing.createdAt).getTime()
+        );
+      });
+
+    return {
+      listings: scoredListings.map((item) => item.listing),
+      totalCount: activeListings.length,
+      matchedCount: scoredListings.length,
+    };
   }
 
   static async deleteMyListing(

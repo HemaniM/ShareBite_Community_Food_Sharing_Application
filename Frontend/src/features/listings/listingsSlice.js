@@ -3,6 +3,7 @@ import {
   createListingAPI,
   deleteMyListingAPI,
   getActiveListingsAPI,
+  getFoodNearYouListingsAPI,
   getMyListingsAPI,
 } from "./listingsAPI";
 
@@ -62,15 +63,38 @@ export const fetchActiveListings = createAsyncThunk(
   },
 );
 
+export const fetchFoodNearYouListings = createAsyncThunk(
+  "listings/fetchFoodNearYouListings",
+  async (params = {}, { rejectWithValue }) => {
+    try {
+      const response = await getFoodNearYouListingsAPI(params);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Unable to fetch food near you",
+      );
+    }
+  },
+);
+
+// /////////////////////////////
+
 const initialState = {
   myListings: [],
   activeListings: [],
+  foodNearYouListings: [],
+  foodNearYouMeta: {
+    totalCount: 0,
+    matchedCount: 0,
+  },
   loading: false,
   activeListingsLoading: false,
+  foodNearYouLoading: false,
   createLoading: false,
   deleteLoading: false,
   error: null,
   activeListingsError: null,
+  foodNearYouError: null,
   createSuccess: false,
 };
 
@@ -140,6 +164,23 @@ const listingsSlice = createSlice({
       .addCase(fetchActiveListings.rejected, (state, action) => {
         state.activeListingsLoading = false;
         state.activeListingsError = action.payload;
+      })
+      .addCase(fetchFoodNearYouListings.pending, (state) => {
+        state.foodNearYouLoading = true;
+        state.foodNearYouError = null;
+      })
+      .addCase(fetchFoodNearYouListings.fulfilled, (state, action) => {
+        state.foodNearYouLoading = false;
+        state.foodNearYouError = null;
+        state.foodNearYouListings = action.payload.listings || [];
+        state.foodNearYouMeta = {
+          totalCount: Number(action.payload.totalCount || 0),
+          matchedCount: Number(action.payload.matchedCount || 0),
+        };
+      })
+      .addCase(fetchFoodNearYouListings.rejected, (state, action) => {
+        state.foodNearYouLoading = false;
+        state.foodNearYouError = action.payload;
       });
   },
 });

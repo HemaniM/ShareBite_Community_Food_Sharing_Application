@@ -3,74 +3,14 @@ import ProductCard from "../../components/common/ProductCard";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
 
-const FoodNearYouSection = ({ onProductClick, onViewMoreClick }) => {
-  const foodItems = [
-    {
-      id: 1,
-      image: "/images/Poha.jpg",
-      location: "BHAYANDER",
-      title: "Poha",
-      price: 20,
-      priceColor: "#d99338",
-    },
-    {
-      id: 2,
-      image: "/images/Nibu_Soda.jpg",
-      location: "BHAYANDER",
-      title: "Nibu Soda",
-      price: 0,
-      priceColor: "#7d8d2a",
-    },
-    {
-      id: 3,
-      image: "/images/Sandwitch.jpg",
-      location: "BHAYANDER",
-      title: "Sandwitch",
-      price: 30,
-      priceColor: "#d99338",
-    },
-    {
-      id: 4,
-      image: "/images/Samose.jpg",
-      location: "BHAYANDER",
-      title: "Samose",
-      price: 25,
-      priceColor: "#d99338",
-    },
-    {
-      id: 5,
-      image: "/images/Lunch_Box.jpg",
-      location: "BHAYANDER",
-      title: "Lunch Box",
-      price: 40,
-      priceColor: "#d99338",
-    },
-    {
-      id: 6,
-      image: "/images/Kathi_Roll.jpg",
-      location: "BHAYANDER",
-      title: "Kathi Roll",
-      price: 55,
-      priceColor: "#d99338",
-    },
-    {
-      id: 7,
-      image: "/images/Dry_Fruits_Pack.jpg",
-      location: "BHAYANDER",
-      title: "Dry Fruits Pack",
-      price: 100,
-      priceColor: "#d99338",
-    },
-    {
-      id: 8,
-      image: "/images/Watermelon_Juice.jpg",
-      location: "BHAYANDER",
-      title: "Watermelon Juice",
-      price: 0,
-      priceColor: "#7d8d2a",
-    },
-  ];
-
+const FoodNearYouSection = ({
+  products = [],
+  loading = false,
+  error = null,
+  userAreaLabel = "",
+  onProductClick,
+  onViewMoreClick,
+}) => {
   return (
     <section className="w-full py-[60px] bg-[#f9f7f8]">
       <div className="w-full max-w-[975px] mx-auto">
@@ -94,16 +34,33 @@ const FoodNearYouSection = ({ onProductClick, onViewMoreClick }) => {
           </div>
 
           {/* Food Items Grid */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 w-full">
-            {foodItems?.map((product) => (
-              <ProductCard
-                key={product?.id}
-                product={product}
-                priceColor={product?.priceColor}
-                onProductClick={() => onProductClick?.(product)}
-              />
-            ))}
-          </div>
+
+          {loading ? (
+            <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6 text-[var(--text-grey-4)]">
+              Detecting nearby food posts...
+            </div>
+          ) : error ? (
+            <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6 text-[var(--text-grey-4)]">
+              {error}
+            </div>
+          ) : products.length === 0 ? (
+            <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6 text-[var(--text-grey-4)]">
+              {userAreaLabel
+                ? `No food posts found near ${userAreaLabel}.`
+                : "No nearby food posts found. Please allow location access or try again later."}
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 lg:gap-6 w-full">
+              {products.map((product) => (
+                <ProductCard
+                  key={product?.id}
+                  product={product}
+                  priceColor={product?.priceColor}
+                  onProductClick={() => onProductClick?.(product)}
+                />
+              ))}
+            </div>
+          )}
         </div>
       </div>
     </section>

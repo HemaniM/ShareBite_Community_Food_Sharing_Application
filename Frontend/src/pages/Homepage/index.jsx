@@ -12,22 +12,70 @@ import RecentlyUploadedSection from "./RecentlyUploadedSection";
 import AllProductsSection from "./AllProductsSection";
 import MapSection from "./MapSection";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import { fetchActiveListings } from "../../features/listings/listingsSlice";
+import {
+  fetchActiveListings,
+  fetchFoodNearYouListings,
+} from "../../features/listings/listingsSlice";
 import {
   isDisplayableListing,
   mapListingToProduct,
   slugifyProductName,
 } from "../../utils/listingTransforms";
+import { resolveUserLocationContext } from "../../utils/locationContext";
 
 const Homepage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { activeListings, activeListingsLoading, activeListingsError } =
-    useAppSelector((state) => state.listings);
+  const {
+    activeListings,
+    activeListingsLoading,
+    activeListingsError,
+    foodNearYouListings,
+    foodNearYouLoading,
+    foodNearYouError,
+  } = useAppSelector((state) => state.listings);
 
   useEffect(() => {
     dispatch(fetchActiveListings());
   }, [dispatch]);
+
+  // Food near you code **************
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadFoodNearYouListings = async () => {
+      const locationContext = await resolveUserLocationContext();
+
+      if (!isMounted) {
+        return;
+      }
+
+      dispatch(
+        fetchFoodNearYouListings({
+          ...locationContext,
+          limit: 8,
+        }),
+      );
+    };
+
+    loadFoodNearYouListings();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [dispatch]);
+
+  const foodNearYouProducts = useMemo(
+    () =>
+      foodNearYouListings
+        .filter(isDisplayableListing)
+        .map(mapListingToProduct)
+        .slice(0, 8),
+    [foodNearYouListings],
+  );
+
+  // Food near you code **************
 
   const allProducts = useMemo(
     () => activeListings.filter(isDisplayableListing).map(mapListingToProduct),
@@ -122,6 +170,9 @@ const Homepage = () => {
           }
         />
         <FoodNearYouSection
+          products={foodNearYouProducts}
+          loading={foodNearYouLoading}
+          error={foodNearYouError}
           onProductClick={handleProductClick}
           onViewMoreClick={() => handleViewMoreClick("food_near_you")}
         />

@@ -15,6 +15,30 @@ export class ListingsController {
     }
   }
 
+
+  static async getFoodNearYou(req: AuthRequest, res: Response) {
+    try {
+      const result = await ListingsService.getFoodNearYouListings({
+        city: typeof req.query.city === "string" ? req.query.city : "",
+        district:
+          typeof req.query.district === "string" ? req.query.district : "",
+        state: typeof req.query.state === "string" ? req.query.state : "",
+        country:
+          typeof req.query.country === "string" ? req.query.country : "",
+        pincode:
+          typeof req.query.pincode === "string" ? req.query.pincode : "",
+        // limit: typeof req.query.limit === "string" ? Number(req.query.limit) : 8,
+      });
+
+      return res.status(200).json(result);
+    } catch (error: any) {
+      logger.error(`Get Food Near You Listings Error: ${error.message}`);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+
+
   static async create(req: AuthRequest, res: Response) {
     try {
       if (!req.user?.id) {
