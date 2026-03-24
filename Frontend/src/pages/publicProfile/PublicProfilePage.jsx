@@ -126,7 +126,7 @@ const PublicProfilePage = () => {
               </p>
             ) : (
               <>
-                <div className="mt-8 grid grid-cols-1 gap-8 md:grid-cols-[250px_1fr]">
+                <div className="mt-8 grid grid-cols-1 gap-[100px] md:grid-cols-[250px_1fr]">
                   <div>
                     <img
                       src={mappedUser.profileImage}
