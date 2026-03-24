@@ -25,13 +25,13 @@ const AllProductsSection = ({
             {/* View More Button */}
             <div className="flex items-center gap-[30px]">
               {products.length > 8 ? (
-                <p className="text-[12px] font-semibold uppercase tracking-[0.2px] text-[var(--text-grey-3)]">
+                <p className="text-[14px] font-semibold uppercase tracking-[0.2px] text-[var(--text-grey-3)]">
                   Showing{" "}
-                  <span className="text-[14px] font-bold text-orange mx-1">
+                  <span className="text-[16px] font-bold text-orange mx-1">
                     8
                   </span>{" "}
                   of{" "}
-                  <span className="text-[14px] font-bold text-orange mx-1">
+                  <span className="text-[16px] font-bold text-orange mx-1">
                     {products.length}
                   </span>{" "}
                   posts
