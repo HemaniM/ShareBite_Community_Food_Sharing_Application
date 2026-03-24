@@ -9,12 +9,16 @@ import CategoriesSection from "../Homepage/CategoriesSection";
 import SearchSection from "../Homepage/SearchSection";
 
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
-import { fetchActiveListings } from "../../features/listings/listingsSlice";
+import {
+  fetchActiveListings,
+  fetchFoodNearYouListings,
+} from "../../features/listings/listingsSlice";
 import {
   isDisplayableListing,
   mapListingToProduct,
   slugifyProductName,
 } from "../../utils/listingTransforms";
+import { resolveUserLocationContext } from "../../utils/locationContext";
 
 const normalizeCategory = (value = "") =>
   value.toString().trim().toLowerCase().replace(/\s+/g, "-");
@@ -50,16 +54,33 @@ const formatHeading = (text = "") => {
 };
 /* ----------------------------------------- */
 
+const SUPPORTED_SOURCE_SECTIONS = {
+  all_products: {
+    mode: "active_listings",
+    heading: "All Food Posts",
+  },
+  food_near_you: {
+    mode: "food_near_you",
+    heading: "Food Near You",
+  },
+};
+
 const ProductListingPage = () => {
   const locationHook = useLocation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { activeListings, activeListingsLoading, activeListingsError } =
-    useAppSelector((state) => state.listings);
+  const {
+    activeListings,
+    activeListingsLoading,
+    activeListingsError,
+    foodNearYouListings,
+    foodNearYouLoading,
+    foodNearYouError,
+  } = useAppSelector((state) => state.listings);
 
-  useEffect(() => {
-    dispatch(fetchActiveListings());
-  }, [dispatch]);
+  // useEffect(() => {
+  //   dispatch(fetchActiveListings());
+  // }, [dispatch]);
 
   const routeQuery = new URLSearchParams(locationHook.search);
   const routeState = locationHook.state || {};
@@ -70,11 +91,73 @@ const ProductListingPage = () => {
   const location = routeQuery.get("location") ?? routeState.location ?? "";
   const budget = routeQuery.get("budget") ?? routeState.budget ?? "";
 
+  // DATA FETCHING PLAN ***************
+  const fetchPlan = useMemo(() => {
+    const sourceConfig = SUPPORTED_SOURCE_SECTIONS[sourceSection];
+
+    if (sourceConfig) {
+      return {
+        ...sourceConfig,
+      };
+    }
+
+    // Initial setup for upcoming route-driven APIs:
+    // - Category specific feed (case 2)
+    // - Search filter feed (case 3)
+    // Until dedicated backend endpoints are ready, these flows use active listings
+    // and apply client-side filtering below.
+    return {
+      mode: "active_listings",
+      heading: formatHeading(category) || "Food Results",
+    };
+  }, [category, sourceSection]);
+
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadListings = async () => {
+      if (fetchPlan.mode === "food_near_you") {
+        let locationContext = {};
+
+        if (location) {
+          locationContext = { city: location.trim() };
+        } else {
+          locationContext = await resolveUserLocationContext();
+        }
+
+        if (!isMounted) {
+          return;
+        }
+
+        dispatch(fetchFoodNearYouListings(locationContext));
+        return;
+      }
+
+      dispatch(fetchActiveListings());
+    };
+
+    loadListings();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [dispatch, fetchPlan.mode, location]);
+
   const normalizedCategory = normalizeCategory(category);
 
+  const selectedListings =
+    fetchPlan.mode === "food_near_you" ? foodNearYouListings : activeListings;
+  const selectedLoading =
+    fetchPlan.mode === "food_near_you"
+      ? foodNearYouLoading
+      : activeListingsLoading;
+  const selectedError =
+    fetchPlan.mode === "food_near_you" ? foodNearYouError : activeListingsError;
+
   const allProducts = useMemo(
-    () => activeListings.filter(isDisplayableListing).map(mapListingToProduct),
-    [activeListings],
+    () =>
+      selectedListings.filter(isDisplayableListing).map(mapListingToProduct),
+    [selectedListings],
   );
 
   const filteredProducts = useMemo(
@@ -126,9 +209,13 @@ const ProductListingPage = () => {
     });
   };
 
-  const handleSearch = ({ location = "", category = "", budget = "" }) => {
+  const handleSearch = ({
+    location: nextLocation = "",
+    category = "",
+    budget = "",
+  }) => {
     navigateToBrowsePage({
-      location,
+      location: nextLocation,
       category,
       budget,
     });
@@ -149,11 +236,13 @@ const ProductListingPage = () => {
   };
 
   const heading =
-    sourceSection === "all_products"
-      ? "All Food Posts"
-      : formatHeading(sourceSection) ||
-        formatHeading(category) ||
-        "Food Results";
+    fetchPlan.heading ||
+    formatHeading(sourceSection) ||
+    formatHeading(category) ||
+    "Food Results";
+
+  const isUnsupportedSourceSection =
+    Boolean(sourceSection) && !SUPPORTED_SOURCE_SECTIONS[sourceSection];
 
   return (
     <main className="min-h-screen flex flex-col w-full bg-white">
@@ -168,17 +257,24 @@ const ProductListingPage = () => {
             {heading}
           </h1>
 
-          {activeListingsLoading ? (
-            <div className="rounded-xl border border-[#f2ebe5] bg-[#fffaef] p-6 text-[#595957]">
+          {isUnsupportedSourceSection ? (
+            <div className="mb-6 rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-4 text-[14px] text-[var(--text-grey-4)]">
+              API mapping for <strong>{formatHeading(sourceSection)}</strong> is
+              not available yet. Showing default product listing for now.
+            </div>
+          ) : null}
+
+          {selectedLoading ? (
+            <div className="rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6 text-[var(--text-grey-4)]">
               Loading available food posts...
             </div>
-          ) : activeListingsError ? (
-            <div className="rounded-xl border border-[#f4c7c3] bg-[#fffaef] p-6 text-[#b45309]">
-              {activeListingsError}
+          ) : selectedError ? (
+            <div className="rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6 text-[var(--text-grey-4)]">
+              {selectedError}
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="rounded-xl border border-[#f2ebe5] bg-[#fffaef] p-6">
-              <p className="text-[#595957] mb-4">
+            <div className="flex items-center justify-between rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6">
+              <p className="text-[var(--text-grey-4)] text-[16px] mb-4">
                 No products found for selected filters.
               </p>
               <Button1

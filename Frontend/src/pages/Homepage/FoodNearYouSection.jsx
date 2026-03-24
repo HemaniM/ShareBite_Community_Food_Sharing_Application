@@ -22,15 +22,30 @@ const FoodNearYouSection = ({
             </h2>
 
             {/* View More Button */}
-            <Button1
-              variant="filled"
-              color="green"
-              size="sm"
-              onClick={onViewMoreClick}
-              className="w-[47px] h-[30px] lg:w-[47px] lg:h-[30px] rounded-[10px]"
-            >
-              <Icon name="right_arrow" />
-            </Button1>
+            <div className="flex items-center gap-[30px]">
+              {products.length > 8 ? (
+                <p className="text-[14px] font-semibold uppercase tracking-[0.2px] text-[var(--text-grey-3)]">
+                  Showing{" "}
+                  <span className="text-[16px] font-bold text-orange mx-1">
+                    8
+                  </span>{" "}
+                  of{" "}
+                  <span className="text-[16px] font-bold text-orange mx-1">
+                    {products.length}
+                  </span>{" "}
+                  posts
+                </p>
+              ) : null}
+              <Button1
+                variant="filled"
+                color="green"
+                size="sm"
+                onClick={onViewMoreClick}
+                className="w-[47px] h-[30px] lg:w-[47px] lg:h-[30px] rounded-[10px]"
+              >
+                <Icon name="right_arrow" />
+              </Button1>
+            </div>
           </div>
 
           {/* Food Items Grid */}
