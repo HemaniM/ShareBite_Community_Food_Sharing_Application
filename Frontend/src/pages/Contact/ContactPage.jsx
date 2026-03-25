@@ -5,23 +5,24 @@ import HomepageNavBar from "../../components/common/NavBarHomepage";
 import Footer from "../../components/common/Footer";
 import Button1 from "../../components/ui/Button1";
 import { CONTACT_EMAIL, sendContactEmail } from "../../utils/contactAPI";
+import { Icon } from "../../components/Icons/Icons";
 
 const CONTACT_DETAILS = [
   {
     title: "Phone Number",
     value: "+91 90224 42156",
-    icon: "☎",
+    icon: "contact_phone_icon",
   },
   {
     title: "Email Address",
     value: CONTACT_EMAIL,
-    icon: "✉",
+    icon: "contact_email_icon",
   },
   {
     title: "Office Address",
     value:
       "Flat 302, Shree Ganesh Apartments, Link road, Andheri west, Mumbai, Maharashtra - 400053",
-    icon: "⌂",
+    icon: "contact_address_icon",
   },
 ];
 
@@ -80,7 +81,7 @@ const ContactPage = () => {
   const heroStyle = useMemo(
     () => ({
       backgroundImage:
-        "linear-gradient(rgba(0,0,0,0.12), rgba(0,0,0,0.12)), url('/images/log2.jpg')",
+        "url('/images/Contact_page_bg_image.jpg')",
       backgroundSize: "cover",
       backgroundPosition: "center",
     }),
@@ -165,39 +166,41 @@ const ContactPage = () => {
             style={heroStyle}
             className="flex h-[260px] items-center justify-center rounded-[20px] text-center shadow-[0_10px_35px_rgba(0,0,0,0.08)] sm:h-[360px]"
           >
-            <h1 className="font-['Nunito'] text-[36px] font-extrabold uppercase tracking-[2px] text-[var(--text-white)] sm:text-[54px]">
+            <h1 className="font-['Nunito'] text-[36px] font-extrabold uppercase tracking-[2px] text-[var(--text-white)] sm:text-[50px]">
               Contact Us
             </h1>
           </section>
 
           <section className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-            <div className="flex flex-col gap-8">
-              <div>
-                <span className="inline-flex rounded-full border border-[var(--border-orange)] px-5 py-2 font-['Nunito'] text-[12px] font-bold uppercase tracking-[1px] text-[var(--text-orange)]">
+            <div className="flex flex-col gap-[30px]">
+              <div className="flex flex-col gap-[20px]">
+                <div className="max-w-[145px] rounded-full border border-[var(--border-orange)] px-[20px] py-[10px] font-['Nunito'] text-[14px] font-bold uppercase tracking-[1px] text-[var(--text-orange)]">
                   Contact Us
-                </span>
-                <h2 className="mt-5 max-w-[320px] font-['Nunito'] text-[36px] font-extrabold uppercase leading-[1.2] text-[var(--text-primary)]">
+                </div>
+                <h2 className="max-w-[320px] font-['Nunito'] text-[24px] font-bold uppercase leading-[1.2] text-black">
                   We&apos;d love to hear from you!
                 </h2>
-                <p className="mt-4 max-w-[430px] font-['Nunito'] text-[16px] leading-7 text-[var(--text-gray-medium)]">
+                <p className="max-w-[430px] font-['Nunito'] text-[17px] leading-7 text-[var(--text-grey-3)]">
                   Have a question, suggestion, or need assistance? Our team is here to help. Reach out to us and we&apos;ll get back to you.
                 </p>
               </div>
 
-              <div className="space-y-4 rounded-[20px] border border-[var(--line-secondary)] bg-[var(--bg-main)] p-6 shadow-[0_12px_24px_rgba(0,0,0,0.04)]">
+              <div className="h-[1px] w-[95%] bg-[var(--white-600)]"></div>
+
+              <div className="grid grid-cols-2 gap-1 rounded-[20px]">
                 {CONTACT_DETAILS.map((item) => (
                   <div
                     key={item.title}
-                    className="flex items-start gap-4 border-b border-[var(--line-secondary)] pb-4 last:border-b-0 last:pb-0"
+                    className="flex items-start gap-4 pb-8"
                   >
                     <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--primary-green-50)] text-[20px] text-[var(--primary-green)]">
-                      {item.icon}
+                      <Icon name={item.icon} />
                     </div>
                     <div>
-                      <h3 className="font-['Nunito'] text-[16px] font-bold text-[var(--text-primary)]">
+                      <h3 className="font-['Nunito'] text-[15px] font-semibold text-[var(--text-grey-5)]">
                         {item.title}
                       </h3>
-                      <p className="mt-1 max-w-[280px] whitespace-pre-line font-['Nunito'] text-[15px] leading-6 text-[var(--text-gray-medium)]">
+                      <p className="mt-1 max-w-[280px] whitespace-pre-line font-['Nunito'] text-[14px] leading-6 text-[var(--text-grey-3)]">
                         {item.value}
                       </p>
                     </div>
@@ -206,7 +209,7 @@ const ContactPage = () => {
               </div>
             </div>
 
-            <div className="rounded-[24px] bg-[var(--bg-secondary)] p-6 shadow-[0_18px_40px_rgba(0,0,0,0.08)] sm:p-8">
+            <div className="rounded-[24px] bg-[var(--bg-secondary)] p-6">
               <h2 className="font-['Nunito'] text-[34px] font-extrabold text-[var(--text-primary)]">
                 Get In Touch
               </h2>
