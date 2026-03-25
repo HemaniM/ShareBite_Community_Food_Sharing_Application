@@ -254,7 +254,7 @@ const ProductPage = () => {
                       </span>
                     </div>
 
-                    <div className="mt-[25px] text-[12px] leading-5 text-[var(--text-grey-4)]">
+                    <div className="mt-[25px] text-[14px] leading-5 text-[var(--text-grey-5)]">
                       {product?.donorId ? (
                         <Link
                           to={`/user/${product.donorId}`}
@@ -268,7 +268,7 @@ const ProductPage = () => {
                         </p>
                       )}
 
-                      <p>{productDescription}</p>
+                      <p className="text-[12px] text-[var(--text-grey-4)]">{productDescription}</p>
                     </div>
 
                     <div className="mt-[25px]">
@@ -282,7 +282,7 @@ const ProductPage = () => {
                         >
                           -
                         </button>
-                        <span className="h-[34px] w-[32px] border-t border-b border-[var(--text-grey-2)] text-center text-[14px] font-semibold text-[var(--text-grey-4)] p-2">
+                        <span className="h-[34px] w-[32px] border-t border-b border-[var(--text-grey-2)] text-center text-[16px] font-semibold text-[var(--text-grey-5)] p-1">
                           {quantity}
                         </span>
                         <button
@@ -298,7 +298,7 @@ const ProductPage = () => {
                         </button>
                       </div>
 
-                      <label className="mt-4 block text-[12px] font-semibold text-[var(--text-grey-5)]">
+                      <label className="mt-6 block text-[14px] font-semibold text-[var(--text-grey-5)]">
                         Request message (optional)
                         <textarea
                           rows="3"
@@ -307,11 +307,11 @@ const ProductPage = () => {
                             setRequestMessage(event.target.value)
                           }
                           placeholder="Add a short note for the donor"
-                          className="mt-2 w-full max-w-[420px] rounded-[8px] border border-[#e5e4df] px-3 py-2 text-[12px] font-normal text-[var(--text-grey-4)]"
+                          className="text-[12px] outline-none focus:outline-none focus:ring-0 mt-2 w-full max-w-[420px] rounded-[8px] border border-[var(--white-600)] px-3 py-2 text-[12px] font-normal text-[var(--text-grey-4)]"
                         />
                       </label>
 
-                      <div className="mt-[15px] flex items-center gap-[20px]">
+                      <div className="mt-[20px] flex items-center gap-[20px]">
                         <Button1
                           variant="filled"
                           color="orange"
@@ -369,7 +369,7 @@ const ProductPage = () => {
                   <div className="mt-8 flex flex-col gap-6 lg:flex-row lg:items-start">
                     <div className="min-w-[160px] shrink-0">
                       <div className="flex gap-2 items-center">
-                        <p className="text-[44px] font-bold leading-none text-[#2e2c27]">
+                        <p className="text-[40px] py-2 font-bold leading-none text-[#2e2c27]">
                           {donorTotalReviews
                             ? donorAverageRating.toFixed(1)
                             : "0.0"}
@@ -419,10 +419,10 @@ const ProductPage = () => {
                             return (
                               <article
                                 key={review._id}
-                                className="w-[320px] shrink-0 rounded-[14px] border border-[#eceae4] bg-[#fffdf9] p-4"
+                                className="w-[340px] shrink-0 rounded-[14px] border border-[var(--white-600)] bg-white p-5"
                               >
                                 <div className="flex items-center justify-between gap-3">
-                                  <div className="flex items-center gap-3">
+                                  <div className="flex items-center gap-[10px]">
                                     {reviewerId ? (
                                       <Link
                                         to={`/user/${reviewerId}`}
@@ -431,25 +431,25 @@ const ProductPage = () => {
                                         <img
                                           src={reviewerImage}
                                           alt={reviewerName}
-                                          className="h-12 w-12 rounded-full object-cover transition hover:opacity-90"
+                                          className="h-14 w-14 rounded-full object-cover transition hover:opacity-90 mr-2"
                                         />
-                                        <p className="text-[14px] font-bold tracking-[0.2px] text-[var(--text-grey-5)] transition hover:text-orange">
+                                        <p className="text-[16px] font-bold tracking-[0.2px] text-[var(--text-grey-5)] transition hover:text-orange">
                                           {reviewerName}
                                         </p>
                                       </Link>
                                     ) : null}
                                   </div>
-                                  <p className="text-[12px] text-[var(--text-grey-4)]">
+                                  <p className="text-[14px] text-[var(--text-grey-4)]">
                                     {formatReviewDate(review.createdAt)}
                                   </p>
                                 </div>
-                                <div className="mt-4 flex items-center gap-2 text-[13px] font-semibold text-[var(--text-grey-5)]">
+                                <div className="mt-4 flex items-center gap-2 text-[15px] font-semibold text-[var(--text-grey-5)]">
                                   <span>
                                     {Number(review.rating || 0).toFixed(1)}/5
                                   </span>
                                   <Icon name="star_icon_review_page_small" />
                                 </div>
-                                <p className="mt-5 text-[13px] leading-7 text-[var(--text-grey-4)]">
+                                <p className="mt-2 text-[13px] leading-7 text-[var(--text-grey-4)]">
                                   “{review.comment}”
                                 </p>
                               </article>
