@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import {
   fetchActiveListings,
   fetchFoodNearYouListings,
+  fetchMostTrustedDonorListings,
   fetchRecentlyUploadedListings,
 } from "../../features/listings/listingsSlice";
 import {
@@ -37,6 +38,9 @@ const Homepage = () => {
     recentlyUploadedListings,
     recentlyUploadedLoading,
     recentlyUploadedError,
+    mostTrustedDonorListings,
+    mostTrustedDonorLoading,
+    mostTrustedDonorError,
   } = useAppSelector((state) => state.listings);
 
   useEffect(() => {
@@ -52,8 +56,18 @@ const Homepage = () => {
     );
   }, [dispatch]);
 
-  // Food near you code **************
 
+  // Most Trusted Donor code **************
+  useEffect(() => {
+    dispatch(
+      fetchMostTrustedDonorListings({
+        minRating: 4,
+      }),
+    );
+  }, [dispatch]);
+
+
+  // Food near you code **************
   useEffect(() => {
     let isMounted = true;
 
@@ -87,13 +101,15 @@ const Homepage = () => {
         .slice(0, 8),
     [foodNearYouListings],
   );
+  //**************
 
-  // Food near you code **************
 
+  // All Products code **************
   const allProducts = useMemo(
     () => activeListings.filter(isDisplayableListing).map(mapListingToProduct),
     [activeListings],
   );
+
 
   // Recently Uploaded code **************
   const recentlyUploadedProducts = useMemo(
@@ -104,6 +120,18 @@ const Homepage = () => {
         .slice(0, 8),
     [recentlyUploadedListings],
   );
+
+
+  // Most Trusted Donor code **************
+  const trustedDonorProducts = useMemo(
+    () =>
+      mostTrustedDonorListings
+        .filter(isDisplayableListing)
+        .map(mapListingToProduct)
+        .slice(0, 13),
+    [mostTrustedDonorListings],
+  );
+
 
   const navigateToBrowsePage = (filters = {}) => {
     const browseFilters = {
@@ -187,6 +215,9 @@ const Homepage = () => {
         <SearchSection onSearch={handleSearch} />
         <CategoriesSection onCategoryClick={handleCategoryClick} />
         <TrustedDonorsSection
+          products={trustedDonorProducts}
+          loading={mostTrustedDonorLoading}
+          error={mostTrustedDonorError}
           onProductClick={handleProductClick}
           onViewMoreClick={() =>
             handleViewMoreClick("from_most_trusted_donors")

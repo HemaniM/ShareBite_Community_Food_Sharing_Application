@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Listing, { IListing, ListingStatus } from "./listings.model";
 import Request from "../request/request.model";
+import Review from "../review/review.model";
 import { CreateListingDto } from "./listings.schema";
 
 export interface FoodNearYouFilters {
@@ -20,6 +21,10 @@ export interface HomepageFilters {
   location?: string;
   category?: string;
   budget?: string;
+}
+
+export interface MostTrustedDonorFilters {
+  minRating?: number;
 }
 
 
@@ -321,6 +326,66 @@ export class ListingsService {
       listings: filteredListings,
       totalCount: activeListings.length,
       matchedCount: filteredListings.length,
+    };
+  }
+
+  static async getMostTrustedDonorListings(
+    filters: MostTrustedDonorFilters = {},
+  ): Promise<{ listings: IListing[]; totalCount: number; matchedCount: number }> {
+    const activeListings = await ListingsService.getActiveListings();
+    const minRating =
+      Number.isFinite(Number(filters.minRating)) && Number(filters.minRating) > 0
+        ? Number(filters.minRating)
+        : 4;
+
+    const trustedDonors = await Review.aggregate([
+      {
+        $group: {
+          _id: "$donor",
+          averageRating: { $avg: "$rating" },
+        },
+      },
+      {
+        $match: {
+          averageRating: { $gte: minRating },
+        },
+      },
+      {
+        $project: {
+          donorId: "$_id",
+          averageRating: 1,
+          _id: 0,
+        },
+      },
+    ]);
+
+    const ratingByDonorId = new Map(
+      trustedDonors.map((donor) => [String(donor.donorId), donor.averageRating]),
+    );
+
+    const trustedListings = activeListings
+      .filter((listing) => ratingByDonorId.has(String((listing.donor as any)?._id)))
+      .sort((a, b) => {
+        const aRating = Number(
+          ratingByDonorId.get(String((a.donor as any)?._id)) || 0,
+        );
+        const bRating = Number(
+          ratingByDonorId.get(String((b.donor as any)?._id)) || 0,
+        );
+
+        if (bRating !== aRating) {
+          return bRating - aRating;
+        }
+
+        return (
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        );
+      });
+
+    return {
+      listings: trustedListings,
+      totalCount: activeListings.length,
+      matchedCount: trustedListings.length,
     };
   }
 

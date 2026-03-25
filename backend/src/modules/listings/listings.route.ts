@@ -10,6 +10,10 @@ listingsRouter.get(
   "/home/recently-uploaded",
   ListingsController.getRecentlyUploaded,
 );
+listingsRouter.get(
+  "/home/most-trusted-donors",
+  ListingsController.getMostTrustedDonorListings,
+);
 listingsRouter.get("/home/filtered", ListingsController.getHomepageFiltered);
 listingsRouter.post("/", protect, ListingsController.create);
 listingsRouter.get("/my", protect, ListingsController.getMine);

@@ -13,6 +13,7 @@ import {
   fetchActiveListings,
   fetchFoodNearYouListings,
   fetchHomepageFilteredListings,
+  fetchMostTrustedDonorListings,
   fetchRecentlyUploadedListings,
 } from "../../features/listings/listingsSlice";
 import {
@@ -69,6 +70,10 @@ const SUPPORTED_SOURCE_SECTIONS = {
     mode: "recently_uploaded",
     heading: "Recently Uploaded",
   },
+  from_most_trusted_donors: {
+    mode: "most_trusted_donors",
+    heading: "From Most Trusted Donors",
+  },
 };
 
 const ProductListingPage = () => {
@@ -85,6 +90,9 @@ const ProductListingPage = () => {
     recentlyUploadedListings,
     recentlyUploadedLoading,
     recentlyUploadedError,
+    mostTrustedDonorListings,
+    mostTrustedDonorLoading,
+    mostTrustedDonorError,
     homepageFilteredListings,
     homepageFilteredLoading,
     homepageFilteredError,
@@ -155,7 +163,6 @@ const ProductListingPage = () => {
         dispatch(fetchFoodNearYouListings(locationContext));
         return;
       }
-
       if (fetchPlan.mode === "recently_uploaded") {
         dispatch(
           fetchRecentlyUploadedListings({
@@ -164,13 +171,20 @@ const ProductListingPage = () => {
         );
         return;
       }
-
       if (fetchPlan.mode === "homepage_filtered") {
         dispatch(
           fetchHomepageFilteredListings({
             location,
             category,
             budget,
+          }),
+        );
+        return;
+      }
+      if (fetchPlan.mode === "most_trusted_donors") {
+        dispatch(
+          fetchMostTrustedDonorListings({
+            minRating: 4,
           }),
         );
         return;
@@ -198,12 +212,16 @@ const ProductListingPage = () => {
     if (fetchPlan.mode === "homepage_filtered") {
       return homepageFilteredListings;
     }
+    if (fetchPlan.mode === "most_trusted_donors") {
+      return mostTrustedDonorListings;
+    }
     return activeListings;
   }, [
     activeListings,
     fetchPlan.mode,
     foodNearYouListings,
     homepageFilteredListings,
+    mostTrustedDonorListings,
     recentlyUploadedListings,
   ]);
 
@@ -219,6 +237,9 @@ const ProductListingPage = () => {
     if (fetchPlan.mode === "homepage_filtered") {
       return homepageFilteredLoading;
     }
+    if (fetchPlan.mode === "most_trusted_donors") {
+      return mostTrustedDonorLoading;
+    }
 
     return activeListingsLoading;
   }, [
@@ -226,6 +247,7 @@ const ProductListingPage = () => {
     fetchPlan.mode,
     foodNearYouLoading,
     homepageFilteredLoading,
+    mostTrustedDonorLoading,
     recentlyUploadedLoading,
   ]);
 
@@ -239,12 +261,16 @@ const ProductListingPage = () => {
     if (fetchPlan.mode === "homepage_filtered") {
       return homepageFilteredError;
     }
+    if (fetchPlan.mode === "most_trusted_donors") {
+      return mostTrustedDonorError;
+    }
     return activeListingsError;
   }, [
     activeListingsError,
     fetchPlan.mode,
     foodNearYouError,
     homepageFilteredError,
+    mostTrustedDonorError,
     recentlyUploadedError,
   ]);
 

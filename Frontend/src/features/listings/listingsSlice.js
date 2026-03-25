@@ -5,6 +5,7 @@ import {
   getActiveListingsAPI,
   getFoodNearYouListingsAPI,
   getHomepageFilteredListingsAPI,
+  getMostTrustedDonorListingsAPI,
   getMyListingsAPI,
   getRecentlyUploadedListingsAPI,
 } from "./listingsAPI";
@@ -107,6 +108,22 @@ export const fetchHomepageFilteredListings = createAsyncThunk(
   },
 );
 
+export const fetchMostTrustedDonorListings = createAsyncThunk(
+  "listings/fetchMostTrustedDonorListings",
+  async (params = {}, { rejectWithValue }) => {
+    try {
+      const response = await getMostTrustedDonorListingsAPI(params);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message ||
+          "Unable to fetch most trusted donor food posts",
+      );
+    }
+  },
+);
+
+
 // /////////////////////////////
 
 const initialState = {
@@ -114,12 +131,17 @@ const initialState = {
   activeListings: [],
   foodNearYouListings: [],
   recentlyUploadedListings: [],
+  mostTrustedDonorListings: [],
   homepageFilteredListings: [],
   foodNearYouMeta: {
     totalCount: 0,
     matchedCount: 0,
   },
   recentlyUploadedMeta: {
+    totalCount: 0,
+    matchedCount: 0,
+  },
+  mostTrustedDonorMeta: {
     totalCount: 0,
     matchedCount: 0,
   },
@@ -131,6 +153,7 @@ const initialState = {
   activeListingsLoading: false,
   foodNearYouLoading: false,
   recentlyUploadedLoading: false,
+  mostTrustedDonorLoading: false,
   homepageFilteredLoading: false,
   createLoading: false,
   deleteLoading: false,
@@ -138,6 +161,7 @@ const initialState = {
   activeListingsError: null,
   foodNearYouError: null,
   recentlyUploadedError: null,
+  mostTrustedDonorError: null,
   homepageFilteredError: null,
   createSuccess: false,
 };
@@ -242,6 +266,23 @@ const listingsSlice = createSlice({
       .addCase(fetchRecentlyUploadedListings.rejected, (state, action) => {
         state.recentlyUploadedLoading = false;
         state.recentlyUploadedError = action.payload;
+      })
+      .addCase(fetchMostTrustedDonorListings.pending, (state) => {
+        state.mostTrustedDonorLoading = true;
+        state.mostTrustedDonorError = null;
+      })
+      .addCase(fetchMostTrustedDonorListings.fulfilled, (state, action) => {
+        state.mostTrustedDonorLoading = false;
+        state.mostTrustedDonorError = null;
+        state.mostTrustedDonorListings = action.payload.listings || [];
+        state.mostTrustedDonorMeta = {
+          totalCount: Number(action.payload.totalCount || 0),
+          matchedCount: Number(action.payload.matchedCount || 0),
+        };
+      })
+      .addCase(fetchMostTrustedDonorListings.rejected, (state, action) => {
+        state.mostTrustedDonorLoading = false;
+        state.mostTrustedDonorError = action.payload;
       })
       .addCase(fetchHomepageFilteredListings.pending, (state) => {
         state.homepageFilteredLoading = true;

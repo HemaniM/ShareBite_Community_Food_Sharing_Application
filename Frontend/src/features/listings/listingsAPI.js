@@ -16,6 +16,8 @@ export const getFoodNearYouListingsAPI = (params = {}) =>
   API.get("/listings/home/food-near-you", { params });
 export const getRecentlyUploadedListingsAPI = (params = {}) =>
   API.get("/listings/home/recently-uploaded", { params });
+export const getMostTrustedDonorListingsAPI = (params = {}) =>
+  API.get("/listings/home/most-trusted-donors", { params });
 export const getHomepageFilteredListingsAPI = (params = {}) =>
   API.get("/listings/home/filtered", { params });
 export const getMyListingsAPI = () => API.get("/listings/my");

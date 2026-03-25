@@ -113,17 +113,17 @@ const PublicProfilePage = () => {
 
           <div className="mx-auto mt-[50px] mb-[100px] w-full max-w-[975px] px-4 py-2 sm:px-0">
             {userProfileLoading ? (
-              <p className="text-[15px] text-[var(--text-grey-4)]">
+              <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6 text-[var(--text-grey-4)]">
                 Loading user profile...
-              </p>
+              </div>
             ) : userProfileError ? (
-              <p className="text-[15px] text-[var(--primary-orange-700)]">
+              <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6 text-[var(--primary-orange-600)]">
                 {userProfileError}
-              </p>
+              </div>
             ) : !mappedUser ? (
-              <p className="text-[15px] text-[var(--text-grey-4)]">
+              <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6 text-[var(--text-grey-4)]">
                 No user data found...
-              </p>
+              </div>
             ) : (
               <>
                 <div className="mt-8 grid grid-cols-1 gap-[100px] md:grid-cols-[250px_1fr]">

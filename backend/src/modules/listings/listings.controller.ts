@@ -51,6 +51,22 @@ export class ListingsController {
     }
   }
 
+  static async getMostTrustedDonorListings(req: AuthRequest, res: Response) {
+    try {
+      const result = await ListingsService.getMostTrustedDonorListings({
+        minRating:
+          typeof req.query.minRating === "string"
+            ? Number(req.query.minRating)
+            : 4,
+      });
+
+      return res.status(200).json(result);
+    } catch (error: any) {
+      logger.error(`Get Most Trusted Donor Listings Error: ${error.message}`);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
   static async getHomepageFiltered(req: AuthRequest, res: Response) {
     try {
       const result = await ListingsService.getHomepageFilteredListings({
