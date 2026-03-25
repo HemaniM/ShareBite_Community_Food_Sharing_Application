@@ -51,7 +51,7 @@ const Homepage = () => {
   useEffect(() => {
     dispatch(
       fetchRecentlyUploadedListings({
-        hours: 12,
+        hours: 24,
       }),
     );
   }, [dispatch]);

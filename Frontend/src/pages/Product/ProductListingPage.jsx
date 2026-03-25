@@ -166,7 +166,7 @@ const ProductListingPage = () => {
       if (fetchPlan.mode === "recently_uploaded") {
         dispatch(
           fetchRecentlyUploadedListings({
-            hours: 12,
+            hours: 24,
           }),
         );
         return;

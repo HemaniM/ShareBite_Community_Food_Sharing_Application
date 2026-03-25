@@ -11,7 +11,7 @@ import {
 } from "../../features/listings/listingsSlice";
 
 const inputClassName =
-  "mt-2 w-full rounded-[6px] border-none bg-[var(--primary-green-50)] px-3 py-[10px] text-[14px] text-[var(--text-grey-4)] outline-none placeholder:text-[var(text-grey-3)]";
+  "mt-2 w-full rounded-[6px] bg-[var(--primary-green-50)] px-3 py-[10px] text-[14px] text-[var(--text-grey-4)] placeholder:text-[var(text-grey-3)] border border-transparent outline-none transition focus:border-[var(--primary-green-200)]";
 
 const labelClassName =
   "text-[14px] font-semibold tracking-[0.2px] text-[var(--text-grey-5)]";

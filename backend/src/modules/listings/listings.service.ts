@@ -252,7 +252,7 @@ export class ListingsService {
     const hoursWindow =
       Number.isFinite(Number(filters.hours)) && Number(filters.hours) > 0
         ? Number(filters.hours)
-        : 12;
+        : 24;
     const thresholdTime = Date.now() - hoursWindow * 60 * 60 * 1000;
 
     const recentListings = activeListings

@@ -154,7 +154,7 @@ const EditProfilePage = () => {
                 name="name"
                 value={formData.name}
                 onChange={handleChange}
-                className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[14px] text-[#7d7d77] outline-none focus:outline-none focus:ring-0"
+                className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[14px] text-[#7d7d77] border border-transparent outline-none transition focus:border-[var(--primary-green-200)]"
               />
             </div>
 
@@ -166,7 +166,7 @@ const EditProfilePage = () => {
                 type="password"
                 value="........"
                 readOnly
-                className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] outline-none focus:outline-none focus:ring-0"
+                className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] border border-transparent outline-none transition focus:border-[var(--primary-green-200)]"
               />
             </div>
             {/* 
@@ -190,7 +190,7 @@ const EditProfilePage = () => {
               name="gender"
               value={formData.gender || ""}
               onChange={handleChange}
-              className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] outline-none focus:outline-none focus:ring-0"
+              className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] border border-transparent outline-none transition focus:border-[var(--primary-green-200)]"
             />
           </div>
 
@@ -202,7 +202,7 @@ const EditProfilePage = () => {
               name="phone"
               value={formData.phone || ""}
               onChange={handleChange}
-              className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] outline-none focus:outline-none focus:ring-0"
+              className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] border border-transparent outline-none transition focus:border-[var(--primary-green-200)]"
             />
           </div>
 
@@ -214,7 +214,7 @@ const EditProfilePage = () => {
               name="email"
               value={formData.email || ""}
               onChange={handleChange}
-              className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] outline-none focus:outline-none focus:ring-0"
+              className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] border border-transparent outline-none transition focus:border-[var(--primary-green-200)]"
             />
           </div>
         </div>
@@ -230,7 +230,7 @@ const EditProfilePage = () => {
               value={formData.about || ""}
               onChange={handleChange}
               rows={3}
-              className="w-full rounded-[5px] bg-[var(--primary-green-50)] px-3 py-2 text-[11px] leading-[16px] text-[#7d7d77] resize-none outline-none focus:outline-none focus:ring-0"
+              className="w-full rounded-[5px] bg-[var(--primary-green-50)] px-3 py-2 text-[11px] leading-[16px] text-[#7d7d77] resize-none border border-transparent outline-none transition focus:border-[var(--primary-green-200)]"
             />
           </div>
         </div>
@@ -246,7 +246,7 @@ const EditProfilePage = () => {
               value={formData.address || ""}
               onChange={handleChange}
               rows={3}
-              className="w-full rounded-[5px] bg-[var(--primary-green-50)] px-3 py-2 text-[11px] leading-[16px] text-[#7d7d77] resize-none outline-none focus:outline-none focus:ring-0"
+              className="w-full rounded-[5px] bg-[var(--primary-green-50)] px-3 py-2 text-[11px] leading-[16px] text-[#7d7d77] resize-none border border-transparent outline-none transition focus:border-[var(--primary-green-200)]"
             />
           </div>
         </div>
@@ -262,7 +262,7 @@ const EditProfilePage = () => {
                 name="city"
                 value={formData.city || ""}
                 onChange={handleChange}
-                className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] outline-none focus:outline-none focus:ring-0"
+                className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] border border-transparent outline-none transition focus:border-[var(--primary-green-200)]"
               />
             </div>
 
@@ -274,7 +274,7 @@ const EditProfilePage = () => {
                 name="district"
                 value={formData.district || ""}
                 onChange={handleChange}
-                className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] outline-none focus:outline-none focus:ring-0"
+                className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] border border-transparent outline-none transition focus:border-[var(--primary-green-200)]"
               />
             </div>
 
@@ -286,7 +286,7 @@ const EditProfilePage = () => {
                 name="state"
                 value={formData.state || ""}
                 onChange={handleChange}
-                className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] outline-none focus:outline-none focus:ring-0"
+                className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] border border-transparent outline-none transition focus:border-[var(--primary-green-200)]"
               />
             </div>
 
@@ -298,7 +298,7 @@ const EditProfilePage = () => {
                 name="pincode"
                 value={formData.pincode || ""}
                 onChange={handleChange}
-                className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] outline-none focus:outline-none focus:ring-0"
+                className="w-full h-[34px] rounded-[5px] bg-[var(--primary-green-50)] px-3 text-[11px] text-[#7d7d77] border border-transparent outline-none transition focus:border-[var(--primary-green-200)]"
               />
             </div>
           </div>
