@@ -72,6 +72,7 @@ const FoodNearYouSection = ({
                   product={product}
                   priceColor={product?.priceColor}
                   onProductClick={() => onProductClick?.(product)}
+                  onRequest={() => onProductClick?.(product)}
                 />
               ))}
             </div>

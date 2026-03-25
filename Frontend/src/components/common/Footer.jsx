@@ -6,8 +6,6 @@ import { twMerge } from "tailwind-merge";
 import { Icon } from "../Icons/Icons";
 import { CONTACT_EMAIL, sendContactEmail } from "../../utils/contactAPI";
 
-
-
 const navigationLinks = [
   { label: "Home", path: "/home" },
   { label: "About", path: "/about" },
@@ -19,9 +17,18 @@ const quickLinks = [
   { label: "Profile", path: "/profile" },
   { label: "Requests", path: "/profile/requests" },
   { label: "Food Posts", path: "/profile/food-posts" },
-  { label: "Most trusted sources", path: "/products?sourceSection=from_most_trusted_donors&category=&location=&budget=" },
-  { label: "Food near you", path: "/products?sourceSection=food_near_you&category=&location=&budget=" },
-  { label: "Recently uploaded", path: "/products?sourceSection=recently_uploaded&category=&location=&budget=" },
+  {
+    label: "Most trusted sources",
+    path: "/products?sourceSection=from_most_trusted_donors&category=&location=&budget=",
+  },
+  {
+    label: "Food near you",
+    path: "/products?sourceSection=food_near_you&category=&location=&budget=",
+  },
+  {
+    label: "Recently uploaded",
+    path: "/products?sourceSection=recently_uploaded&category=&location=&budget=",
+  },
   { label: "Search on map", path: "/home" },
 ];
 
@@ -66,12 +73,19 @@ const MessageForm = ({ compact = false }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={compact ? "space-y-3" : "flex flex-col gap-2 lg:gap-[10px] items-end"}>
+    <form
+      onSubmit={handleSubmit}
+      className={
+        compact
+          ? "flex gap-[24px]"
+          : "flex flex-col gap-2 lg:gap-[10px] items-end"
+      }
+    >
       <input
         value={message}
         onChange={(event) => setMessage(event.target.value)}
         placeholder="Message"
-        className="w-full rounded-[8px] border border-transparent bg-white px-3 py-2 text-xs font-semibold leading-[17px] text-[var(--text-gray-light)] outline-none transition focus:border-[var(--border-orange)] font-['Nunito']"
+        className={`${compact ? "rounded-[10px] px-[18px] py-[10px] text-[20px]" : "rounded-[8px] px-3 py-2 text-[14px] font-semibold"} w-full border border-transparent bg-white leading-[17px] text-[var(--text-gray-light)] outline-none transition focus:border-[var(--border-orange)] font-['Nunito']`}
       />
 
       <Button1
@@ -80,9 +94,13 @@ const MessageForm = ({ compact = false }) => {
         color="orange"
         size="sm"
         disabled={sending}
-        className="font-medium"
+        className={
+          compact
+            ? "bg-orange rounded-[10px] px-[28px] py-[12px] text-[18px] font-semibold !hover:opacity-100 !hover:bg-[var(--primary-orange-400)]"
+            : "rounded-[8px] font-medium text-[14px] px-[25px] py-[8px]"
+        }
       >
-        {sending ? "SENDING..." : "SEND MESSAGE"}
+        {sending ? "SENDING..." : "SEND"}
       </Button1>
 
       {status.message ? (
@@ -100,15 +118,10 @@ const MessageForm = ({ compact = false }) => {
   );
 };
 
-
-
-
 const Footer = ({ className, compactFeedbackOnly = false, ...props }) => {
-
-if (compactFeedbackOnly) {
+  if (compactFeedbackOnly) {
     return <MessageForm compact />;
   }
-
 
   return (
     <footer
@@ -215,9 +228,15 @@ if (compactFeedbackOnly) {
                 </div> */}
 
                 {navigationLinks.map((item) => (
-                  <Link key={item.label} to={item.path} className="flex items-center gap-2 lg:gap-[10px] hover:opacity-80 cursor-pointer">
+                  <Link
+                    key={item.label}
+                    to={item.path}
+                    className="flex items-center gap-2 lg:gap-[10px] hover:opacity-80 cursor-pointer"
+                  >
                     <Icon name="right_arrow_small" />
-                    <span className="text-xs font-semibold leading-[17px] text-left uppercase text-[var(--text-grey-5)] font-['Nunito']">{item.label}</span>
+                    <span className="text-xs font-semibold leading-[17px] text-left uppercase text-[var(--text-grey-5)] font-['Nunito']">
+                      {item.label}
+                    </span>
                   </Link>
                 ))}
               </div>
@@ -280,9 +299,15 @@ if (compactFeedbackOnly) {
                   </span>
                 </div> */}
                 {quickLinks.map((item) => (
-                  <Link key={item.label} to={item.path} className="flex items-center gap-2 lg:gap-[10px] hover:opacity-80 cursor-pointer">
+                  <Link
+                    key={item.label}
+                    to={item.path}
+                    className="flex items-center gap-2 lg:gap-[10px] hover:opacity-80 cursor-pointer"
+                  >
                     <Icon name="right_arrow_small" />
-                    <span className="text-xs font-semibold leading-[17px] text-left uppercase text-[var(--text-grey-5)] font-['Nunito']">{item.label}</span>
+                    <span className="text-xs font-semibold leading-[17px] text-left uppercase text-[var(--text-grey-5)] font-['Nunito']">
+                      {item.label}
+                    </span>
                   </Link>
                 ))}
               </div>

@@ -6,6 +6,7 @@ import Footer from "../../components/common/Footer";
 import Button1 from "../../components/ui/Button1";
 import { CONTACT_EMAIL, sendContactEmail } from "../../utils/contactAPI";
 import { Icon } from "../../components/Icons/Icons";
+import { toast } from "react-toastify";
 
 const CONTACT_DETAILS = [
   {
@@ -74,14 +75,13 @@ const initialContactForm = {
 
 const ContactPage = () => {
   const [contactForm, setContactForm] = useState(initialContactForm);
-  const [status, setStatus] = useState({ type: "idle", message: "" });
+  // const [status, setStatus] = useState({ type: "idle", message: "" });
   const [submitting, setSubmitting] = useState(false);
   const [openFaqs, setOpenFaqs] = useState(() => new Set([1]));
 
   const heroStyle = useMemo(
     () => ({
-      backgroundImage:
-        "url('/images/Contact_page_bg_image.jpg')",
+      backgroundImage: "url('/images/Contact_page_bg_image.jpg')",
       backgroundSize: "cover",
       backgroundPosition: "center",
     }),
@@ -90,8 +90,7 @@ const ContactPage = () => {
 
   const feedbackStyle = useMemo(
     () => ({
-      backgroundImage:
-        "linear-gradient(rgba(0,0,0,0.28), rgba(0,0,0,0.28)), url('/images/log1.jpg')",
+      backgroundImage: "url('/images/Your_feedback_bg_image.jpg')",
       backgroundSize: "cover",
       backgroundPosition: "center",
     }),
@@ -120,7 +119,7 @@ const ContactPage = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     setSubmitting(true);
-    setStatus({ type: "idle", message: "" });
+    // setStatus({ type: "idle", message: "" });
 
     try {
       await sendContactEmail({
@@ -133,15 +132,20 @@ const ContactPage = () => {
       });
 
       setContactForm(initialContactForm);
-      setStatus({
-        type: "success",
-        message: "Your message was sent successfully. Our team will contact you shortly.",
-      });
+
+      toast.success("Your message was sent successfully!");
+
+      // setStatus({
+      //   type: "success",
+      //   message:
+      //     "Your message was sent successfully. Our team will contact you shortly.",
+      // });
     } catch (error) {
-      setStatus({
-        type: "error",
-        message: error.message || "We could not send your message right now.",
-      });
+      toast.error(error.message || "Something went wrong. Try again.");
+      // setStatus({
+      //   type: "error",
+      //   message: error.message || "We could not send your message right now.",
+      // });
     } finally {
       setSubmitting(false);
     }
@@ -181,22 +185,19 @@ const ContactPage = () => {
                   We&apos;d love to hear from you!
                 </h2>
                 <p className="max-w-[430px] font-['Nunito'] text-[17px] leading-7 text-[var(--text-grey-3)]">
-                  Have a question, suggestion, or need assistance? Our team is here to help. Reach out to us and we&apos;ll get back to you.
+                  Have a question, suggestion, or need assistance? Our team is
+                  here to help. Reach out to us and we&apos;ll get back to you.
                 </p>
               </div>
 
               <div className="h-[1px] w-[95%] bg-[var(--white-600)]"></div>
 
-              <div className="grid grid-cols-2 gap-1 rounded-[20px]">
+              <div className="grid grid-cols-[210px_1fr] gap-y-5 gap-x-2 rounded-[20px]">
                 {CONTACT_DETAILS.map((item) => (
-                  <div
-                    key={item.title}
-                    className="flex items-start gap-4 pb-8"
-                  >
-                    <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[var(--primary-green-50)] text-[20px] text-[var(--primary-green)]">
-                      <Icon name={item.icon} />
-                    </div>
-                    <div>
+                  <div key={item.title} className="flex items-start gap-4">
+                    <Icon name={item.icon} />
+
+                    <div className="">
                       <h3 className="font-['Nunito'] text-[15px] font-semibold text-[var(--text-grey-5)]">
                         {item.title}
                       </h3>
@@ -209,12 +210,13 @@ const ContactPage = () => {
               </div>
             </div>
 
-            <div className="rounded-[24px] bg-[var(--bg-secondary)] p-6">
-              <h2 className="font-['Nunito'] text-[34px] font-extrabold text-[var(--text-primary)]">
+            <div className="rounded-[24px] bg-[var(--bg-secondary)] p-7 py-8">
+              <h2 className="font-['Nunito'] text-[26px] font-bold text-black">
                 Get In Touch
               </h2>
-              <p className="mt-3 max-w-[480px] font-['Nunito'] text-[15px] leading-7 text-[var(--text-gray-medium)]">
-                Please fill out the form below and our team will get back to you shortly.
+              <p className="mt-3 max-w-[480px] font-['Nunito'] text-[15px] font-semibold leading-7 text-[var(--text-grey-3)]">
+                Please fill out the form below and our team will get back to you
+                shortly.
               </p>
 
               <form onSubmit={handleSubmit} className="mt-8 space-y-4">
@@ -263,7 +265,7 @@ const ContactPage = () => {
                   className="w-full rounded-[12px] border border-transparent bg-white px-4 py-4 font-['Nunito'] text-[15px] text-[var(--text-primary)] outline-none transition focus:border-[var(--border-orange)]"
                 />
 
-                {status.message ? (
+                {/* {status.message ? (
                   <p
                     className={`font-['Nunito'] text-[14px] font-semibold ${
                       status.type === "success"
@@ -273,7 +275,7 @@ const ContactPage = () => {
                   >
                     {status.message}
                   </p>
-                ) : null}
+                ) : null} */}
 
                 <Button1
                   type="submit"
@@ -281,7 +283,7 @@ const ContactPage = () => {
                   variant="filled"
                   color="orange"
                   size="md"
-                  className="min-w-[180px] rounded-[12px] px-7 py-3 text-[13px] uppercase tracking-[1px] disabled:opacity-70"
+                  className="min-w-[180px] rounded-[12px] px-7 py-3 font-bold text-[14px] uppercase tracking-[1px] disabled:opacity-70"
                 >
                   {submitting ? "Sending..." : "Send Message"}
                 </Button1>
@@ -289,34 +291,34 @@ const ContactPage = () => {
             </div>
           </section>
 
-          <section>
-            <h2 className="font-['Nunito'] text-[34px] font-extrabold uppercase text-[var(--text-primary)]">
+          <section className="mt-[40px]">
+            <h2 className="font-['Nunito'] text-[22px] font-bold uppercase text-black">
               Need immediate help?
             </h2>
 
-            <div className="mt-8 space-y-4">
+            <div className="mt-[40px] space-y-6">
               {FAQS.map((faq, index) => {
                 const isOpen = openFaqs.has(index);
                 return (
                   <div
                     key={faq.question}
-                    className="overflow-hidden rounded-[14px] border border-[var(--line-secondary)] bg-white shadow-[0_10px_24px_rgba(0,0,0,0.03)]"
+                    className="overflow-hidden rounded-[14px] border border-[var(--white-600)] bg-white"
                   >
                     <button
                       type="button"
                       onClick={() => toggleFaq(index)}
                       className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left"
                     >
-                      <span className="font-['Nunito'] text-[18px] font-bold text-[var(--text-primary)]">
+                      <span className="font-['Nunito'] text-[18px] font-bold text-[var(--text-grey-5)]">
                         {faq.question}
                       </span>
-                      <span className="text-[28px] leading-none text-[var(--text-primary)]">
+                      <span className="text-[28px] leading-none text-[var(--text-grey-5)]">
                         {isOpen ? "−" : "+"}
                       </span>
                     </button>
                     {isOpen ? (
-                      <div className="border-t border-[var(--line-secondary)] px-5 py-4">
-                        <p className="font-['Nunito'] text-[15px] leading-7 text-[var(--text-gray-medium)]">
+                      <div className="border-t border-[var(--line-secondary)] p-5 pr-6">
+                        <p className="font-['Nunito'] text-[18px] font-semibold leading-7 text-[var(--text-grey-3)]">
                           {faq.answer}
                         </p>
                       </div>
@@ -329,16 +331,16 @@ const ContactPage = () => {
 
           <section
             style={feedbackStyle}
-            className="rounded-[24px] px-6 py-10 text-center shadow-[0_18px_40px_rgba(0,0,0,0.08)] sm:px-12"
+            className="h-[350px] mt-[40px] rounded-[24px] px-6 py-10 text-center sm:px-12"
           >
-            <h2 className="font-['Nunito'] text-[32px] font-extrabold text-[var(--text-white)]">
+            <h2 className="pt-[40px] font-['Nunito'] text-[32px] font-extrabold text-[var(--text-white)] tracking-[1.5px]">
               Your Feedback Matters
             </h2>
-            <p className="mx-auto mt-3 max-w-[560px] font-['Nunito'] text-[15px] leading-7 text-[rgba(255,255,255,0.9)]">
+            <p className="mx-auto mt-3 max-w-[560px] font-['Nunito'] text-[18px] leading-7 text-[var(--text-grey-1)]">
               Your feedback helps us improve and serve the community better.
             </p>
-            <div className="mt-6 flex justify-center">
-              <div className="w-full max-w-[520px]">
+            <div className="mt-8 flex justify-center">
+              <div className="w-full max-w-[620px]">
                 <Footer compactFeedbackOnly />
               </div>
             </div>
