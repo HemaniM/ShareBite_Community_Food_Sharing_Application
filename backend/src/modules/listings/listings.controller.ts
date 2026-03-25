@@ -38,6 +38,19 @@ export class ListingsController {
   }
 
 
+  static async getRecentlyUploaded(req: AuthRequest, res: Response) {
+    try {
+      const result = await ListingsService.getRecentlyUploadedListings({
+        hours: typeof req.query.hours === "string" ? Number(req.query.hours) : 12,
+      });
+
+      return res.status(200).json(result);
+    } catch (error: any) {
+      logger.error(`Get Recently Uploaded Listings Error: ${error.message}`);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
 
   static async create(req: AuthRequest, res: Response) {
     try {

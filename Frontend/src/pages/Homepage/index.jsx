@@ -15,6 +15,7 @@ import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import {
   fetchActiveListings,
   fetchFoodNearYouListings,
+  fetchRecentlyUploadedListings,
 } from "../../features/listings/listingsSlice";
 import {
   isDisplayableListing,
@@ -33,10 +34,22 @@ const Homepage = () => {
     foodNearYouListings,
     foodNearYouLoading,
     foodNearYouError,
+    recentlyUploadedListings,
+    recentlyUploadedLoading,
+    recentlyUploadedError,
   } = useAppSelector((state) => state.listings);
 
   useEffect(() => {
     dispatch(fetchActiveListings());
+  }, [dispatch]);
+
+  // Recently Uploaded code **************
+  useEffect(() => {
+    dispatch(
+      fetchRecentlyUploadedListings({
+        hours: 12,
+      }),
+    );
   }, [dispatch]);
 
   // Food near you code **************
@@ -80,6 +93,16 @@ const Homepage = () => {
   const allProducts = useMemo(
     () => activeListings.filter(isDisplayableListing).map(mapListingToProduct),
     [activeListings],
+  );
+
+  // Recently Uploaded code **************
+  const recentlyUploadedProducts = useMemo(
+    () =>
+      recentlyUploadedListings
+        .filter(isDisplayableListing)
+        .map(mapListingToProduct)
+        .slice(0, 8),
+    [recentlyUploadedListings],
   );
 
   const navigateToBrowsePage = (filters = {}) => {
@@ -177,6 +200,9 @@ const Homepage = () => {
           onViewMoreClick={() => handleViewMoreClick("food_near_you")}
         />
         <RecentlyUploadedSection
+          products={recentlyUploadedProducts}
+          loading={recentlyUploadedLoading}
+          error={recentlyUploadedError}
           onProductClick={handleProductClick}
           onViewMoreClick={() => handleViewMoreClick("recently_uploaded")}
         />

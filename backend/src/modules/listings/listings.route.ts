@@ -6,6 +6,10 @@ export const listingsRouter = Router();
 
 listingsRouter.get("/", ListingsController.getActive);
 listingsRouter.get("/home/food-near-you", ListingsController.getFoodNearYou);
+listingsRouter.get(
+  "/home/recently-uploaded",
+  ListingsController.getRecentlyUploaded,
+);
 listingsRouter.post("/", protect, ListingsController.create);
 listingsRouter.get("/my", protect, ListingsController.getMine);
 listingsRouter.delete("/:listingId", protect, ListingsController.deleteMine);

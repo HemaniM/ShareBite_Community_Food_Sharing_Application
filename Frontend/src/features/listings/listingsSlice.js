@@ -5,6 +5,7 @@ import {
   getActiveListingsAPI,
   getFoodNearYouListingsAPI,
   getMyListingsAPI,
+  getRecentlyUploadedListingsAPI,
 } from "./listingsAPI";
 
 export const createListing = createAsyncThunk(
@@ -77,24 +78,45 @@ export const fetchFoodNearYouListings = createAsyncThunk(
   },
 );
 
+export const fetchRecentlyUploadedListings = createAsyncThunk(
+  "listings/fetchRecentlyUploadedListings",
+  async (params = {}, { rejectWithValue }) => {
+    try {
+      const response = await getRecentlyUploadedListingsAPI(params);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Unable to fetch recently uploaded food",
+      );
+    }
+  },
+);
+
 // /////////////////////////////
 
 const initialState = {
   myListings: [],
   activeListings: [],
   foodNearYouListings: [],
+  recentlyUploadedListings: [],
   foodNearYouMeta: {
+    totalCount: 0,
+    matchedCount: 0,
+  },
+  recentlyUploadedMeta: {
     totalCount: 0,
     matchedCount: 0,
   },
   loading: false,
   activeListingsLoading: false,
   foodNearYouLoading: false,
+  recentlyUploadedLoading: false,
   createLoading: false,
   deleteLoading: false,
   error: null,
   activeListingsError: null,
   foodNearYouError: null,
+  recentlyUploadedError: null,
   createSuccess: false,
 };
 
@@ -181,6 +203,23 @@ const listingsSlice = createSlice({
       .addCase(fetchFoodNearYouListings.rejected, (state, action) => {
         state.foodNearYouLoading = false;
         state.foodNearYouError = action.payload;
+      })
+      .addCase(fetchRecentlyUploadedListings.pending, (state) => {
+        state.recentlyUploadedLoading = true;
+        state.recentlyUploadedError = null;
+      })
+      .addCase(fetchRecentlyUploadedListings.fulfilled, (state, action) => {
+        state.recentlyUploadedLoading = false;
+        state.recentlyUploadedError = null;
+        state.recentlyUploadedListings = action.payload.listings || [];
+        state.recentlyUploadedMeta = {
+          totalCount: Number(action.payload.totalCount || 0),
+          matchedCount: Number(action.payload.matchedCount || 0),
+        };
+      })
+      .addCase(fetchRecentlyUploadedListings.rejected, (state, action) => {
+        state.recentlyUploadedLoading = false;
+        state.recentlyUploadedError = action.payload;
       });
   },
 });

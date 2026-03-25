@@ -3,7 +3,6 @@ import Listing, { IListing, ListingStatus } from "./listings.model";
 import Request from "../request/request.model";
 import { CreateListingDto } from "./listings.schema";
 
-
 export interface FoodNearYouFilters {
   city?: string;
   district?: string;
@@ -13,11 +12,14 @@ export interface FoodNearYouFilters {
   limit?: number;
 }
 
+export interface RecentlyUploadedFilters {
+  hours?: number;
+}
+
 const normalizeLocationValue = (value?: string): string =>
   String(value || "")
     .trim()
     .toLowerCase();
-
 
 export class ListingsService {
   static getDerivedStatus(
@@ -146,10 +148,13 @@ export class ListingsService {
       });
   }
 
-
   static async getFoodNearYouListings(
     filters: FoodNearYouFilters = {},
-  ): Promise<{ listings: IListing[]; totalCount: number; matchedCount: number }> {
+  ): Promise<{
+    listings: IListing[];
+    totalCount: number;
+    matchedCount: number;
+  }> {
     const normalizedFilters = {
       city: normalizeLocationValue(filters.city),
       district: normalizeLocationValue(filters.district),
@@ -178,7 +183,8 @@ export class ListingsService {
         }
 
         if (normalizedFilters.city && listingLocation.city) {
-          locationScore += normalizedFilters.city === listingLocation.city ? 4 : 0;
+          locationScore +=
+            normalizedFilters.city === listingLocation.city ? 4 : 0;
         }
 
         if (normalizedFilters.district && listingLocation.district) {
@@ -199,7 +205,8 @@ export class ListingsService {
         return { listing, locationScore };
       })
       .filter(({ locationScore }) => {
-        const hasAnyLocationFilter = Object.values(normalizedFilters).some(Boolean);
+        const hasAnyLocationFilter =
+          Object.values(normalizedFilters).some(Boolean);
 
         if (!hasAnyLocationFilter) {
           return true;
@@ -222,6 +229,33 @@ export class ListingsService {
       listings: scoredListings.map((item) => item.listing),
       totalCount: activeListings.length,
       matchedCount: scoredListings.length,
+    };
+  }
+
+  static async getRecentlyUploadedListings(
+    filters: RecentlyUploadedFilters = {},
+  ): Promise<{ listings: IListing[]; totalCount: number; matchedCount: number }> {
+    const activeListings = await ListingsService.getActiveListings();
+    const hoursWindow =
+      Number.isFinite(Number(filters.hours)) && Number(filters.hours) > 0
+        ? Number(filters.hours)
+        : 12;
+    const thresholdTime = Date.now() - hoursWindow * 60 * 60 * 1000;
+
+    const recentListings = activeListings
+      .filter((listing) => {
+        const createdAtTime = new Date(listing.createdAt).getTime();
+        return Number.isFinite(createdAtTime) && createdAtTime >= thresholdTime;
+      })
+      .sort(
+        (a, b) =>
+          new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
+      );
+
+    return {
+      listings: recentListings,
+      totalCount: activeListings.length,
+      matchedCount: recentListings.length,
     };
   }
 
