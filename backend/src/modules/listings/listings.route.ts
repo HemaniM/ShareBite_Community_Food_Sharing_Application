@@ -10,6 +10,7 @@ listingsRouter.get(
   "/home/recently-uploaded",
   ListingsController.getRecentlyUploaded,
 );
+listingsRouter.get("/home/filtered", ListingsController.getHomepageFiltered);
 listingsRouter.post("/", protect, ListingsController.create);
 listingsRouter.get("/my", protect, ListingsController.getMine);
 listingsRouter.delete("/:listingId", protect, ListingsController.deleteMine);

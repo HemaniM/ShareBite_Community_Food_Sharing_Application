@@ -8,7 +8,7 @@ const navItems = [
   { label: "HOME", path: "/home" },
   { label: "ABOUT", path: "/about" },
   { label: "CONTACT", path: "/contact" },
-  { label: "DONATION", path: "/donation" },
+  { label: "DONATION", path: "/donation", disabled: true },
 ];
 
 const HomepageNavBar = ({ showBorder = false }) => {
@@ -36,19 +36,28 @@ const HomepageNavBar = ({ showBorder = false }) => {
             </Link>
 
             <div className="flex flex-row gap-[50px] items-center mr-[50px]">
-              {navItems.map((item) => (
-                <NavLink
-                  key={item.label}
-                  to={item.path}
-                  className={`text-[14px] leading-5 text-left font-['Nunito'] cursor-pointer transition-colors ${
-                    isNavItemActive(item.path)
-                      ? "font-[var(--font-weight-bold)] text-orange"
-                      : "font-[var(--font-weight-semibold)] text-[var(--primary-cream-900)] hover:text-orange hover:font-bold"
-                  }`}
-                >
-                  {item.label}
-                </NavLink>
-              ))}
+              {navItems.map((item) => {
+                const isDisabled = item.disabled;
+                return isDisabled ? (
+                  <span
+                    key={item.label}
+                    className="text-[14px] leading-5 font-semibold text-[var(--primary-cream-900)] cursor-not-allowed opacity-80"
+                  >
+                    {item.label}
+                  </span>
+                ) : (
+                    <NavLink
+                      key={item.label}
+                      to={item.path}
+                      className={`text-[14px] leading-5 text-left font-['Nunito'] cursor-pointer transition-colors ${isNavItemActive(item.path)
+                          ? "font-[var(--font-weight-bold)] text-orange"
+                          : "font-[var(--font-weight-semibold)] text-[var(--primary-cream-900)] hover:text-orange hover:font-bold"
+                        }`}
+                    >
+                      {item.label}
+                    </NavLink>
+                  );
+              })}
             </div>
 
             <div className="flex flex-row items-center gap-[12px] lg:gap-[12px]">

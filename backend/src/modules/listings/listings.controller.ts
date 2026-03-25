@@ -51,6 +51,22 @@ export class ListingsController {
     }
   }
 
+  static async getHomepageFiltered(req: AuthRequest, res: Response) {
+    try {
+      const result = await ListingsService.getHomepageFilteredListings({
+        location:
+          typeof req.query.location === "string" ? req.query.location : "",
+        category:
+          typeof req.query.category === "string" ? req.query.category : "",
+        budget: typeof req.query.budget === "string" ? req.query.budget : "",
+      });
+
+      return res.status(200).json(result);
+    } catch (error: any) {
+      logger.error(`Get Homepage Filtered Listings Error: ${error.message}`);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
 
   static async create(req: AuthRequest, res: Response) {
     try {

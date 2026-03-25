@@ -52,15 +52,15 @@ const AllProductsSection = ({
 
           {/* Products Grid */}
           {loading ? (
-            <div className="w-full rounded-[10px] border border-[#f2ebe5] bg-white px-6 py-8 text-center text-[#6b6961]">
+            <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6 text-[var(--text-grey-4)]">
               Loading available food posts...
             </div>
           ) : error ? (
-            <div className="w-full rounded-[10px] border border-[#f4c7c3] bg-white px-6 py-8 text-center text-[#b45309]">
+            <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6 text-[var(--primary-orange-600)]">
               {error}
             </div>
           ) : products.length === 0 ? (
-            <div className="w-full rounded-[10px] border border-[#f2ebe5] bg-white px-6 py-8 text-center text-[#6b6961]">
+            <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6 text-[var(--text-grey-4)]">
               No available food posts right now.
             </div>
           ) : (

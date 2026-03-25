@@ -55,7 +55,7 @@ const FoodNearYouSection = ({
               Detecting nearby food posts...
             </div>
           ) : error ? (
-            <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6 text-[var(--text-grey-4)]">
+            <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent p-6 text-[var(--primary-orange-600)]">
               {error}
             </div>
           ) : products.length === 0 ? (

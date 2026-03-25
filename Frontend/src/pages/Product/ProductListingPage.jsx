@@ -12,6 +12,8 @@ import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
 import {
   fetchActiveListings,
   fetchFoodNearYouListings,
+  fetchHomepageFilteredListings,
+  fetchRecentlyUploadedListings,
 } from "../../features/listings/listingsSlice";
 import {
   isDisplayableListing,
@@ -20,27 +22,27 @@ import {
 } from "../../utils/listingTransforms";
 import { resolveUserLocationContext } from "../../utils/locationContext";
 
-const normalizeCategory = (value = "") =>
-  value.toString().trim().toLowerCase().replace(/\s+/g, "-");
+// const normalizeCategory = (value = "") =>
+//   value.toString().trim().toLowerCase().replace(/\s+/g, "-");
 
-const isWithinBudget = (price, budget) => {
-  if (!budget) return true;
+// const isWithinBudget = (price, budget) => {
+//   if (!budget) return true;
 
-  if (budget === "free") {
-    return price === 0;
-  }
+//   if (budget === "free") {
+//     return price === 0;
+//   }
 
-  if (budget === ">500") {
-    return price > 500;
-  }
+//   if (budget === ">500") {
+//     return price > 500;
+//   }
 
-  if (budget.includes("-")) {
-    const [min, max] = budget.split("-").map(Number);
-    return price >= min && price <= max;
-  }
+//   if (budget.includes("-")) {
+//     const [min, max] = budget.split("-").map(Number);
+//     return price >= min && price <= max;
+//   }
 
-  return true;
-};
+//   return true;
+// };
 
 /* ---------- HEADING HELPER FUNCTION ---------- */
 const formatHeading = (text = "") => {
@@ -63,6 +65,10 @@ const SUPPORTED_SOURCE_SECTIONS = {
     mode: "food_near_you",
     heading: "Food Near You",
   },
+  recently_uploaded: {
+    mode: "recently_uploaded",
+    heading: "Recently Uploaded",
+  },
 };
 
 const ProductListingPage = () => {
@@ -76,6 +82,12 @@ const ProductListingPage = () => {
     foodNearYouListings,
     foodNearYouLoading,
     foodNearYouError,
+    recentlyUploadedListings,
+    recentlyUploadedLoading,
+    recentlyUploadedError,
+    homepageFilteredListings,
+    homepageFilteredLoading,
+    homepageFilteredError,
   } = useAppSelector((state) => state.listings);
 
   // useEffect(() => {
@@ -95,6 +107,10 @@ const ProductListingPage = () => {
   const fetchPlan = useMemo(() => {
     const sourceConfig = SUPPORTED_SOURCE_SECTIONS[sourceSection];
 
+    const hasSearchFilters =
+      Boolean(category?.trim()) || Boolean(location?.trim()) || Boolean(budget);
+
+      
     if (sourceConfig) {
       return {
         ...sourceConfig,
@@ -106,11 +122,18 @@ const ProductListingPage = () => {
     // - Search filter feed (case 3)
     // Until dedicated backend endpoints are ready, these flows use active listings
     // and apply client-side filtering below.
+    if (hasSearchFilters) {
+      return {
+        mode: "homepage_filtered",
+        heading: "Food Results",
+      };
+    }
+
     return {
       mode: "active_listings",
       heading: formatHeading(category) || "Food Results",
     };
-  }, [category, sourceSection]);
+  }, [budget, category, location, sourceSection]);
 
   useEffect(() => {
     let isMounted = true;
@@ -133,6 +156,26 @@ const ProductListingPage = () => {
         return;
       }
 
+      if (fetchPlan.mode === "recently_uploaded") {
+        dispatch(
+          fetchRecentlyUploadedListings({
+            hours: 12,
+          }),
+        );
+        return;
+      }
+
+      if (fetchPlan.mode === "homepage_filtered") {
+        dispatch(
+          fetchHomepageFilteredListings({
+            location,
+            category,
+            budget,
+          }),
+        );
+        return;
+      }
+
       dispatch(fetchActiveListings());
     };
 
@@ -141,18 +184,69 @@ const ProductListingPage = () => {
     return () => {
       isMounted = false;
     };
-  }, [dispatch, fetchPlan.mode, location]);
+  }, [budget, category, dispatch, fetchPlan.mode, location]);
 
-  const normalizedCategory = normalizeCategory(category);
+  // const normalizedCategory = normalizeCategory(category);
 
-  const selectedListings =
-    fetchPlan.mode === "food_near_you" ? foodNearYouListings : activeListings;
-  const selectedLoading =
-    fetchPlan.mode === "food_near_you"
-      ? foodNearYouLoading
-      : activeListingsLoading;
-  const selectedError =
-    fetchPlan.mode === "food_near_you" ? foodNearYouError : activeListingsError;
+  const selectedListings = useMemo(() => {
+    if (fetchPlan.mode === "food_near_you") {
+      return foodNearYouListings;
+    }
+    if (fetchPlan.mode === "recently_uploaded") {
+      return recentlyUploadedListings;
+    }
+    if (fetchPlan.mode === "homepage_filtered") {
+      return homepageFilteredListings;
+    }
+    return activeListings;
+  }, [
+    activeListings,
+    fetchPlan.mode,
+    foodNearYouListings,
+    homepageFilteredListings,
+    recentlyUploadedListings,
+  ]);
+
+  const selectedLoading = useMemo(() => {
+    if (fetchPlan.mode === "food_near_you") {
+      return foodNearYouLoading;
+    }
+
+    if (fetchPlan.mode === "recently_uploaded") {
+      return recentlyUploadedLoading;
+    }
+
+    if (fetchPlan.mode === "homepage_filtered") {
+      return homepageFilteredLoading;
+    }
+
+    return activeListingsLoading;
+  }, [
+    activeListingsLoading,
+    fetchPlan.mode,
+    foodNearYouLoading,
+    homepageFilteredLoading,
+    recentlyUploadedLoading,
+  ]);
+
+  const selectedError = useMemo(() => {
+    if (fetchPlan.mode === "food_near_you") {
+      return foodNearYouError;
+    }
+    if (fetchPlan.mode === "recently_uploaded") {
+      return recentlyUploadedError;
+    }
+    if (fetchPlan.mode === "homepage_filtered") {
+      return homepageFilteredError;
+    }
+    return activeListingsError;
+  }, [
+    activeListingsError,
+    fetchPlan.mode,
+    foodNearYouError,
+    homepageFilteredError,
+    recentlyUploadedError,
+  ]);
 
   const allProducts = useMemo(
     () =>
@@ -160,28 +254,45 @@ const ProductListingPage = () => {
     [selectedListings],
   );
 
-  const filteredProducts = useMemo(
-    () =>
-      allProducts.filter((product) => {
-        const productCategory = normalizeCategory(product.category);
-        const productLocation = `${product.location} ${product.fullLocation}`
-          .toLowerCase()
-          .trim();
+  const filteredProducts = allProducts;
+  
+  // const selectedListings =
+  //   fetchPlan.mode === "food_near_you" ? foodNearYouListings : activeListings;
+  // const selectedLoading =
+  //   fetchPlan.mode === "food_near_you"
+  //     ? foodNearYouLoading
+  //     : activeListingsLoading;
+  // const selectedError =
+  //   fetchPlan.mode === "food_near_you" ? foodNearYouError : activeListingsError;
 
-        const matchCategory = normalizedCategory
-          ? productCategory === normalizedCategory
-          : true;
+  // const allProducts = useMemo(
+  //   () =>
+  //     selectedListings.filter(isDisplayableListing).map(mapListingToProduct),
+  //   [selectedListings],
+  // );
 
-        const matchLocation = location
-          ? productLocation.includes(location.toLowerCase().trim())
-          : true;
+  // const filteredProducts = useMemo(
+  //   () =>
+  //     allProducts.filter((product) => {
+  //       const productCategory = normalizeCategory(product.category);
+  //       const productLocation = `${product.location} ${product.fullLocation}`
+  //         .toLowerCase()
+  //         .trim();
 
-        const matchBudget = isWithinBudget(product.price, budget);
+  //       const matchCategory = normalizedCategory
+  //         ? productCategory === normalizedCategory
+  //         : true;
 
-        return matchCategory && matchLocation && matchBudget;
-      }),
-    [allProducts, budget, location, normalizedCategory],
-  );
+  //       const matchLocation = location
+  //         ? productLocation.includes(location.toLowerCase().trim())
+  //         : true;
+
+  //       const matchBudget = isWithinBudget(product.price, budget);
+
+  //       return matchCategory && matchLocation && matchBudget;
+  //     }),
+  //   [allProducts, budget, location, normalizedCategory],
+  // );
 
   const navigateToBrowsePage = (filters = {}) => {
     const browseFilters = {
@@ -281,7 +392,7 @@ const ProductListingPage = () => {
                 variant="filled"
                 color="green"
                 size="md"
-                className="w-[180px]"
+                className="py-3 px-8 font-semibold tracking-[0.5px] uppercase"
                 onClick={() => navigate("/home")}
               >
                 Go to Homepage

@@ -4,6 +4,7 @@ import {
   deleteMyListingAPI,
   getActiveListingsAPI,
   getFoodNearYouListingsAPI,
+  getHomepageFilteredListingsAPI,
   getMyListingsAPI,
   getRecentlyUploadedListingsAPI,
 } from "./listingsAPI";
@@ -92,6 +93,20 @@ export const fetchRecentlyUploadedListings = createAsyncThunk(
   },
 );
 
+export const fetchHomepageFilteredListings = createAsyncThunk(
+  "listings/fetchHomepageFilteredListings",
+  async (params = {}, { rejectWithValue }) => {
+    try {
+      const response = await getHomepageFilteredListingsAPI(params);
+      return response.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Unable to fetch filtered food posts",
+      );
+    }
+  },
+);
+
 // /////////////////////////////
 
 const initialState = {
@@ -99,6 +114,7 @@ const initialState = {
   activeListings: [],
   foodNearYouListings: [],
   recentlyUploadedListings: [],
+  homepageFilteredListings: [],
   foodNearYouMeta: {
     totalCount: 0,
     matchedCount: 0,
@@ -107,16 +123,22 @@ const initialState = {
     totalCount: 0,
     matchedCount: 0,
   },
+  homepageFilteredMeta: {
+    totalCount: 0,
+    matchedCount: 0,
+  },
   loading: false,
   activeListingsLoading: false,
   foodNearYouLoading: false,
   recentlyUploadedLoading: false,
+  homepageFilteredLoading: false,
   createLoading: false,
   deleteLoading: false,
   error: null,
   activeListingsError: null,
   foodNearYouError: null,
   recentlyUploadedError: null,
+  homepageFilteredError: null,
   createSuccess: false,
 };
 
@@ -220,6 +242,23 @@ const listingsSlice = createSlice({
       .addCase(fetchRecentlyUploadedListings.rejected, (state, action) => {
         state.recentlyUploadedLoading = false;
         state.recentlyUploadedError = action.payload;
+      })
+      .addCase(fetchHomepageFilteredListings.pending, (state) => {
+        state.homepageFilteredLoading = true;
+        state.homepageFilteredError = null;
+      })
+      .addCase(fetchHomepageFilteredListings.fulfilled, (state, action) => {
+        state.homepageFilteredLoading = false;
+        state.homepageFilteredError = null;
+        state.homepageFilteredListings = action.payload.listings || [];
+        state.homepageFilteredMeta = {
+          totalCount: Number(action.payload.totalCount || 0),
+          matchedCount: Number(action.payload.matchedCount || 0),
+        };
+      })
+      .addCase(fetchHomepageFilteredListings.rejected, (state, action) => {
+        state.homepageFilteredLoading = false;
+        state.homepageFilteredError = action.payload;
       });
   },
 });

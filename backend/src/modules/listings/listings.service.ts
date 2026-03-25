@@ -16,6 +16,14 @@ export interface RecentlyUploadedFilters {
   hours?: number;
 }
 
+export interface HomepageFilters {
+  location?: string;
+  category?: string;
+  budget?: string;
+}
+
+
+
 const normalizeLocationValue = (value?: string): string =>
   String(value || "")
     .trim()
@@ -256,6 +264,63 @@ export class ListingsService {
       listings: recentListings,
       totalCount: activeListings.length,
       matchedCount: recentListings.length,
+    };
+  }
+
+  static async getHomepageFilteredListings(
+    filters: HomepageFilters = {},
+  ): Promise<{ listings: IListing[]; totalCount: number; matchedCount: number }> {
+    const activeListings = await ListingsService.getActiveListings();
+    const normalizedLocation = normalizeLocationValue(filters.location);
+    const normalizedCategory = normalizeLocationValue(filters.category).replace(
+      /\s+/g,
+      "-",
+    );
+    const normalizedBudget = String(filters.budget || "").trim();
+
+    const filteredListings = activeListings.filter((listing) => {
+      const listingCategory = normalizeLocationValue(listing.category).replace(
+        /\s+/g,
+        "-",
+      );
+      const listingLocation = [
+        listing.location?.city,
+        listing.location?.district,
+        listing.location?.state,
+        listing.location?.country,
+        listing.location?.pincode,
+      ]
+        .map((value) => normalizeLocationValue(value))
+        .filter(Boolean)
+        .join(" ");
+      const priceAmount = Number(listing.price?.amount || 0);
+
+      const matchesCategory = normalizedCategory
+        ? listingCategory === normalizedCategory
+        : true;
+      const matchesLocation = normalizedLocation
+        ? listingLocation.includes(normalizedLocation)
+        : true;
+
+      let matchesBudget = true;
+      if (normalizedBudget === "free") {
+        matchesBudget = priceAmount === 0;
+      } else if (normalizedBudget === ">500") {
+        matchesBudget = priceAmount > 500;
+      } else if (normalizedBudget.includes("-")) {
+        const [min, max] = normalizedBudget.split("-").map(Number);
+        if (Number.isFinite(min) && Number.isFinite(max)) {
+          matchesBudget = priceAmount >= min && priceAmount <= max;
+        }
+      }
+
+      return matchesCategory && matchesLocation && matchesBudget;
+    });
+
+    return {
+      listings: filteredListings,
+      totalCount: activeListings.length,
+      matchedCount: filteredListings.length,
     };
   }
 
