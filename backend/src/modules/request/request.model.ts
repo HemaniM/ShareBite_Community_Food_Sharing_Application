@@ -4,8 +4,6 @@ export enum RequestStatus {
   PENDING = "pending",
   APPROVED = "approved",
   REJECTED = "rejected",
-  COMPLETED = "completed",
-  CANCELLED = "cancelled",
 }
 
 export interface IRequest extends Document {

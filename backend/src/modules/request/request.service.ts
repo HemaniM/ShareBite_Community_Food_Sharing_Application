@@ -49,7 +49,7 @@ export class RequestService {
     const [requests, foodPosts] = await Promise.all([
       Request.find({
         requester: userId,
-        status: { $in: [RequestStatus.COMPLETED, RequestStatus.REJECTED] },
+        status: { $in: [RequestStatus.APPROVED, RequestStatus.REJECTED] },
       })
         .populate(listingPopulate)
         .populate(donorPopulate)
@@ -80,7 +80,7 @@ export class RequestService {
     return Request.find({
       donor: userId,
       listingId,
-      status: { $in: [RequestStatus.COMPLETED, RequestStatus.REJECTED] },
+      status: { $in: [RequestStatus.APPROVED, RequestStatus.REJECTED] },
     })
       .populate(requesterPopulate)
       .populate(listingPopulate)
