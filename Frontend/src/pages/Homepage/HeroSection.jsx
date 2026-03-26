@@ -3,8 +3,9 @@ import Button from "../../components/ui/Button";
 import { Icon } from "../../components/Icons/Icons";
 import NavBarHomepage from "../../components/common/NavbarHomepage";
 import Button1 from "../../components/ui/Button1";
+import { Link } from "react-router-dom";
 
-const HeroSection = () => {
+const HeroSection = ({ onGetStartedClick }) => {
   return (
     <section className="w-full min-h-[696px] bg-[url('../../public/images/hero_background.jpg'),linear-gradient(90deg,#f9f7f8_0%,#f0eeef_50%,#f3f1f2_100%)] bg-no-repeat bg-top relative">
       {/* Navigation Bar */}
@@ -39,18 +40,22 @@ const HeroSection = () => {
 
               {/* Action Buttons */}
               <div className="flex flex-col sm:flex-row items-center gap-4 lg:gap-[32px] w-full lg:w-auto">
-                <Button1 variant="filled" color="orange" size="md">
+                <Button1 onClick={onGetStartedClick} variant="filled" color="orange" size="md">
                   GET STARTED
                 </Button1>
-
-                <Button1
-                  variant="outline"
-                  color="orange"
-                  size="md"
-                  className="py-[9px]"
+                <Link
+                  to="/about"
+                  aria-label="About US"
                 >
-                  LEARN MORE
-                </Button1>
+                  <Button1
+                    variant="outline"
+                    color="orange"
+                    size="md"
+                    className="py-[9px]"
+                  >
+                    LEARN MORE
+                  </Button1>
+                </Link>
               </div>
             </div>
           </div>

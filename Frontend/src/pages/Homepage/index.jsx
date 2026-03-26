@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 import ContactBar from "../../components/common/ContactBar";
@@ -26,6 +26,7 @@ import {
 import { resolveUserLocationContext } from "../../utils/locationContext";
 
 const Homepage = () => {
+  const foodNearYouRef = useRef(null);
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const {
@@ -42,6 +43,13 @@ const Homepage = () => {
     mostTrustedDonorLoading,
     mostTrustedDonorError,
   } = useAppSelector((state) => state.listings);
+
+  // Get Started Button code *****************
+  const scrollToFoodNearYou = () => {
+  foodNearYouRef.current?.scrollIntoView({
+    behavior: "smooth",
+  });
+};
 
   useEffect(() => {
     dispatch(fetchActiveListings());
@@ -211,7 +219,7 @@ const Homepage = () => {
 
       <main className="w-full bg-[#ffffff]">
         <ContactBar />
-        <HeroSection />
+        <HeroSection onGetStartedClick={scrollToFoodNearYou} />
         <SearchSection onSearch={handleSearch} />
         <CategoriesSection onCategoryClick={handleCategoryClick} />
         <TrustedDonorsSection
@@ -223,13 +231,15 @@ const Homepage = () => {
             handleViewMoreClick("from_most_trusted_donors")
           }
         />
+        <div ref={foodNearYouRef}>
         <FoodNearYouSection
           products={foodNearYouProducts}
           loading={foodNearYouLoading}
           error={foodNearYouError}
           onProductClick={handleProductClick}
           onViewMoreClick={() => handleViewMoreClick("food_near_you")}
-        />
+          />
+        </div>
         <RecentlyUploadedSection
           products={recentlyUploadedProducts}
           loading={recentlyUploadedLoading}

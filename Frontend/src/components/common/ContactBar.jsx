@@ -1,6 +1,7 @@
 import React from 'react';
 import { twMerge } from 'tailwind-merge';
 import { Icon } from '../Icons/Icons';
+import { CONTACT_EMAIL } from '../../utils/contactAPI';
 
 const ContactBar = ({ className, ...props }) => {
   return (
@@ -15,7 +16,7 @@ const ContactBar = ({ className, ...props }) => {
             {/* Email */}
             <div className="">
               <span className="text-[10px] md:text-[13px] font-semibold leading-[18px] text-left lowercase text-[#8c8c8a] font-['Nunito']">
-                farmgate@gmail.com
+                kartikmaurya2005s@gmail.com
               </span>
             </div>
 
@@ -30,7 +31,7 @@ const ContactBar = ({ className, ...props }) => {
             <div className="min-w-[90px] flex flex-row justify-between mt-[5px] items-center">
               {/* Email Icon */}
               <a
-                href="#"
+                href={`mailto:${CONTACT_EMAIL}`}
                 className="hover:opacity-80 transition-opacity"
                 aria-label="Email"
               >
