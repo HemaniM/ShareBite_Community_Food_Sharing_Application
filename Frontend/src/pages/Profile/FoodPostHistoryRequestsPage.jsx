@@ -52,7 +52,7 @@ const FoodPostHistoryRequestsPage = () => {
             <div className="space-y-4">
                 {!listingHistoryLoading && !listingHistoryRequests.length && (
                     <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent text-[var(--text-grey-4)] px-6 py-10 text-center text-[15px]">
-                        No completed/rejected requests found for this food post.
+                        No approved/rejected requests found for this food post.
                     </div>
                 )}
 
