@@ -18,6 +18,7 @@ import CartPage from "./pages/Cart/CartPage";
 import ProductPage from "./pages/Product/ProductPage";
 import PublicProfilePage from "./pages/publicProfile/PublicProfilePage";
 import ProductListingPage from "./pages/Product/ProductListingPage";
+import AboutPage from "./pages/About/AboutPage";
 import ContactPage from "./pages/Contact/ContactPage";
 
 import HistoryPage from "./pages/Profile/HistoryPage";
@@ -48,6 +49,8 @@ const AppRoutes = () => {
             </ProtectedRoute>
           }
         />
+
+        <Route path="/about" element={<AboutPage />} />
 
         <Route
           path="/contact"
