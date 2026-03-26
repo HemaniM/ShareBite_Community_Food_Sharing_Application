@@ -20,6 +20,11 @@ import PublicProfilePage from "./pages/publicProfile/PublicProfilePage";
 import ProductListingPage from "./pages/Product/ProductListingPage";
 import ContactPage from "./pages/Contact/ContactPage";
 
+import HistoryPage from "./pages/Profile/HistoryPage";
+import HistoryRequestsPage from "./pages/Profile/HistoryRequestsPage";
+import HistoryFoodPostsPage from "./pages/Profile/HistoryFoodPostsPage";
+import FoodPostHistoryRequestsPage from "./pages/Profile/FoodPostHistoryRequestsPage";
+
 import ProtectedRoute from "./routes/ProtectedRoute";
 
 const AppRoutes = () => {
@@ -108,7 +113,15 @@ const AppRoutes = () => {
             path="food-posts/:postId/requests"
             element={<FoodPostRequestsPage />}
           />
-          <Route path="history" element={<div>History</div>} />
+          <Route path="history" element={<HistoryPage />}>
+            <Route index element={<Navigate to="requests" replace />} />
+            <Route path="requests" element={<HistoryRequestsPage />} />
+            <Route path="food-posts" element={<HistoryFoodPostsPage />} />
+            <Route
+              path="food-posts/:postId/requests"
+              element={<FoodPostHistoryRequestsPage />}
+            />
+          </Route>
         </Route>
 
         {/* <Route

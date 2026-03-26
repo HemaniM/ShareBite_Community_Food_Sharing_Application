@@ -4,6 +4,7 @@ import profileReducer from "../features/profile/profileSlice";
 import listingsReducer from "../features/listings/listingsSlice";
 import requestsReducer from "../features/requests/requestsSlice";
 import reviewsReducer from "../features/reviews/reviewsSlice";
+import historyReducer from "../features/history/historySlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,5 +13,6 @@ export const store = configureStore({
     listings: listingsReducer,
     requests: requestsReducer,
     reviews: reviewsReducer,
+    history: historyReducer,
   },
 });

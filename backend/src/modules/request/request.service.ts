@@ -36,7 +36,57 @@ const reviewPopulate = {
   },
 };
 
+
+
 export class RequestService {
+
+  static async getHistoryOverview(userId: string): Promise<{
+    requests: IRequest[];
+    foodPosts: any[];
+  }> {
+    await ListingsService.syncListingStatuses();
+
+    const [requests, foodPosts] = await Promise.all([
+      Request.find({
+        requester: userId,
+        status: { $in: [RequestStatus.COMPLETED, RequestStatus.REJECTED] },
+      })
+        .populate(listingPopulate)
+        .populate(donorPopulate)
+        .populate(reviewPopulate)
+        .sort({ createdAt: -1 }),
+      Listing.find({
+        donor: userId,
+        status: { $in: [ListingStatus.EXPIRED, ListingStatus.NOT_AVAILABLE] },
+      })
+        .sort({ createdAt: -1 })
+        .lean(),
+    ]);
+
+    return { requests, foodPosts };
+  }
+
+  static async getHistoryRequestsForListing(
+    userId: string,
+    listingId: string,
+  ): Promise<IRequest[]> {
+    await ListingsService.syncListingStatuses();
+
+    const listing = await Listing.findOne({ _id: listingId, donor: userId });
+    if (!listing) {
+      throw new Error("Food post not found");
+    }
+
+    return Request.find({
+      donor: userId,
+      listingId,
+      status: { $in: [RequestStatus.COMPLETED, RequestStatus.REJECTED] },
+    })
+      .populate(requesterPopulate)
+      .populate(listingPopulate)
+      .sort({ createdAt: -1 });
+  }
+
   static async createRequest(
     userId: string,
     data: CreateRequestDto,

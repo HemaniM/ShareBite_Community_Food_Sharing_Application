@@ -66,6 +66,43 @@ export class RequestController {
     }
   }
 
+
+  static async getHistoryOverview(req: AuthRequest, res: Response) {
+    try {
+      if (!req.user?.id) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const history = await RequestService.getHistoryOverview(req.user.id);
+      return res.status(200).json(history);
+    } catch (error: any) {
+      logger.error(`Get History Overview Error: ${error.message}`);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
+  static async getHistoryByListing(req: AuthRequest, res: Response) {
+    try {
+      if (!req.user?.id) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const listingId = String(req.params.listingId || "");
+      const requests = await RequestService.getHistoryRequestsForListing(
+        req.user.id,
+        listingId,
+      );
+
+      return res.status(200).json({ requests });
+    } catch (error: any) {
+      logger.error(`Get History Listing Requests Error: ${error.message}`);
+      return res
+        .status(400)
+        .json({ message: error.message || "Unable to fetch history" });
+    }
+  }
+
+
   static async accept(req: AuthRequest, res: Response) {
     try {
       if (!req.user?.id) {
