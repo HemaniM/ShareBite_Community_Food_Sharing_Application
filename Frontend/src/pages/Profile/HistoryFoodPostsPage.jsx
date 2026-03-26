@@ -2,7 +2,12 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { Icon } from "../../components/Icons/Icons";
 import Button1 from "../../components/ui/Button1";
-import { useAppSelector } from "../../hooks/reduxHooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
+import {
+  deleteMyListing,
+  fetchMyListings,
+} from "../../features/listings/listingsSlice";
+import { fetchHistoryOverview } from "../../features/history/historySlice";
 
 const formatDate = (value) => {
   if (!value) {
@@ -18,9 +23,19 @@ const formatDate = (value) => {
 };
 
 const HistoryFoodPostsPage = () => {
+  const dispatch = useAppDispatch();
   const { historyFoodPosts, overviewLoading, overviewError } = useAppSelector(
     (state) => state.history,
   );
+  const { deleteLoading } = useAppSelector((state) => state.listings);
+
+  const handleDeletePost = async (postId) => {
+    const action = await dispatch(deleteMyListing(postId));
+    if (deleteMyListing.fulfilled.match(action)) {
+      dispatch(fetchHistoryOverview());
+      dispatch(fetchMyListings());
+    }
+  };
 
   return (
     <div className="space-y-[30px]">
@@ -88,6 +103,8 @@ const HistoryFoodPostsPage = () => {
                 size="sm"
                 className="group !border-none p-[16px] bg-[var(--primary-cream-100)] rounded-[8px]"
               aria-label="Delete food post history"
+              onClick={() => handleDeletePost(post._id)}
+              disabled={deleteLoading}
             >
               <Icon name="delete_icon_orange" className="group-hover:hidden"/>
               <Icon name="delete_icon_white" className="hidden group-hover:block"/>

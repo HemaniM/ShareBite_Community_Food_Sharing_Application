@@ -1,5 +1,6 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import {
+  deleteMyRequestAPI,
   getHistoryListingRequestsAPI,
   getHistoryOverviewAPI,
 } from "./historyAPI";
@@ -33,14 +34,30 @@ export const fetchHistoryListingRequests = createAsyncThunk(
   },
 );
 
+export const deleteHistoryRequest = createAsyncThunk(
+  "history/deleteRequest",
+  async (requestId, { rejectWithValue }) => {
+    try {
+      const response = await deleteMyRequestAPI(requestId);
+      return { requestId, ...response.data };
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Unable to delete request",
+      );
+    }
+  },
+);
+
 const initialState = {
   historyRequests: [],
   historyFoodPosts: [],
   listingHistoryRequests: [],
+  deleteRequestLoading: false,
   overviewLoading: false,
   listingHistoryLoading: false,
   overviewError: null,
   listingHistoryError: null,
+  deleteRequestError: null,
 };
 
 const historySlice = createSlice({
@@ -73,6 +90,21 @@ const historySlice = createSlice({
       .addCase(fetchHistoryListingRequests.rejected, (state, action) => {
         state.listingHistoryLoading = false;
         state.listingHistoryError = action.payload;
+      })
+      .addCase(deleteHistoryRequest.pending, (state) => {
+        state.deleteRequestLoading = true;
+        state.deleteRequestError = null;
+      })
+      .addCase(deleteHistoryRequest.fulfilled, (state, action) => {
+        state.deleteRequestLoading = false;
+        state.deleteRequestError = null;
+        state.historyRequests = state.historyRequests.filter(
+          (request) => request._id !== action.payload.requestId,
+        );
+      })
+      .addCase(deleteHistoryRequest.rejected, (state, action) => {
+        state.deleteRequestLoading = false;
+        state.deleteRequestError = action.payload;
       });
   },
 });

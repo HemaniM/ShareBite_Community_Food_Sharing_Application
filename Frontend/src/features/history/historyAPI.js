@@ -15,3 +15,5 @@ API.interceptors.request.use((req) => {
 export const getHistoryOverviewAPI = () => API.get("/requests/history");
 export const getHistoryListingRequestsAPI = (listingId) =>
   API.get(`/requests/history/listing/${listingId}`);
+export const deleteMyRequestAPI = (requestId) =>
+  API.delete(`/requests/${requestId}`);
