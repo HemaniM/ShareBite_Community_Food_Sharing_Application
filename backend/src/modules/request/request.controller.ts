@@ -47,6 +47,29 @@ export class RequestController {
     }
   }
 
+    static async deleteMine(req: AuthRequest, res: Response) {
+    try {
+      if (!req.user?.id) {
+        return res.status(401).json({ message: "Unauthorized" });
+      }
+
+      const requestId = String(req.params.requestId || "");
+      const deletedRequest = await RequestService.deleteRequesterRequest(
+        req.user.id,
+        requestId,
+      );
+
+      if (!deletedRequest) {
+        return res.status(404).json({ message: "Request not found" });
+      }
+
+      return res.status(200).json({ message: "Request deleted successfully" });
+    } catch (error: any) {
+      logger.error(`Delete Request Error: ${error.message}`);
+      return res.status(500).json({ message: "Internal Server Error" });
+    }
+  }
+
   static async getByListing(req: AuthRequest, res: Response) {
     try {
       if (!req.user?.id) {

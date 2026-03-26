@@ -27,8 +27,6 @@ export interface MostTrustedDonorFilters {
   minRating?: number;
 }
 
-
-
 const normalizeLocationValue = (value?: string): string =>
   String(value || "")
     .trim()
@@ -101,7 +99,10 @@ export class ListingsService {
   static async getMyListings(userId: string): Promise<any[]> {
     await ListingsService.syncListingStatuses();
 
-    const listings = await Listing.find({ donor: userId })
+    const listings = await Listing.find({
+      donor: userId,
+      status: ListingStatus.AVAILABLE,
+    })
       .sort({ createdAt: -1 })
       .lean();
 
@@ -247,7 +248,11 @@ export class ListingsService {
 
   static async getRecentlyUploadedListings(
     filters: RecentlyUploadedFilters = {},
-  ): Promise<{ listings: IListing[]; totalCount: number; matchedCount: number }> {
+  ): Promise<{
+    listings: IListing[];
+    totalCount: number;
+    matchedCount: number;
+  }> {
     const activeListings = await ListingsService.getActiveListings();
     const hoursWindow =
       Number.isFinite(Number(filters.hours)) && Number(filters.hours) > 0
@@ -274,7 +279,11 @@ export class ListingsService {
 
   static async getHomepageFilteredListings(
     filters: HomepageFilters = {},
-  ): Promise<{ listings: IListing[]; totalCount: number; matchedCount: number }> {
+  ): Promise<{
+    listings: IListing[];
+    totalCount: number;
+    matchedCount: number;
+  }> {
     const activeListings = await ListingsService.getActiveListings();
     const normalizedLocation = normalizeLocationValue(filters.location);
     const normalizedCategory = normalizeLocationValue(filters.category).replace(
@@ -331,10 +340,15 @@ export class ListingsService {
 
   static async getMostTrustedDonorListings(
     filters: MostTrustedDonorFilters = {},
-  ): Promise<{ listings: IListing[]; totalCount: number; matchedCount: number }> {
+  ): Promise<{
+    listings: IListing[];
+    totalCount: number;
+    matchedCount: number;
+  }> {
     const activeListings = await ListingsService.getActiveListings();
     const minRating =
-      Number.isFinite(Number(filters.minRating)) && Number(filters.minRating) > 0
+      Number.isFinite(Number(filters.minRating)) &&
+      Number(filters.minRating) > 0
         ? Number(filters.minRating)
         : 4;
 
@@ -360,11 +374,16 @@ export class ListingsService {
     ]);
 
     const ratingByDonorId = new Map(
-      trustedDonors.map((donor) => [String(donor.donorId), donor.averageRating]),
+      trustedDonors.map((donor) => [
+        String(donor.donorId),
+        donor.averageRating,
+      ]),
     );
 
     const trustedListings = activeListings
-      .filter((listing) => ratingByDonorId.has(String((listing.donor as any)?._id)))
+      .filter((listing) =>
+        ratingByDonorId.has(String((listing.donor as any)?._id)),
+      )
       .sort((a, b) => {
         const aRating = Number(
           ratingByDonorId.get(String((a.donor as any)?._id)) || 0,

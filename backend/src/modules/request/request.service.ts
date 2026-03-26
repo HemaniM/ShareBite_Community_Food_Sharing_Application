@@ -36,9 +36,16 @@ const reviewPopulate = {
   },
 };
 
-
-
 export class RequestService {
+  static async deleteRequesterRequest(
+    userId: string,
+    requestId: string,
+  ): Promise<IRequest | null> {
+    return Request.findOneAndDelete({
+      _id: requestId,
+      requester: userId,
+    });
+  }
 
   static async getHistoryOverview(userId: string): Promise<{
     requests: IRequest[];
