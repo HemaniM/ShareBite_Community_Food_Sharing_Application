@@ -14,14 +14,11 @@ const DropdownField = ({
   buttonColorClass = "",
   menuClassName = "",
   optionClassName = "",
-  iconName = ""
+  iconName = "",
 }) => {
-
-
-// const iconName = buttonColorClass.includes("text-white")
-//   ? "arrow_down_white"
-//   : "arrow_down_grey";
-
+  // const iconName = buttonColorClass.includes("text-white")
+  //   ? "arrow_down_white"
+  //   : "arrow_down_grey";
 
   return (
     <div className="relative">
@@ -31,7 +28,7 @@ const DropdownField = ({
         color="orange"
         size="sm"
         onClick={onToggle}
-        className={`mt-2 flex h-[42px] w-full items-center justify-between rounded-[8px] px-4 text-left text-[12px] font-semibold tracking-[0.2px] ${buttonColorClass} ${buttonClassName}`}
+        className={`mt-2 flex h-[42px] w-full items-center gap-[20px] justify-between rounded-[8px] px-4 text-left text-[14px] font-semibold tracking-[0.5px] ${buttonColorClass} ${buttonClassName}`}
       >
         <span>{value || placeholder}</span>
         <Icon

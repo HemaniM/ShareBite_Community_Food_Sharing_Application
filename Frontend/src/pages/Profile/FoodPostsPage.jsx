@@ -1,5 +1,6 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useEffect, useState, useMemo, useRef } from "react";
 import Button1 from "../../components/ui/Button1";
+import DropdownField from "../../components/ui/DropdownField";
 import { Icon } from "../../components/Icons/Icons";
 import { Link, useLocation } from "react-router-dom";
 import { useAppDispatch, useAppSelector } from "../../hooks/reduxHooks";
@@ -7,6 +8,8 @@ import {
   deleteMyListing,
   fetchMyListings,
 } from "../../features/listings/listingsSlice";
+
+const sortOptions = ["Latest request", "Most pending requests", "Newest post"];
 
 const FoodPostsPage = () => {
   const dispatch = useAppDispatch();
@@ -20,7 +23,9 @@ const FoodPostsPage = () => {
     type: "success",
   }));
 
-  const [sortBy, setSortBy] = useState("latestRequest");
+  const [sortBy, setSortBy] = useState("Latest request");
+  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+  const sortDropdownRef = useRef(null);
 
   useEffect(() => {
     dispatch(fetchMyListings());
@@ -39,6 +44,17 @@ const FoodPostsPage = () => {
     return () => clearTimeout(timeoutId);
   }, [toast]);
 
+  useEffect(() => {
+    const closeOnOutsideClick = (event) => {
+      if (!sortDropdownRef.current?.contains(event.target)) {
+        setIsSortDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", closeOnOutsideClick);
+    return () => document.removeEventListener("mousedown", closeOnOutsideClick);
+  }, []);
+
   const showToast = (message, type = "success") => {
     setToast({ message, type });
   };
@@ -54,15 +70,16 @@ const FoodPostsPage = () => {
     };
 
     return [...myListings].sort((a, b) => {
-      if (sortBy === "mostPending") {
+      if (sortBy === "Most pending requests") {
         const pendingDifference =
-          Number(b.pendingRequestCount || 0) - Number(a.pendingRequestCount || 0);
+          Number(b.pendingRequestCount || 0) -
+          Number(a.pendingRequestCount || 0);
         if (pendingDifference !== 0) {
           return pendingDifference;
         }
       }
 
-      if (sortBy === "newestPost") {
+      if (sortBy === "Newest post") {
         return getTime(b.createdAt) - getTime(a.createdAt);
       }
 
@@ -96,8 +113,9 @@ const FoodPostsPage = () => {
     <section className="w-full max-w-[975px] mx-auto pb-16 mt-[80px]">
       {toast.message && (
         <div
-          className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${toast.type === "error" ? "bg-orange-500" : "bg-green-500"
-            }`}
+          className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${
+            toast.type === "error" ? "bg-orange-500" : "bg-green-500"
+          }`}
         >
           {toast.message}
         </div>
@@ -124,28 +142,35 @@ const FoodPostsPage = () => {
         <h2 className="mt-12 mb-[50px] text-[22px] font-bold tracking-[0.4px] text-black">
           ALL FOOD POSTS
         </h2>
-        <label
-          htmlFor="food-post-sort"
-          className="flex items-center gap-2 text-[13px] font-semibold text-[var(--text-grey-5)]"
-        >
-          Sort by
-          <select
-            id="food-post-sort"
+        <div ref={sortDropdownRef} className="min-w-[180px]">
+          <DropdownField
+            name="foodPostSort"
             value={sortBy}
-            onChange={(event) => setSortBy(event.target.value)}
-            className="rounded-[10px] border border-[#e5e4df] bg-white px-3 py-2 text-[13px] text-[var(--text-grey-5)] outline-none"
-          >
-            <option value="latestRequest">Latest request</option>
-            <option value="mostPending">Most pending requests</option>
-            <option value="newestPost">Newest post</option>
-          </select>
-        </label>
+            placeholder="Latest request"
+            buttonColorClass="bg-orange text-white"
+            iconName="arrow_down_white"
+            options={sortOptions}
+            isOpen={isSortDropdownOpen}
+            onToggle={() => setIsSortDropdownOpen((previous) => !previous)}
+            onSelect={(value) => {
+              setSortBy(value);
+              setIsSortDropdownOpen(false);
+            }}
+            buttonClassName="!mt-0 "
+          />
+        </div>
       </div>
 
-      {loading && <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent text-[var(--text-grey-4)] px-6 py-10 text-center text-[15px]">
-        Loading posts...
-      </div>}
-      {error && <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent text-[var(--primary-orange-600)] px-6 py-10 text-center text-[15px]">{error}</div>}
+      {loading && (
+        <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent text-[var(--text-grey-4)] px-6 py-10 text-center text-[15px]">
+          Loading posts...
+        </div>
+      )}
+      {error && (
+        <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent text-[var(--primary-orange-600)] px-6 py-10 text-center text-[15px]">
+          {error}
+        </div>
+      )}
 
       {!loading && !myListings.length && (
         <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent text-[var(--text-grey-4)] px-6 py-10 text-center text-[15px]">
