@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
 import { Link, useLocation } from "react-router-dom";
@@ -20,6 +20,8 @@ const FoodPostsPage = () => {
     type: "success",
   }));
 
+  const [sortBy, setSortBy] = useState("latestRequest");
+
   useEffect(() => {
     dispatch(fetchMyListings());
   }, [dispatch]);
@@ -40,6 +42,40 @@ const FoodPostsPage = () => {
   const showToast = (message, type = "success") => {
     setToast({ message, type });
   };
+
+  const sortedListings = useMemo(() => {
+    const getTime = (value) => {
+      if (!value) {
+        return 0;
+      }
+
+      const timestamp = new Date(value).getTime();
+      return Number.isFinite(timestamp) ? timestamp : 0;
+    };
+
+    return [...myListings].sort((a, b) => {
+      if (sortBy === "mostPending") {
+        const pendingDifference =
+          Number(b.pendingRequestCount || 0) - Number(a.pendingRequestCount || 0);
+        if (pendingDifference !== 0) {
+          return pendingDifference;
+        }
+      }
+
+      if (sortBy === "newestPost") {
+        return getTime(b.createdAt) - getTime(a.createdAt);
+      }
+
+      const latestRequestDifference =
+        getTime(b.latestRequestAt) - getTime(a.latestRequestAt);
+
+      if (latestRequestDifference !== 0) {
+        return latestRequestDifference;
+      }
+
+      return getTime(b.createdAt) - getTime(a.createdAt);
+    });
+  }, [myListings, sortBy]);
 
   const handleDeletePost = async (postId) => {
     try {
@@ -84,10 +120,27 @@ const FoodPostsPage = () => {
           </Button1>
         </Link>
       </div>
-
-      <h2 className="mt-12 mb-[50px] text-[22px] font-bold tracking-[0.4px] text-black">
-        ALL FOOD POSTS
-      </h2>
+      <div className="mt-12 mb-[40px] flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <h2 className="mt-12 mb-[50px] text-[22px] font-bold tracking-[0.4px] text-black">
+          ALL FOOD POSTS
+        </h2>
+        <label
+          htmlFor="food-post-sort"
+          className="flex items-center gap-2 text-[13px] font-semibold text-[var(--text-grey-5)]"
+        >
+          Sort by
+          <select
+            id="food-post-sort"
+            value={sortBy}
+            onChange={(event) => setSortBy(event.target.value)}
+            className="rounded-[10px] border border-[#e5e4df] bg-white px-3 py-2 text-[13px] text-[var(--text-grey-5)] outline-none"
+          >
+            <option value="latestRequest">Latest request</option>
+            <option value="mostPending">Most pending requests</option>
+            <option value="newestPost">Newest post</option>
+          </select>
+        </label>
+      </div>
 
       {loading && <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent text-[var(--text-grey-4)] px-6 py-10 text-center text-[15px]">
         Loading posts...
@@ -101,7 +154,7 @@ const FoodPostsPage = () => {
       )}
 
       <div className="space-y-[30px]">
-        {myListings.map((post) => {
+        {sortedListings.map((post) => {
           const pendingRequestCount = Number(post.pendingRequestCount || 0);
 
           return (

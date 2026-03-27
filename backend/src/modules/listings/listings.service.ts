@@ -121,6 +121,7 @@ export class ListingsService {
         $group: {
           _id: "$listingId",
           requestCount: { $sum: 1 },
+          latestRequestAt: { $max: "$createdAt" },
           pendingRequestCount: {
             $sum: {
               $cond: [{ $eq: ["$status", "pending"] }, 1, 0],
@@ -141,6 +142,7 @@ export class ListingsService {
         ...listing,
         requestCount: counts?.requestCount || 0,
         pendingRequestCount: counts?.pendingRequestCount || 0,
+        latestRequestAt: counts?.latestRequestAt || null,
       };
     });
   }
