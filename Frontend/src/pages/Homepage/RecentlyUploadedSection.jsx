@@ -1,4 +1,5 @@
 import React from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Button1 from "../../components/ui/Button1";
 import { Icon } from "../../components/Icons/Icons";
 
@@ -23,14 +24,6 @@ const getRelativeTimeLabel = (createdAt) => {
   return `• ${Math.floor(diffInMinutes / 60)}h ago`;
 };
 
-const handlePrevious = () => {
-  setCurrentPage((prev) => Math.max(0, prev - 1));
-};
-
-const handleNext = () => {
-  setCurrentPage((prev) => Math.min(1, prev + 1));
-};
-
 const RecentlyUploadedSection = ({
   products = [],
   loading = false,
@@ -39,6 +32,65 @@ const RecentlyUploadedSection = ({
   onViewMoreClick,
 }) => {
   // const [currentPage, setCurrentPage] = useState(0);
+
+  const sliderRef = useRef(null);
+  const [canScrollPrev, setCanScrollPrev] = useState(false);
+  const [canScrollNext, setCanScrollNext] = useState(false);
+
+  const updateScrollState = useCallback(() => {
+    const sliderElement = sliderRef.current;
+
+    if (!sliderElement) {
+      return;
+    }
+
+    const maxScrollLeft = sliderElement.scrollWidth - sliderElement.clientWidth;
+    const tolerance = 1;
+
+    setCanScrollPrev(sliderElement.scrollLeft > tolerance);
+    setCanScrollNext(sliderElement.scrollLeft < maxScrollLeft - tolerance);
+  }, []);
+
+  useEffect(() => {
+    updateScrollState();
+  }, [products.length, updateScrollState]);
+
+  const scrollByOneCard = useCallback((direction) => {
+    const sliderElement = sliderRef.current;
+
+    if (!sliderElement) {
+      return;
+    }
+
+    const firstCard = sliderElement.querySelector(
+      "[data-recently-card='true']",
+    );
+    if (!firstCard) {
+      return;
+    }
+
+    const cardWidth = firstCard.getBoundingClientRect().width;
+    const secondCard = firstCard.nextElementSibling;
+    const gapValue = secondCard
+      ? secondCard.getBoundingClientRect().left -
+        firstCard.getBoundingClientRect().left -
+        cardWidth
+      : 0;
+    const scrollDistance = cardWidth + Math.max(0, gapValue);
+
+    sliderElement.scrollBy({
+      left: direction === "next" ? scrollDistance : -scrollDistance,
+      behavior: "smooth",
+    });
+  }, []);
+
+  const handlePrevious = useCallback(() => {
+    scrollByOneCard("prev");
+  }, [scrollByOneCard]);
+
+  const handleNext = useCallback(() => {
+    scrollByOneCard("next");
+  }, [scrollByOneCard]);
 
   return (
     <section className="w-full py-[60px]">
@@ -78,12 +130,17 @@ const RecentlyUploadedSection = ({
           ) : (
             <div className="flex flex-col gap-4 lg:gap-5 w-full">
               {/* Items Row */}
-              <div className="flex flex-col sm:flex-row gap-4 lg:gap-[18px] overflow-x-auto pb-2">
+              <div
+                ref={sliderRef}
+                onScroll={updateScrollState}
+                className="flex gap-4 lg:gap-[18px] overflow-x-auto pb-2 snap-x snap-mandatory scroll-smooth no-scrollbar"
+              >
                 {products?.map((item) => (
                   <div
                     key={item?.id}
                     onClick={() => onProductClick?.(item)}
-                    className="relative flex-shrink-0 w-full sm:w-[230px] h-[200px] lg:h-[276px] rounded-[14px] overflow-hidden group cursor-pointer"
+                    data-recently-card="true"
+                    className="relative flex-shrink-0 w-full sm:w-[230px] h-[200px] lg:h-[276px] rounded-[14px] overflow-hidden group cursor-pointer snap-start"
                   >
                     {/* Background Image */}
                     <img
@@ -141,14 +198,16 @@ const RecentlyUploadedSection = ({
               <div className="flex items-center justify-center gap-3 lg:gap-[14px]">
                 <button
                   onClick={handlePrevious}
-                  className="flex items-center justify-center w-8 h-8 lg:w-[34px] lg:h-[34px] rounded-[16px] bg-[#f8d4a6] hover:opacity-90 transition-opacity disabled:opacity-50"
+                  disabled={!canScrollPrev}
+                  className="flex items-center justify-center w-8 h-8 lg:w-[34px] lg:h-[34px] rounded-[16px] bg-orange hover:opacity-90 transition-opacity disabled:opacity-50"
                 >
                   <Icon name="left_arrow_slider" />
                 </button>
 
                 <button
                   onClick={handleNext}
-                  className="flex items-center justify-center w-8 h-8 lg:w-[34px] lg:h-[34px] rounded-[16px] bg-[#efa13d] hover:opacity-90 transition-opacity disabled:opacity-50"
+                  disabled={!canScrollNext}
+                  className="flex items-center justify-center w-8 h-8 lg:w-[34px] lg:h-[34px] rounded-[16px] bg-orange hover:opacity-90 transition-opacity disabled:opacity-50"
                 >
                   <Icon name="right_arrow_slider" />
                 </button>
