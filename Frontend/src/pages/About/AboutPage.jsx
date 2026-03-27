@@ -13,62 +13,62 @@ const highlights = [
     text: "Large quantities of perfectly edible food are discarded every day.",
     textOnly: true,
     classes: "gap-[10px]",
-    iconName: "inverted_comma_black"
+    iconName: "inverted_comma_black",
   },
   {
     image: "/images/About_page_grid_img_1.jpg",
     text: "",
     textOnly: false,
     classes: "",
-    iconName: ""
+    iconName: false,
   },
   {
     image: "/images/About_page_grid_img_3.jpg",
     text: "",
     textOnly: false,
     classes: "row-span-2",
-    iconName: ""
+    iconName: false,
   },
   {
     image: "/images/About_page_grid_img_2.jpg",
     textOnly: false,
     classes: "",
-    iconName: ""
+    iconName: false,
   },
   {
     image: "",
     text: "While some discard food, others struggle to find their next meal.",
     textOnly: true,
     classes: "gap-[10px]",
-    iconName: "inverted_comma_orange"
+    iconName: "inverted_comma_orange",
   },
   {
     image: "/images/About_page_grid_img_4.jpg",
     text: "",
     textOnly: false,
     classes: "row-span-2",
-    iconName: ""
+    iconName: false,
   },
   {
     image: "/images/About_page_grid_img_5.jpg",
     text: "",
     textOnly: false,
     classes: "row-span-2",
-    iconName: ""
+    iconName: false,
   },
   {
     image: "",
     text: "A shared meal can create connections that go beyond food.",
     textOnly: true,
     classes: "gap-[10px]",
-    iconName: "inverted_comma_green"
+    iconName: "inverted_comma_green",
   },
   {
     image: "/images/About_page_grid_img_6.jpg",
     text: "",
     textOnly: false,
     classes: "",
-    iconName: ""
+    iconName: false,
   },
 ];
 
@@ -132,33 +132,32 @@ const AboutPage = () => {
 
           <section className="max-w-[1100px] mt-[30px] mx-auto grid w-[1100px] grid-cols-3 grid-cols-[350px_350px_350px] gap-[25px] auto-rows-[255px]">
             {highlights.map((item, index) => (
-              <article
-                key={`${item.image}-${index}`}
-                className={`${item.classes || ""} relative overflow-hidden rounded-[5px] bg-white shadow-[0_2px_8px_rgba(0,0,0,0.08)]`}
-              >
-                {!item.textOnly ? (
-                  <img
-                    src={item.image}
-                    alt="ShareBite value"
-                    className="h-full w-full object-cover"
-                  />
-                ) : null}
-                {item.iconName ? (
-                  <Icon name={item.iconName} />
-                ) : null}
-                {item.text ? (
-                  <div
-                    className={`absolute inset-0 flex items-center ${item.textOnly ? "bg-white" : "bg-[rgba(0,0,0,0.35)]"} p-6`}
-                  >
-                    <p
-                      className={`font-['Nunito'] text-[20px] font-semibold leading-8 ${item.textOnly ? "text-[var(--text-grey-4)]" : ""}`}
+                <article
+                  key={`${item.image}-${index}`}
+                  className={`${item.classes || ""} relative rounded-[5px] shadow-[0_2px_8px_rgba(0,0,0,0.08)]`}
+                >
+                  {!item.textOnly ? (
+                    <img
+                      src={item.image}
+                      alt="ShareBite value"
+                      className="h-full w-full object-cover"
+                    />
+                  ) : null}
+                  {item.text ? (
+                    <div
+                      className={`absolute inset-0 flex flex-col items-start gap-[10px] ${item.textOnly ? "bg-white" : "bg-[rgba(0,0,0,0.35)]"} px-8 py-14`}
                     >
-                      {item.text}
-                    </p>
-                  </div>
-                ) : null}
-              </article>
-            ))}
+                      <Icon name={`${item.iconName}`} />
+                      <p
+                        className={`font-['Nunito'] text-[20px] font-semibold leading-8 ${item.textOnly ? "text-[var(--text-grey-4)]" : ""}`}
+                      >
+                        {item.text}
+                      </p>
+                    </div>
+                  ) : null}
+                </article>
+              )
+            )}
           </section>
 
           <section className="mt-[40px] bg-[var(--bg-secondary)]">
