@@ -9,6 +9,7 @@ import {
   fetchRequestsForListing,
   rejectRequest,
 } from "../../features/requests/requestsSlice";
+import { slugifyProductName } from "../../utils/listingTransforms";
 
 const dropdownOptions = ["ALL", "Pending", "Accepted", "Rejected"];
 
@@ -112,6 +113,15 @@ const FoodPostRequestsPage = () => {
       (request) => request.status === statusFilter.toLowerCase(),
     );
   }, [listingRequests, statusFilter]);
+
+  const postDetailsPath = useMemo(() => {
+    if (!postId) {
+      return "/profile/food-posts";
+    }
+
+    const postSlug = slugifyProductName(pageTitle || "product");
+    return `/product/${postId}/${postSlug}`;
+  }, [pageTitle, postId]);
 
   const handleAcceptRequest = async (requestId) => {
     const action = await dispatch(
@@ -327,7 +337,7 @@ const FoodPostRequestsPage = () => {
       </div>
 
       <div className="mt-8 flex justify-end">
-        <Link to="/profile/food-posts">
+        <Link to={postDetailsPath}>
           <Button1
             type="button"
             variant="outline"
