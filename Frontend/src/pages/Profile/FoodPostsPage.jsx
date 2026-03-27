@@ -60,9 +60,8 @@ const FoodPostsPage = () => {
     <section className="w-full max-w-[975px] mx-auto pb-16 mt-[80px]">
       {toast.message && (
         <div
-          className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${
-            toast.type === "error" ? "bg-orange-500" : "bg-green-500"
-          }`}
+          className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${toast.type === "error" ? "bg-orange-500" : "bg-green-500"
+            }`}
         >
           {toast.message}
         </div>
@@ -90,13 +89,15 @@ const FoodPostsPage = () => {
         ALL FOOD POSTS
       </h2>
 
-      {loading && <p>Loading posts...</p>}
-      {error && <p className="text-red-500">{error}</p>}
+      {loading && <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent text-[var(--text-grey-4)] px-6 py-10 text-center text-[15px]">
+        Loading posts...
+      </div>}
+      {error && <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent text-[var(--primary-orange-600)] px-6 py-10 text-center text-[15px]">{error}</div>}
 
       {!loading && !myListings.length && (
-        <p className="text-[var(--text-grey-4)]">
+        <div className="w-full rounded-xl border border-dashed border-[var(--text-grey-2)] bg-transparent text-[var(--text-grey-4)] px-6 py-10 text-center text-[15px]">
           No food post yet. Create your first one.
-        </p>
+        </div>
       )}
 
       <div className="space-y-[30px]">

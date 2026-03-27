@@ -94,7 +94,7 @@ const AboutPage = () => {
               backgroundImage: "url('/images/About_page_hero_section_img.jpg')",
             }}
           >
-            <h1 className="font-['Nunito'] text-[36px] font-extrabold uppercase tracking-[2px] text-[var(--text-white)] sm:text-[52px]">
+            <h1 className="font-['Nunito'] text-[36px] font-extrabold uppercase tracking-[2px] text-[var(--text-white)] sm:text-[52px] shadow-[0_15px_50px_rgba(0,0,0,0.35)]`">
               About Us
             </h1>
           </section>
