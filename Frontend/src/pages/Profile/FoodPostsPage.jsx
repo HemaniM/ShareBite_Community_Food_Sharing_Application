@@ -8,6 +8,7 @@ import {
   deleteMyListing,
   fetchMyListings,
 } from "../../features/listings/listingsSlice";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
 
 const sortOptions = ["Latest request", "Most pending requests", "Newest post"];
 
@@ -18,10 +19,10 @@ const FoodPostsPage = () => {
     (state) => state.listings,
   );
 
-  const [toast, setToast] = useState(() => ({
-    message: location.state?.toastMessage || "",
-    type: "success",
-  }));
+  // const [toast, setToast] = useState(() => ({
+  //   message: location.state?.toastMessage || "",
+  //   type: "success",
+  // }));
 
   const [sortBy, setSortBy] = useState("Latest request");
   const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
@@ -32,17 +33,20 @@ const FoodPostsPage = () => {
   }, [dispatch]);
 
   useEffect(() => {
-    if (!toast.message) {
-      return undefined;
+    // if (!toast.message) {
+    //   return undefined;
+    if (!location.state?.toastMessage) {
+      return;
     }
 
+    showSuccessToast(location.state.toastMessage);
     window.history.replaceState({}, document.title);
-    const timeoutId = setTimeout(
-      () => setToast({ message: "", type: "success" }),
-      3000,
-    );
-    return () => clearTimeout(timeoutId);
-  }, [toast]);
+    // const timeoutId = setTimeout(
+    //   () => setToast({ message: "", type: "success" }),
+    //   3000,
+    // );
+    // return () => clearTimeout(timeoutId);
+  }, [location.state]);
 
   useEffect(() => {
     const closeOnOutsideClick = (event) => {
@@ -55,9 +59,9 @@ const FoodPostsPage = () => {
     return () => document.removeEventListener("mousedown", closeOnOutsideClick);
   }, []);
 
-  const showToast = (message, type = "success") => {
-    setToast({ message, type });
-  };
+  // const showToast = (message, type = "success") => {
+  //   setToast({ message, type });
+  // };
 
   const sortedListings = useMemo(() => {
     const getTime = (value) => {
@@ -98,20 +102,23 @@ const FoodPostsPage = () => {
     try {
       const action = await dispatch(deleteMyListing(postId));
       if (deleteMyListing.fulfilled.match(action)) {
-        showToast("Post deleted successfully", "success");
+        // showToast("Post deleted successfully", "success");
+        showSuccessToast("Post deleted successfully");
       } else {
         console.error("Delete post failed:", action.payload);
-        showToast("Not able to delete post", "error");
+        // showToast("Not able to delete post", "error");
+        showErrorToast("Not able to delete post");
       }
     } catch (deleteError) {
       console.error("Delete post failed:", deleteError);
-      showToast("Not able to delete post", "error");
+      // showToast("Not able to delete post", "error");
+      showErrorToast("Not able to delete post");
     }
   };
 
   return (
     <section className="w-full max-w-[975px] mx-auto pb-16 mt-[80px]">
-      {toast.message && (
+      {/* {toast.message && (
         <div
           className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${
             toast.type === "error" ? "bg-orange-500" : "bg-green-500"
@@ -119,7 +126,7 @@ const FoodPostsPage = () => {
         >
           {toast.message}
         </div>
-      )}
+      )} */}
       <div className="flex justify-center">
         <Link
           to="/profile/food-posts/create-post"

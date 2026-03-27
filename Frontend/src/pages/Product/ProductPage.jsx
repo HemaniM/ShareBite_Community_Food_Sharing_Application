@@ -22,6 +22,7 @@ import {
   mapListingToProduct,
   slugifyProductName,
 } from "../../utils/listingTransforms";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
 
 const formatExpiryText = (expiresAt) => {
   if (!expiresAt) {
@@ -54,7 +55,7 @@ const ProductPage = () => {
 
   const [quantity, setQuantity] = useState(1);
   const [requestMessage, setRequestMessage] = useState("");
-  const [toast, setToast] = useState({ message: "", type: "success" });
+  // const [toast, setToast] = useState({ message: "", type: "success" });
 
   const { activeListings, activeListingsLoading } = useAppSelector(
     (state) => state.listings,
@@ -71,18 +72,18 @@ const ProductPage = () => {
     dispatch(fetchActiveListings());
   }, [dispatch]);
 
-  useEffect(() => {
-    if (!toast.message) {
-      return undefined;
-    }
+  // useEffect(() => {
+  //   if (!toast.message) {
+  //     return undefined;
+  //   }
 
-    const timeoutId = setTimeout(() => {
-      setToast({ message: "", type: "success" });
-      dispatch(clearRequestFeedback());
-    }, 3000);
+  //   const timeoutId = setTimeout(() => {
+  //     setToast({ message: "", type: "success" });
+  //     dispatch(clearRequestFeedback());
+  //   }, 3000);
 
-    return () => clearTimeout(timeoutId);
-  }, [dispatch, toast]);
+  //   return () => clearTimeout(timeoutId);
+  // }, [dispatch, toast]);
 
   const allProducts = useMemo(
     () => activeListings.filter(isDisplayableListing).map(mapListingToProduct),
@@ -135,7 +136,8 @@ const ProductPage = () => {
 
   const handleCreateRequest = async () => {
     if (!product?.id) {
-      setToast({ message: "Food post not found", type: "error" });
+      // setToast({ message: "Food post not found", type: "error" });
+      showErrorToast("Food post not found");
       return;
     }
 
@@ -148,17 +150,21 @@ const ProductPage = () => {
     );
 
     if (createRequest.fulfilled.match(action)) {
-      setToast({
-        message: action.payload.message || "Request placed successfully",
-        type: "success",
-      });
+      // setToast({
+      //   message: action.payload.message || "Request placed successfully",
+      //   type: "success",
+      // });
+      showSuccessToast(action.payload.message || "Request placed successfully");
       setRequestMessage("");
       dispatch(fetchMyRequests());
+      dispatch(clearRequestFeedback());
     } else {
-      setToast({
-        message: action.payload || "Unable to place request",
-        type: "error",
-      });
+      // setToast({
+      //   message: action.payload || "Unable to place request",
+      //   type: "error",
+      // });
+      showErrorToast(action.payload || "Unable to place request");
+      dispatch(clearRequestFeedback());
     }
   };
 
@@ -185,7 +191,7 @@ const ProductPage = () => {
       </Helmet>
 
       <main className="w-full bg-white">
-        {toast.message && (
+        {/* {toast.message && (
           <div
             className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${
               toast.type === "error" ? "bg-orange-500" : "bg-green-500"
@@ -193,7 +199,7 @@ const ProductPage = () => {
           >
             {toast.message}
           </div>
-        )}
+        )} */}
         <ContactBar />
         <section className="w-full">
           <NavbarHomepage showBorder={true} />
@@ -268,7 +274,9 @@ const ProductPage = () => {
                         </p>
                       )}
 
-                      <p className="text-[12px] text-[var(--text-grey-4)]">{productDescription}</p>
+                      <p className="text-[12px] text-[var(--text-grey-4)]">
+                        {productDescription}
+                      </p>
                     </div>
 
                     <div className="mt-[25px]">

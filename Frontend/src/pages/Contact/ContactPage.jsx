@@ -6,7 +6,8 @@ import Footer from "../../components/common/Footer";
 import Button1 from "../../components/ui/Button1";
 import { CONTACT_EMAIL, sendContactEmail } from "../../utils/contactAPI";
 import { Icon } from "../../components/Icons/Icons";
-import { toast } from "react-toastify";
+// import { toast } from "react-toastify";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
 
 const CONTACT_DETAILS = [
   {
@@ -133,15 +134,16 @@ const ContactPage = () => {
 
       setContactForm(initialContactForm);
 
-      toast.success("Your message was sent successfully!");
-
+      showSuccessToast("Your message was sent successfully!");
+      // toast.success("Your message was sent successfully!");
       // setStatus({
       //   type: "success",
       //   message:
       //     "Your message was sent successfully. Our team will contact you shortly.",
       // });
     } catch (error) {
-      toast.error(error.message || "Something went wrong. Try again.");
+      showErrorToast(error.message || "Something went wrong. Try again.");
+      // toast.error(error.message || "Something went wrong. Try again.");
       // setStatus({
       //   type: "error",
       //   message: error.message || "We could not send your message right now.",

@@ -5,6 +5,7 @@ import EditText from "../ui/EditText";
 import { twMerge } from "tailwind-merge";
 import { Icon } from "../Icons/Icons";
 import { CONTACT_EMAIL, sendContactEmail } from "../../utils/contactAPI";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
 
 const navigationLinks = [
   { label: "Home", path: "/home" },
@@ -34,18 +35,19 @@ const quickLinks = [
 
 const MessageForm = ({ compact = false }) => {
   const [message, setMessage] = useState("");
-  const [status, setStatus] = useState({ type: "idle", message: "" });
+  // const [status, setStatus] = useState({ type: "idle", message: "" });
   const [sending, setSending] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!message.trim()) {
-      setStatus({ type: "error", message: "Please enter a message first." });
+      // setStatus({ type: "error", message: "Please enter a message first." });
+      showErrorToast("Please enter a message first.");
       return;
     }
 
     setSending(true);
-    setStatus({ type: "idle", message: "" });
+    // setStatus({ type: "idle", message: "" });
 
     try {
       await sendContactEmail({
@@ -58,15 +60,17 @@ const MessageForm = ({ compact = false }) => {
       });
 
       setMessage("");
-      setStatus({
-        type: "success",
-        message: "Message sent successfully.",
-      });
+      // setStatus({
+      //   type: "success",
+      //   message: "Message sent successfully.",
+      // });
+      showSuccessToast("Message sent successfully.");
     } catch (error) {
-      setStatus({
-        type: "error",
-        message: error.message || "Unable to send your message right now.",
-      });
+      // setStatus({
+      //   type: "error",
+      //   message: error.message || "Unable to send your message right now.",
+      // });
+      showErrorToast(error.message || "Unable to send your message right now.");
     } finally {
       setSending(false);
     }
@@ -103,7 +107,7 @@ const MessageForm = ({ compact = false }) => {
         {sending ? "SENDING..." : "SEND"}
       </Button1>
 
-      {status.message ? (
+      {/* {status.message ? (
         <p
           className={`w-full text-left font-['Nunito'] text-xs font-semibold ${
             status.type === "success"
@@ -113,7 +117,7 @@ const MessageForm = ({ compact = false }) => {
         >
           {status.message}
         </p>
-      ) : null}
+      ) : null} */}
     </form>
   );
 };

@@ -9,6 +9,7 @@ import {
   createListing,
   resetCreateListingState,
 } from "../../features/listings/listingsSlice";
+import { showErrorToast } from "../../utils/toast";
 
 const inputClassName =
   "mt-2 w-full rounded-[6px] bg-[var(--primary-green-50)] px-3 py-[10px] text-[14px] text-[var(--text-grey-4)] placeholder:text-[var(text-grey-3)] border border-transparent outline-none transition focus:border-[var(--primary-green-200)]";
@@ -70,7 +71,7 @@ const CreateFoodPost = () => {
   const [free, setFree] = useState("No");
   const [stockMeasure, setStockMeasure] = useState("");
   const [formData, setFormData] = useState(initialFormState);
-  const [toast, setToast] = useState({ message: "", type: "success" });
+  // const [toast, setToast] = useState({ message: "", type: "success" });
 
   const fileInputRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -89,22 +90,22 @@ const CreateFoodPost = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (!toast.message) {
-      return undefined;
-    }
+  // useEffect(() => {
+  //   if (!toast.message) {
+  //     return undefined;
+  //   }
 
-    const timeoutId = setTimeout(
-      () => setToast({ message: "", type: "success" }),
-      3000,
-    );
+  //   const timeoutId = setTimeout(
+  //     () => setToast({ message: "", type: "success" }),
+  //     3000,
+  //   );
 
-    return () => clearTimeout(timeoutId);
-  }, [toast]);
+  //   return () => clearTimeout(timeoutId);
+  // }, [toast]);
 
-  const showToast = (message, type = "success") => {
-    setToast({ message, type });
-  };
+  // const showToast = (message, type = "success") => {
+  //   setToast({ message, type });
+  // };
 
   const handleUploadClick = () => {
     fileInputRef.current.click();
@@ -197,7 +198,8 @@ const CreateFoodPost = () => {
     const validationErrors = validateFormData();
 
     if (validationErrors.length) {
-      showToast(validationErrors[0], "error");
+      // showToast(validationErrors[0], "error");
+      showErrorToast(validationErrors[0]);
       return;
     }
 
@@ -252,13 +254,14 @@ const CreateFoodPost = () => {
       });
     } catch (uploadErr) {
       console.error("Create post failed:", uploadErr);
-      showToast("Not able to create post", "error");
+      // showToast("Not able to create post", "error");
+      showErrorToast("Not able to create post");
     }
   };
 
   return (
     <section className="mx-auto mt-[80px] w-full max-w-[975px] pb-20">
-      {toast.message && (
+      {/* {toast.message && (
         <div
           className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${
             toast.type === "error" ? "bg-orange-500" : "bg-green-500"
@@ -266,7 +269,7 @@ const CreateFoodPost = () => {
         >
           {toast.message}
         </div>
-      )}
+      )} */}
       <h1 className="mb-[50px] text-[22px] font-bold tracking-[0.4px] text-black">
         CREATE NEW FOOD POST
       </h1>

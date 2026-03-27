@@ -11,12 +11,15 @@ function App() {
       <ToastContainer
         position="top-right"
         autoClose={3000}
-        hideProgressBar={false}
+        hideProgressBar
         newestOnTop
         closeOnClick
         pauseOnHover
-        theme="colored"
-        toastClassName="!rounded-[12px] !font-['Nunito']"
+        theme="light"
+        className="sharebite-toast-container"
+        toastClassName="sharebite-toast"
+        bodyClassName="sharebite-toast-body"
+        progressClassName="sharebite-toast-progress"
       />
     </>
   );

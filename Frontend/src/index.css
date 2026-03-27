@@ -23,6 +23,38 @@
 }
 
 
+.sharebite-toast-container {
+  width: min(100%, 500px);
+  margin-top: 70px;
+  margin-right: 0px;
+
+  display: flex;
+  justify-content: center;  /* horizontal center */
+  align-items: center;  /* vertical center */
+}
+
+.sharebite-toast {
+  min-width: 400px;
+  background: transparent !important;
+  box-shadow: none !important;
+  min-height: auto !important;
+  padding: 0 !important;
+}
+
+.sharebite-toast-body {
+  margin: 0 !important;
+  /* padding: 0 !important; */
+}
+
+.sharebite-toast-progress {
+  height: 10px !important;
+  background: linear-gradient(
+    90deg,
+    var(--primary-orange-600),
+    var(--primary-green-600)
+  ) !important;
+}
+
 
 
 @layer base {

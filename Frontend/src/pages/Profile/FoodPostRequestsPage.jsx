@@ -10,6 +10,7 @@ import {
   rejectRequest,
 } from "../../features/requests/requestsSlice";
 import { slugifyProductName } from "../../utils/listingTransforms";
+import { showErrorToast, showSuccessToast } from "../../utils/toast";
 
 const dropdownOptions = ["ALL", "Pending", "Accepted", "Rejected"];
 
@@ -65,7 +66,7 @@ const FoodPostRequestsPage = () => {
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [statusFilter, setStatusFilter] = useState("ALL");
-  const [toast, setToast] = useState({ message: "", type: "success" });
+  // const [toast, setToast] = useState({ message: "", type: "success" });
   const dropdownRef = useRef(null);
 
   const pageTitle =
@@ -91,18 +92,18 @@ const FoodPostRequestsPage = () => {
     return () => document.removeEventListener("mousedown", closeOnOutsideClick);
   }, []);
 
-  useEffect(() => {
-    if (!toast.message) {
-      return undefined;
-    }
+  // useEffect(() => {
+  //   if (!toast.message) {
+  //     return undefined;
+  //   }
 
-    const timeoutId = setTimeout(
-      () => setToast({ message: "", type: "success" }),
-      3000,
-    );
+  //   const timeoutId = setTimeout(
+  //     () => setToast({ message: "", type: "success" }),
+  //     3000,
+  //   );
 
-    return () => clearTimeout(timeoutId);
-  }, [toast]);
+  //   return () => clearTimeout(timeoutId);
+  // }, [toast]);
 
   const filteredRequests = useMemo(() => {
     if (statusFilter === "ALL") {
@@ -128,13 +129,15 @@ const FoodPostRequestsPage = () => {
       acceptRequest({ requestId, listingId: postId }),
     );
     if (acceptRequest.fulfilled.match(action)) {
-      setToast({ message: "Request accepted successfully", type: "success" });
+      // setToast({ message: "Request accepted successfully", type: "success" });
+      showSuccessToast("Request accepted successfully");
       dispatch(fetchRequestsForListing(postId));
     } else {
-      setToast({
-        message: action.payload || "Unable to accept request",
-        type: "error",
-      });
+      // setToast({
+      //   message: action.payload || "Unable to accept request",
+      //   type: "error",
+      // });
+      showErrorToast(action.payload || "Unable to accept request");
     }
   };
 
@@ -143,19 +146,21 @@ const FoodPostRequestsPage = () => {
       rejectRequest({ requestId, listingId: postId }),
     );
     if (rejectRequest.fulfilled.match(action)) {
-      setToast({ message: "Request rejected successfully", type: "success" });
+      // setToast({ message: "Request rejected successfully", type: "success" });
+      showSuccessToast("Request rejected successfully");
       dispatch(fetchRequestsForListing(postId));
     } else {
-      setToast({
-        message: action.payload || "Unable to reject request",
-        type: "error",
-      });
+      // setToast({
+      //   message: action.payload || "Unable to reject request",
+      //   type: "error",
+      // });
+      showErrorToast(action.payload || "Unable to reject request");
     }
   };
 
   return (
     <section className="w-full max-w-[975px] mx-auto pb-16 mt-[80px]">
-      {toast.message && (
+      {/* {toast.message && (
         <div
           className={`fixed top-5 right-5 z-50 rounded-lg px-4 py-3 text-white shadow-lg ${
             toast.type === "error" ? "bg-orange-500" : "bg-green-500"
@@ -163,7 +168,7 @@ const FoodPostRequestsPage = () => {
         >
           {toast.message}
         </div>
-      )}
+      )} */}
 
       <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <h2 className="text-[22px] font-bold tracking-[0.4px] text-black uppercase">
