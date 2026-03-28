@@ -1,6 +1,7 @@
 import { Outlet, NavLink } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { Icon } from "../../components/Icons/Icons";
+import { Link } from "react-router-dom";
 
 const carouselData = [
   {
@@ -42,10 +43,8 @@ const AuthLayout = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#f3f4f6]">
       <div className="bg-white w-full max-w-[1000px] h-[670px] flex rounded-xl overflow-hidden shadow-2xl">
-
         {/* LEFT: Image Carousel */}
         <div className="w-[45%] relative overflow-hidden m-3 rounded-lg">
-
           {/* Sign Up & Login buttons */}
           <div className="absolute top-6 right-6 flex gap-3 z-20">
             <NavLink
@@ -102,15 +101,17 @@ const AuthLayout = () => {
               </div>
 
               {/* Learn More Button (PAUSE ON HOVER) */}
-              <button
-                onMouseEnter={() => setPaused(true)}
-                onMouseLeave={() => setPaused(false)}
-                className="absolute bottom-6 left-8 px-5 py-2 border-2 border-white 
+              <Link to="/about">
+                <button
+                  onMouseEnter={() => setPaused(true)}
+                  onMouseLeave={() => setPaused(false)}
+                  className="absolute bottom-6 left-8 px-5 py-2 border-2 border-white 
                            text-white rounded-md hover:bg-white hover:text-gray-900 
                            transition-all duration-300 font-medium text-sm"
-              >
-                Learn More
-              </button>
+                >
+                  Learn More
+                </button>
+              </Link>
             </div>
           ))}
 
@@ -143,7 +144,6 @@ const AuthLayout = () => {
             <Outlet />
           </div>
         </div>
-
       </div>
     </div>
   );
